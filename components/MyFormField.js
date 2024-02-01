@@ -1,5 +1,6 @@
 import React from "react";
 import { useFormikContext } from "formik";
+import { useTheme } from '@react-navigation/native';
 
 import MyErrorMessage from "./MyErrorMessage";
 import MyTextInput from "./MyTextInput";
@@ -23,7 +24,6 @@ function MyFormField({ name, width, onPress, isPasswordField = false, passwordVi
         onPress={onPress}
         isPasswordField={isPasswordField}
         passwordVisible={passwordVisible}
-
         {...otherProps}
       />
       <MyErrorMessage error={errors[name]} visible={touched[name]} />
