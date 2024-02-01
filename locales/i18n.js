@@ -4,12 +4,17 @@ import {getLocales} from 'expo-localization'
 import loginTransEN from './en/login.json'
 import loginTransHU from './hu/login.json'
 
+import registerTransEN from './en/register.json'
+import registerTransHU from './hu/register.json'
+
 const translations = {
     en: {
-        ...loginTransEN
+        ...loginTransEN, 
+        ...registerTransEN
     },
     hu: {
-        ...loginTransHU
+        ...loginTransHU, 
+        ...registerTransHU
     }
 }
 

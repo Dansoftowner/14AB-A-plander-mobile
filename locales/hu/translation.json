@@ -1,0 +1,19 @@
+{
+  "langSelectorAlt": "Kiválasztott nyelv módosítása",
+  "association": "Egyesület",
+  "emailAddress": "E-mail cím",
+  "back": "Vissza",
+  "president": "Egyesületelnök",
+  "cancel": "Mégse",
+  "home": "Főoldal",
+  "members": "Tagok",
+  "myProfile": "Profilom",
+  "notifications": "Értesítések",
+  "logout": "Kijelentkezés",
+  "save": "Mentés",
+  "edit": "Szerkesztés",
+  "error": "Hiba!",
+  "success": "Siker!",
+  "backToHome": "Vissza a főoldalra...",
+  "404": "A keresett oldal nem található!"
+}
