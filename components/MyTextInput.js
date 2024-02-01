@@ -1,27 +1,34 @@
 import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useTheme } from '@react-navigation/native';
 
-import defaultStyles from "../config/styles";
+//import defaultStyles from "../config/styles";
 import colors from "../config/colors";
+import EyeToShowPassword from "./EyeToShowPassword";
 
-function AppTextInput({title, icon, width = "100%", ...otherProps }) {
+function MyTextInput({title, icon, onPress, isPasswordField = false, passwordVisible = false, width = "100%", ...otherProps }) {
+  const { colors: colorsByTheme } = useTheme();
+
   return (
-    <View style={[styles.container, { width }]}>
+    <View style={[styles.container, { width }, {borderColor: colorsByTheme.Login_textColor}]}>
       {icon && (
         <MaterialCommunityIcons
           name={icon}
           size={20}
-          color={defaultStyles.colors.white}
+          color={colorsByTheme.Login_textColor}
           style={styles.icon}
         />
       )}
       <TextInput
         placeholder={title}
-        placeholderTextColor={defaultStyles.colors.medium}
-        style={[defaultStyles.text, styles.text]}
+        placeholderTextColor={colorsByTheme.Login_textColor}
+        style={[colorsByTheme.Login_textColor]}
         {...otherProps}
       />
+      {isPasswordField && (
+        <EyeToShowPassword style={styles.eye} onPress={onPress} passwordVisible={passwordVisible}/>
+      )}
     </View>
   );
 }
@@ -33,16 +40,23 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 10,
     alignItems: "center",
-    borderColor: defaultStyles.colors.white,
     borderWidth: 0.7
-},
+    },
+    eye: {
+      right: 10,
+      justifyContent: "flex-end",
+      alignSelf: "flex-end",
+    },
   icon: {
     marginRight: 10,
   },
   text: {
     color: colors.white,
-    fontWeight: "500"
+    fontWeight: "500",
+    flex: 1,
+    //width: "300",
+    // backgroundColor: "red"
   }
 });
 
-export default AppTextInput;
+export default MyTextInput;
