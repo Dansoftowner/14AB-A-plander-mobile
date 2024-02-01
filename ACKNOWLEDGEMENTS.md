@@ -4,7 +4,12 @@
 - Yup
 - Formik
 - Expo-Localization
-- React Navigation Native
+- Expo-Secure Storage
+- React Navigation Native (Drawer)
+- React Native Gesture Handler
+- React Native Reanimated
+- React Native Screens
+- React Native Safe Area Context
 
 ## Fejlesztési
 - Expo
