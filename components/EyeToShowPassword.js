@@ -1,10 +1,15 @@
 import React from 'react';
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-function EyeToShowPassword({onPress, passwordVisible}) {
+
+import { useTheme } from '@react-navigation/native';
+
+function EyeToShowPassword({onPress, passwordVisible = false}) {
+  const { colors: colorsByTheme } = useTheme();
+
     return (
     <TouchableWithoutFeedback style={styles.container} onPress={onPress}>
-        <MaterialCommunityIcons name={passwordVisible ? "eye" : "eye-off"} size={18} color="black" />
+        <MaterialCommunityIcons name={passwordVisible ? "eye" : "eye-off"} size={18} color={colorsByTheme.Login_eyeColor} />
     </TouchableWithoutFeedback>
   );
 }
