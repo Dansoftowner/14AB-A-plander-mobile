@@ -8,10 +8,12 @@ const AppLightTheme = {
     ...DefaultTheme.colors,
     Login_background: colors.soft_blue,
     Login_dropDownFont: colors.medium,
+    Login_placeholders: colors.light,
+    Login_textColor: colors.white,
     Login_buttonBg: colors.medium_blue,
     Login_buttonColor: colors.white,
-    Login_textColor: colors.medium,
-    Login_titleColor: colors.medium_blue
+    Login_titleColor: colors.medium_blue,
+    Login_eyeColor: colors.dark_blue,
   }
 }
 
