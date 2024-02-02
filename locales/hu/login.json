@@ -1,4 +1,6 @@
 {
+    "darkmode": "Sötét téma",
+    "lightmode": "Világos téma",
     "password": "Jelszó",
     "username": "Felhasználónév vagy email",
     "associationSelector": "Egyesület választása",
