@@ -15,15 +15,15 @@ function LogOut(props) {
         setUser(null)
     }
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colorsByTheme.medium_blue_dark_blue}]}>
       <TouchableWithoutFeedback onPress={handleOnPress}>
       <MaterialCommunityIcons
         name="power-standby"
         size={30}
-        color={colorsByTheme.Login_buttonColor}
+        color={colorsByTheme.white_white}
       />
       </TouchableWithoutFeedback>
-      <MyText style={[styles.text, { color: colorsByTheme.Login_buttonColor }]}>
+      <MyText style={[styles.text, { color: colorsByTheme.white_white }]}>
         {i18n.t('logout')}
       </MyText>
     </View>
@@ -33,7 +33,6 @@ function LogOut(props) {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    backgroundColor: colors.dark_blue,
     flexDirection: 'row',
     alignItems: 'center',
   },
