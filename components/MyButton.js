@@ -12,7 +12,7 @@ function MyButton({ title, onPress, color = "medium_blue" }) {
       style={[styles.button, { backgroundColor: colorsByTheme.Login_buttonBg }]}
       onPress={onPress}
     >
-      <Text style={[styles.text, {backgroundColor: colorsByTheme.Login_buttonColor}]}>{title}</Text>
+      <Text style={[styles.text, {color: colorsByTheme.Login_buttonColor}]}>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 15,
     width: "100%",
-    marginVertical: 10,
+    marginBottom: 20,
   },
   text: {
     fontSize: 18,
