@@ -14,21 +14,24 @@ import MainScreen from './screens/MainScreen'
 import MyDrawer from './navigation/MyDrawer'
 import MyStack from './navigation/MyStack'
 import LoginScreen from './screens/LoginScreen'
+// import AutocompleteDropdownContextProvider from 'react-native-autocomplete-dropdown'
 
 export default function App() {
   const colorScheme = useColorScheme()
-  Appearance.setColorScheme('dark')
+  Appearance.setColorScheme('light')
   const [user, setUser] = useState()
   i18n.locale = 'en'
   return (
+    // <AutocompleteDropdownContextProvider>
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthContext.Provider value={{ user, setUser }}>
         <NavigationContainer
           theme={colorScheme === 'light' ? AppLightTheme : AppDarkTheme}
         >          
-          { user ? <MyDrawer /> : <MyStack /> }
+        {/* <MyDrawer/> */}
           {/* <LoginScreen/> */}
           {/* <MainScreen /> */}
+          { user ? <MyDrawer /> : <MyStack /> }
           {/* <Drawer.Navigator initialRouteName="Main">
             <Drawer.Screen name="Main" component={MainScreen} />
             <Drawer.Screen name="Settings" component={SettingsScreen} />
@@ -36,5 +39,6 @@ export default function App() {
         </NavigationContainer>
       </AuthContext.Provider>
     </GestureHandlerRootView>
+    // </AutocompleteDropdownContextProvider>
   )
 }
