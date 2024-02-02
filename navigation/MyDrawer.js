@@ -3,13 +3,14 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import { View, StyleSheet } from 'react-native'
 import MainScreen from '../screens/MainScreen'
 import SettingsScreen from '../screens/SettingsScreen'
-import colors from '../config/colors'
 import useAuth from '../auth/useAuth'
+import { useTheme } from '@react-navigation/native'
+
 
 const Drawer = createDrawerNavigator()
 
 function MyDrawer(props) {
-    
+    const { colors: colorsByTheme } = useTheme()
     const {user} = useAuth();
     return (
     <Drawer.Navigator
@@ -17,8 +18,11 @@ function MyDrawer(props) {
       screenOptions={{
         headerShown: true,
         headerTitle: user ? user.name : 'Plander',
-        headerTintColor: colors.white,
-        headerStyle: { backgroundColor: colors.dark_blue },
+        headerTintColor: colorsByTheme.white_white,
+        headerStyle: { backgroundColor: colorsByTheme.medium_blue_dark_blue },
+        headerTitleStyle: {fontWeight: 'bold'},
+        drawerActiveTintColor: colorsByTheme.white_white,
+        drawerActiveBackgroundColor: colorsByTheme.medium_blue_dark_blue,
       }}
     >
       <Drawer.Screen name="Main" component={MainScreen} />
@@ -28,7 +32,9 @@ function MyDrawer(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+
+  },
 })
 
 export default MyDrawer
