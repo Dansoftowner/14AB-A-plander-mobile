@@ -6,6 +6,7 @@ import { useTheme } from '@react-navigation/native';
 import colors from '../config/colors';
 import useAuth from '../auth/useAuth';
 import LogOut from '../components/LogOut';
+import DarkMode from '../components/DarkModeSwitch';
 
 function MainScreen(props) {
     const {user} = useAuth();
@@ -14,6 +15,7 @@ function MainScreen(props) {
     <Screen>
       <View style={[styles.container]}>
       <LogOut />
+      <DarkMode/>
       </View>
     </Screen>
   )
