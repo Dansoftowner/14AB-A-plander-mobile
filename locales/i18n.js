@@ -7,14 +7,24 @@ import loginTransHU from './hu/login.json'
 import registerTransEN from './en/register.json'
 import registerTransHU from './hu/register.json'
 
+import memberTransHU from './hu/member.json'
+import memberTransEN from './en/member.json'
+
+import translationTransHU from './hu/translation.json'
+import translationTransEN from './en/translation.json'
+
 const translations = {
     en: {
         ...loginTransEN, 
-        ...registerTransEN
+        ...registerTransEN,
+        ...memberTransEN,
+        ...translationTransEN
     },
     hu: {
         ...loginTransHU, 
-        ...registerTransHU
+        ...registerTransHU,
+        ...memberTransHU,
+        ...translationTransHU
     }
 }
 
