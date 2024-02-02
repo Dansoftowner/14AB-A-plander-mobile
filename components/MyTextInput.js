@@ -22,8 +22,8 @@ function MyTextInput({title, icon, onPress, isPasswordField = false, passwordVis
       )}
       <TextInput
         placeholder={title}
-        placeholderTextColor={colorsByTheme.Login_textColor}
-        style={[colorsByTheme.Login_textColor]}
+        placeholderTextColor={colorsByTheme.Login_placeholders}
+        style={[styles.text, {color: colorsByTheme.Login_textColor}]}
         {...otherProps}
       />
       {isPasswordField && (
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   text: {
-    color: colors.white,
-    fontWeight: "500",
+    //color: colors.white,
+    fontWeight: "700",
     flex: 1,
     //width: "300",
     // backgroundColor: "red"
