@@ -12,8 +12,10 @@ import MyFormField from '../components/MyFormField'
 import MyText from '../components/MyText'
 import MySubmitButton from '../components/MySubmitButton'
 import Screen from './Screen'
-import useAuth from '../auth/useAuth'
 import AuthContext from '../auth/authContext'
+
+import LogoDark from '../assets/logos/dark.svg'
+import LogoLight from '../assets/logos/light.svg'
 
 export default function LoginScreen() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -33,13 +35,10 @@ export default function LoginScreen() {
   }) => {
     const result = await auth.login(associationId, username, password)
     if (!result.ok) {
-      console.log(result)
       return setLoginFailed(true)
     }
     setLoginFailed(false)
-    console.log(result.data)
     setUser(result.data)
-    console.log(user)
   }
   const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -58,14 +57,22 @@ export default function LoginScreen() {
       ]}
     >
       <View style={styles.headerContainer}>
-        <Image
-          source={
-            colorScheme === 'light'
-              ? require('../assets/plander_logo_light.png')
-              : require('../assets/plander_logo_dark.png')
-          }
-          style={styles.image}
-        />
+        {/* {colorScheme === 'dark' ? (
+          <LogoDark width={150} height={150} />
+        ) : (
+          <LogoLight width={150} height={150} />
+        )} */}
+        {colorScheme === 'dark' ? (
+          <Image
+            source={require('../assets/logos/dark.png')}
+            style={styles.logo}
+          />
+        ) : (
+          <Image
+            source={require('../assets/logos/light.png')}
+            style={styles.logo}
+          />
+        )}
         <MyText
           style={[styles.title, { color: colorsByTheme.Login_titleColor }]}
         >
@@ -124,13 +131,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  image: {
-    width: 125,
-    height: 125,
-  },
   title: {
     fontSize: 30,
     paddingLeft: 5,
     fontWeight: 'bold',
+  },
+  logo: {
+    width: 125,
+    height: 125,
   },
 })
