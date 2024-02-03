@@ -3,14 +3,13 @@ import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import MyText from './MyText'
 import { useTheme } from '@react-navigation/native'
-import colors from '../config/colors'
 
 import i18n from '../locales/i18n'
 import AuthContext from '../auth/authContext'
 
-function LogOut(props) {
+function Logout() {
   const { colors: colorsByTheme } = useTheme()
-  const {user, setUser} = useContext(AuthContext)
+  const { setUser} = useContext(AuthContext)
     const handleOnPress = () => {
         setUser(null)
     }
@@ -35,6 +34,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 1
   },
   text: {
     fontWeight: '700',
@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default LogOut
+export default Logout
