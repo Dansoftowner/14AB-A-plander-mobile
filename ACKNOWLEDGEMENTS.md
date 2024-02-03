@@ -10,6 +10,7 @@
 - React Native Reanimated
 - React Native Screens
 - React Native Safe Area Context
+- React Native SVG
 
 ## Fejlesztési
 - Expo
