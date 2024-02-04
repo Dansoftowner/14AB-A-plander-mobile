@@ -14,6 +14,7 @@ import MainScreen from './screens/MainScreen'
 import MyDrawer from './navigation/MyDrawer'
 import MyStack from './navigation/MyStack'
 import LoginScreen from './screens/LoginScreen'
+import AssociationsScreen from './screens/AssociationsScreen'
 // import AutocompleteDropdownContextProvider from 'react-native-autocomplete-dropdown'
 
 export default function App() {
@@ -31,7 +32,9 @@ export default function App() {
         {/* <MyDrawer/> */}
           {/* <LoginScreen/> */}
           {/* <MainScreen /> */}
-          { user ? <MyDrawer /> : <MyStack /> }
+          {/* <AssociationsScreen/> */}
+          <MyStack/>
+          {/* { user ? <MyDrawer /> : <MyStack /> } */}
           {/* <Drawer.Navigator initialRouteName="Main">
             <Drawer.Screen name="Main" component={MainScreen} />
             <Drawer.Screen name="Settings" component={SettingsScreen} />

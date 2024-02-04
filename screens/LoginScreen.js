@@ -6,6 +6,7 @@ import * as Yup from 'yup'
 import i18n from '../locales/i18n'
 
 import auth from '../api/auth'
+import associationsHook from '../api/associations'
 import MyButton from '../components/MyButton'
 import MyForm from '../components/MyForm'
 import MyFormField from '../components/MyFormField'
@@ -14,24 +15,27 @@ import MySubmitButton from '../components/MySubmitButton'
 import Screen from './Screen'
 import useAuth from '../auth/useAuth'
 import AuthContext from '../auth/authContext'
+import AssociationSelector from '../components/AssociationSelector'
+import AutoComplete from '../components/AutoComplete'
+import SelectAssociation from '../components/SelectAssociation'
+import { useFormikContext } from 'formik'
+import AssContext from '../AssContext'
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [loginFailed, setLoginFailed] = useState(false)
   const { user, setUser } = useContext(AuthContext)
+  const [association, setAssociation] = useState('')
   const { colors: colorsByTheme } = useTheme()
   const colorScheme = useColorScheme()
+  // const [associations, setAssociations] = useState()
 
   const handleForgettenPassword = () => {
     console.log('TODO forgotten password')
   }
 
-  const handleSubmit = async ({
-    associationId = '652f7b95fc13ae3ce86c7cdf',
-    username,
-    password,
-  }) => {
-    const result = await auth.login(associationId, username, password)
+  const handleSubmit = async ({ username, password }) => {
+    const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
       return setLoginFailed(true)
@@ -48,7 +52,23 @@ export default function LoginScreen() {
     password: Yup.string()
       .required(i18n.t('fieldRequired'))
       .label(i18n.t('password')),
+    associationId: Yup.string().required(i18n.t('fieldRequired')),
   })
+
+  const handleNavigateAssociation = () => {
+    console.log('click!')
+    navigation.navigate('Associations')
+  }
+  // const {setFieldValue} = useFormikContext();
+  // const handleGetAssociations = async () => {
+  //   const result = await associationsHook.getAssociations()
+  //   if (!result.ok) {
+  //     return console.log(result)
+  //   }
+  //   //console.log(result.data)
+  //   setAssociations([...result.data.items])
+  //   console.log(associations.length)
+  // }
 
   return (
     <Screen
@@ -73,12 +93,21 @@ export default function LoginScreen() {
         </MyText>
       </View>
       <MyForm
-        initialValues={{ email: '', password: '' }}
+        initialValues={{
+          username: '',
+          password: '',
+          associationId: association._id ?? '',
+        }}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
         style={styles.form}
       >
         <View style={styles.form}>
+          <AssContext.Provider value={{ association, setAssociation }}>
+            <SelectAssociation
+              onPress={handleNavigateAssociation}
+            />
+          </AssContext.Provider>
           <MyFormField
             autoCapitalize="none"
             autoCorrect={false}
@@ -98,14 +127,22 @@ export default function LoginScreen() {
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
             passwordVisible={isPasswordVisible}
           />
+          {/* {associations && <AssociationSelector associations={associations} />} */}
         </View>
-        <MySubmitButton title={i18n.t('loginButton')} />
+        {/* {associations && (
+          <AutoComplete
+            data={associations}
+            onChangeText={handleGetAssociations}
+          />
+        )} */}
+        {/* <MySubmitButton title={i18n.t('loginButton')} /> */}
       </MyForm>
-      <MyButton
+      {/* <MyButton
         title={i18n.t('forgotMyPassword')}
         onPress={handleForgettenPassword}
         color="light_blue"
-      />
+      /> */}
+      {/* <MyButton title="getAssociations" onPress={handleGetAssociations} /> */}
     </Screen>
   )
 }

@@ -1,10 +1,18 @@
-import React from "react";
-import { useFormikContext } from "formik";
-import { useTheme } from '@react-navigation/native';
+import React, { useState } from 'react'
+import { useFormikContext } from 'formik'
+import { useTheme } from '@react-navigation/native'
+import associationsHook from '../api/associations'
 
-import MyErrorMessage from "./MyErrorMessage";
-import MyTextInput from "./MyTextInput";
-function MyFormField({ name, width, onPress, isPasswordField = false, passwordVisible = false, ...otherProps }) {
+import MyErrorMessage from './MyErrorMessage'
+import MyTextInput from './MyTextInput'
+function MyFormField({
+  name,
+  width,
+  onPress,
+  isPasswordField = false,
+  passwordVisible = false,
+  ...otherProps
+}) {
   const {
     setFieldTouched,
     handleChange,
@@ -12,7 +20,22 @@ function MyFormField({ name, width, onPress, isPasswordField = false, passwordVi
     values,
     errors,
     touched,
-  } = useFormikContext();
+  } = useFormikContext()
+
+  // const [associations, setAssociations] = useState()
+
+  // const fetchData = async () => {
+  //   setFieldValue(name, text)
+  //   if (values[name].length > 2) {
+  //     const result = await associationsHook.getAssociations()
+  //     if (!result.ok) {
+  //       return console.log(result)
+  //     }
+  //     //console.log(result.data)
+  //     setAssociations([...result.data.items])
+  //     console.log(associations.length)
+  //   }
+  // }
 
   return (
     <>
@@ -28,7 +51,7 @@ function MyFormField({ name, width, onPress, isPasswordField = false, passwordVi
       />
       <MyErrorMessage error={errors[name]} visible={touched[name]} />
     </>
-  );
+  )
 }
 
-export default MyFormField;
+export default MyFormField
