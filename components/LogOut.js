@@ -6,13 +6,14 @@ import { useTheme } from '@react-navigation/native'
 import colors from '../config/colors'
 
 import i18n from '../locales/i18n'
+import logout from '../auth/useAuth'
 import AuthContext from '../auth/authContext'
 
 function LogOut(props) {
   const { colors: colorsByTheme } = useTheme()
-  const {user, setUser} = useContext(AuthContext)
+  //const {user, setUser} = useContext(AuthContext)
     const handleOnPress = () => {
-        setUser(null)
+        logout()
     }
   return (
     <View style={[styles.container, {backgroundColor: colorsByTheme.medium_blue_dark_blue}]}>
