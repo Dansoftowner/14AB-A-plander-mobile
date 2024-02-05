@@ -4,26 +4,36 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import MyText from './MyText'
 import { useTheme } from '@react-navigation/native'
 
-import i18n from '../locales/i18n'
-import AuthContext from '../auth/authContext'
+import { Appearance } from 'react-native'
 
-function Logout() {
+import i18n from '../locales/i18n'
+
+function ThemeSwitch() {
+  const colorMode = Appearance.getColorScheme()
   const { colors: colorsByTheme } = useTheme()
-  const { setUser} = useContext(AuthContext)
-    const handleOnPress = () => {
-        setUser(null)
+  const handleOnPress = () => {
+    if (colorMode === 'light') {
+      Appearance.setColorScheme('dark')
+    } else {
+      Appearance.setColorScheme('light')
     }
+  }
   return (
-    <View style={[styles.container, {backgroundColor: colorsByTheme.medium_blue_dark_blue}]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: colorsByTheme.medium_blue_dark_blue },
+      ]}
+    >
       <TouchableWithoutFeedback onPress={handleOnPress}>
-      <MaterialCommunityIcons
-        name="power-standby"
-        size={30}
-        color={colorsByTheme.white_white}
-      />
+        <MaterialCommunityIcons
+          name={colorMode === 'light' ? 'white-balance-sunny' : 'star-crescent'}
+          size={30}
+          color={colorsByTheme.white_white}
+        />
       </TouchableWithoutFeedback>
       <MyText style={[styles.text, { color: colorsByTheme.white_white }]}>
-        {i18n.t('logout')}
+        {i18n.t('theme')}
       </MyText>
     </View>
   )
@@ -42,4 +52,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Logout
+export default ThemeSwitch
