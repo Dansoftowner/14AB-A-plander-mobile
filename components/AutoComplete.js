@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -14,31 +14,28 @@ import MyText from './MyText'
 import MyTextInput from './MyTextInput'
 import { useTheme } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
-import AssContext from '../AssContext'
 
-function AutoComplete({ data, onChangeText, selectAssociation }) {
+function AutoComplete({
+  data,
+  handleChange,
+  values,
+  onChangeText,
+  selectAssociation,
+  setFieldValue,
+}) {
   const { colors: colorsByTheme } = useTheme()
-  const { association, setAssociation } = useContext(AssContext)
   const navigation = useNavigation()
+
   return (
     <TouchableWithoutFeedback>
       <View>
-        {/* <MyFormField
-          autoCapitalize="none"
-          autoCorrect={false}
-          icon="police-badge-outline"
-          name="association"
-          placeholder={i18n.t('association')}
-          onChangeText={onChangeText} 
-        />*/}
         <MyTextInput
-          onChangeText={(text) => selectAssociation(text)}
+          onChangeText={(text) => {
+            selectAssociation(text)
+          }}
           icon="magnify"
-          title={association.name ?? 'Association'}
-          //value={values['associationId']}
           style={{ marginVertical: 2, borderRadius: 15 }}
         />
-        {/* <MyButton title='showData' onPress={() => console.log(data)}/> */}
         <FlatList
           contentContainerStyle={{
             alignItems: 'center',
@@ -48,27 +45,21 @@ function AutoComplete({ data, onChangeText, selectAssociation }) {
             { backgroundColor: colorsByTheme.white_black, borderRadius: 15 },
           ]}
           data={data}
-          renderItem={
-            ({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('Login')
-                  setAssociation(item)
-                  //setFieldValue('associationId', item._id)
-                }}
-                // setFieldValue('associationId', item._id)}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => {
+                setFieldValue('association', item)
+                navigation.navigate('Login')
+                //console.log(item)
+              }}
+            >
+              <MyText
+                style={[styles.text, { color: colorsByTheme.medium_white }]}
               >
-                <MyText
-                  style={[styles.text, { color: colorsByTheme.medium_white }]}
-                >
-                  {item.name}
-                </MyText>
-              </TouchableOpacity>
-            )
-            // <TouchableWithoutFeedback onPress={() => console.log(item)}>
-            //     <MyText>{item.name}</MyText>
-            // </TouchableWithoutFeedback>
-          }
+                {item.name ?? ''}
+              </MyText>
+            </TouchableOpacity>
+          )}
           keyExtractor={(item) => item._id}
         ></FlatList>
       </View>
