@@ -1,53 +1,73 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import MyText from '../components/MyText'
 import Screen from './Screen'
 import { useTheme } from '@react-navigation/native'
 import AutoComplete from '../components/AutoComplete'
-import AssociationSelector from '../components/AssociationSelector'
-import MyButton from '../components/MyButton'
 import associationsHook from '../api/associations'
-import MyForm from '../components/MyForm'
-import AssContext from '../AssContext'
+import { useFormDispatch, useFormState } from '../components/FormContext'
+import { Formik } from 'formik'
 
-function AssociationsScreen(props) {
+function AssociationsScreen({ navigation }) {
   const { colors: colorsByTheme } = useTheme()
   const [associations, setAssociations] = useState()
-  // const handleSelectAssociation = (item) => {
-  //   console.log(item)
-  // }
 
   const handleGetAssociations = async (q) => {
     const result = await associationsHook.getAssociations(q)
     if (!result.ok) {
-      return console.log(result)
+      return console.log(result) //TODO Hibakezelés
     }
-    //console.log(result.data)
     setAssociations([...result.data.items])
-    console.log(associations.length)
   }
+
+  const form = React.useRef()
+  const dispatch = useFormDispatch()
+  const { values: formValues, errors: formErrors } = useFormState('user')
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      if (form.current) {
+        const { values, errors } = form.current
+        dispatch({
+          type: 'UPDATE_FORM',
+          payload: {
+            id: 'user',
+            data: { values, errors },
+          },
+        })
+      }
+    })
+
+    return unsubscribe
+  }, [navigation])
 
   useEffect(() => {
     handleGetAssociations('')
   }, [])
 
   return (
-    <Screen
-      style={[
-        styles.container,
-        { backgroundColor: colorsByTheme.Login_background },
-      ]}
+    <Formik
+      innerRef={form}
+      initialValues={formValues}
+      initialErrors={formErrors}
+      enableReinitialize
     >
-      {/* <MyForm initialValues={{ associationId: '' }} style={styles.form}> */}
-      {/* <MyButton title="getAssociations" onPress={handleGetAssociations('')} /> */}
-      <AssContext.Provider value={{ association, setAssociation }}>
+      {({values, handleChange, setFieldValue}) => (
+      <Screen
+        style={[
+          styles.container,
+          { backgroundColor: colorsByTheme.Login_background },
+        ]}
+      >
         <AutoComplete
           data={associations}
+          values={values.association}
+          handleChange={handleChange}
+          setFieldValue={setFieldValue}
           selectAssociation={(text) => handleGetAssociations(text)}
         />
-      </AssContext.Provider>
-      {/* </MyForm> */}
-    </Screen>
+      </Screen>
+      )}
+    </Formik>
   )
 }
 
