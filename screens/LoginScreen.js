@@ -1,5 +1,12 @@
-import React, { useContext, useState } from 'react'
-import { Image, StyleSheet, View, useColorScheme } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import {
+  Button,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme,
+} from 'react-native'
 import { useTheme } from '@react-navigation/native'
 import * as Yup from 'yup'
 
@@ -18,23 +25,54 @@ import AuthContext from '../auth/authContext'
 import AssociationSelector from '../components/AssociationSelector'
 import AutoComplete from '../components/AutoComplete'
 import SelectAssociation from '../components/SelectAssociation'
-import { useFormikContext } from 'formik'
+import { Form, Formik, useFormikContext } from 'formik'
 import AssContext from '../AssContext'
+import MyErrorMessage from '../components/MyErrorMessage'
+// import { FormProvider } from './components/form-context'
+import { useFormDispatch, useFormState } from '../components/FormContext'
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, route }) {
+  const form = React.useRef()
+  const dispatch = useFormDispatch()
+  const { values: formValues, errors: formErrors } = useFormState('user')
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      if (form.current) {
+        const { values, errors } = form.current
+        dispatch({
+          type: 'UPDATE_FORM',
+          payload: {
+            id: 'user',
+            data: { values, errors },
+          },
+        })
+      }
+    })
+    return unsubscribe
+  }, [navigation])
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [loginFailed, setLoginFailed] = useState(false)
   const { user, setUser } = useContext(AuthContext)
-  const [association, setAssociation] = useState('')
   const { colors: colorsByTheme } = useTheme()
   const colorScheme = useColorScheme()
+  const [association, setAssociation] = useState()
+  const [isAssociationSelected, setIsAssociationSelected] = useState(true)
+  //const formikProps = useFormikContext()
+  // const [association, setAssociation] = useState('')
   // const [associations, setAssociations] = useState()
 
   const handleForgettenPassword = () => {
     console.log('TODO forgotten password')
   }
 
-  const handleSubmit = async ({ username, password }) => {
+  const handleSubmitI = async ({user}) => {
+    console.log('itt')
+    // if (!association) {
+    //   return setIsAssociationSelected(false)
+    // }
+    return console.log(user)
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
@@ -44,21 +82,35 @@ export default function LoginScreen({ navigation }) {
     console.log(result.data)
     setUser(result.data)
     console.log(user)
+    // return alert('You must choose an association!')
   }
+
   const validationSchema = Yup.object().shape({
-    username: Yup.string()
-      .required(i18n.t('fieldRequired'))
-      .label(i18n.t('username')),
-    password: Yup.string()
-      .required(i18n.t('fieldRequired'))
-      .label(i18n.t('password')),
-    associationId: Yup.string().required(i18n.t('fieldRequired')),
+    user: Yup.object().shape({
+      valeus: Yup.object().shape({
+        username: Yup.string()
+          .required(i18n.t('fieldRequired'))
+          .label(i18n.t('username')),
+        password: Yup.string()
+          .required(i18n.t('fieldRequired'))
+          .label(i18n.t('password')),
+        association: Yup.object().required(i18n.t('fieldRequired')),
+      }),
+    }),
   })
 
   const handleNavigateAssociation = () => {
-    console.log('click!')
     navigation.navigate('Associations')
   }
+
+  // useEffect(() => {
+  //   if (route.params?.association) {
+  //     //console.log(route.params?.association)
+  //     setAssociation(route.params?.association)
+  //     //console.log(association)
+  //     //formikProps.setFieldValue('association', route.params?.association) //ezt kell módosítani
+  //   }
+  // }, [route.params])
   // const {setFieldValue} = useFormikContext();
   // const handleGetAssociations = async () => {
   //   const result = await associationsHook.getAssociations()
@@ -92,57 +144,75 @@ export default function LoginScreen({ navigation }) {
           Plander
         </MyText>
       </View>
-      <MyForm
-        initialValues={{
-          username: '',
-          password: '',
-          associationId: association._id ?? '',
-        }}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
-        style={styles.form}
+      <Formik
+        innerRef={form}
+        initialValues={formValues}
+        initialErrors={formErrors}
+        // validationSchema={validationSchema}
+        onSubmit={handleSubmitI}
+        enableReinitialize
       >
-        <View style={styles.form}>
-          <AssContext.Provider value={{ association, setAssociation }}>
+        {({ values, errors, handleChange, handleSubmit, submitForm }) => (
+          <View style={styles.form}>
             <SelectAssociation
               onPress={handleNavigateAssociation}
+              title={values.association?.name ?? 'Association'}
             />
-          </AssContext.Provider>
-          <MyFormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            icon="account-outline"
-            name="username"
-            placeholder={i18n.t('username')}
-          />
-          <MyFormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            icon="lock-outline"
-            name="password"
-            placeholder={i18n.t('password')}
-            secureTextEntry={!isPasswordVisible}
-            textContentType="password"
-            isPasswordField={true}
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            passwordVisible={isPasswordVisible}
-          />
-          {/* {associations && <AssociationSelector associations={associations} />} */}
-        </View>
-        {/* {associations && (
-          <AutoComplete
-            data={associations}
-            onChangeText={handleGetAssociations}
-          />
-        )} */}
-        {/* <MySubmitButton title={i18n.t('loginButton')} /> */}
-      </MyForm>
-      {/* <MyButton
-        title={i18n.t('forgotMyPassword')}
-        onPress={handleForgettenPassword}
-        color="light_blue"
-      /> */}
-      {/* <MyButton title="getAssociations" onPress={handleGetAssociations} /> */}
+            <MyFormField
+              value={values.username}
+              onChangeText={handleChange('username')}
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="account-outline"
+              name="username"
+              placeholder={i18n.t('username')}
+            />
+            <MyFormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              icon="lock-outline"
+              name="password"
+              value={values.password}
+              onChangeText={handleChange('password')}
+              placeholder={i18n.t('password')}
+              secureTextEntry={!isPasswordVisible}
+              textContentType="password"
+              isPasswordField={true}
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+              passwordVisible={isPasswordVisible}
+            />
+            <Text>{JSON.stringify(values, null, 2)}</Text>
+            <Button
+              title={i18n.t('loginButton')}
+              onPress={submitForm}
+            />
+            {/* <Button
+              title="Submit"
+              mode="contained"
+              onPress={() => {
+                dispatch({
+                  type: 'UPDATE_FORM',
+                  payload: {
+                    id: 'user',
+                    data: { values, errors },
+                  },
+                })
+                alert(JSON.stringify(values, null, 2))
+                handleSubmit()
+              }}
+            ></Button> */}
+          </View>
+        )}
+      </Formik>
+      {/* <View style={styles.form}>
+        <Button
+          title="Next"
+          mode="contained"
+          onPress={() => {
+            navigation.push('Associations')
+          }}
+        ></Button>
+      </View> */}
     </Screen>
   )
 }
@@ -154,6 +224,10 @@ const styles = StyleSheet.create({
   },
   form: {
     marginVertical: 40,
+    // flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    //a felső három most lett hozzáadva
   },
   headerContainer: {
     flexDirection: 'row',
