@@ -2,11 +2,10 @@ import React from 'react'
 import { View, TextInput, StyleSheet } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
-
-//import defaultStyles from "../config/styles";
-import colors from '../config/colors'
 import EyeToShowPassword from './EyeToShowPassword'
 import MyText from './MyText'
+
+//import defaultStyles from "../config/styles";
 
 function MyTextInput({
   title,
@@ -14,13 +13,14 @@ function MyTextInput({
   onPress,
   onChangeText,
   style,
+  value,
   isPasswordField = false,
   passwordVisible = false,
   width = '100%',
   isButton = false,
   ...otherProps
 }) {
-  const { colors: colorsByTheme } = useTheme()
+  const { colors: colorsByTheme } = useTheme()  
 
   return (
     <View
@@ -41,24 +41,20 @@ function MyTextInput({
       )}
       {isButton ? (
         <MyText
-          // title={title}
-          // placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: colorsByTheme.Login_placeholders }]}
+          placeholderTextColor={colorsByTheme.Login_placeholders}
+          style={[styles.text, { color: title !== 'Association' ? colorsByTheme.Login_textColor :  colorsByTheme.Login_placeholders}]}
           {...otherProps}
-          // editable={false}
-          // selectTextOnFocus={false}
         >
-          {title}
+          {title ?? 'Association'}
         </MyText>
       ) : (
         <TextInput
+          // value={value}
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
           placeholderTextColor={colorsByTheme.Login_placeholders}
           style={[styles.text, { color: colorsByTheme.Login_textColor }]}
           {...otherProps}
-          // editable={false}
-          // selectTextOnFocus={false}
         />
       )}
       {isPasswordField && (
