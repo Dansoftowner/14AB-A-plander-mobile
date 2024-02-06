@@ -14,7 +14,7 @@ const AppLightTheme = {
     Login_buttonColor: colors.white,
     Login_titleColor: colors.medium_blue,
     Login_eyeColor: colors.black,
-    softBlue_lightBlue: colors.soft_blue,
+    soft_blue_light_blue: colors.soft_blue,
     medium_white: colors.medium,
     light_dark_blue: colors.light,
     medium_blue_yellow: colors.medium_blue,
