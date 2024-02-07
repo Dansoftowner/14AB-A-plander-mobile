@@ -14,19 +14,19 @@ function MyFormField({
   ...otherProps
 }) {
   const {
-    setFieldTouched,
+    // setFieldTouched,
     handleChange,
     setFieldValue,
     values,
     errors,
-    touched,
+    // touched,
   } = useFormikContext()
 
 
   return (
     <>
       <MyTextInput
-        onBlur={() => setFieldTouched(name)}
+        //onBlur={() => setFieldTouched(name)}
         //onChangeText={(text) => setFieldValue(name, text)}
         onChangeText={onChangeText}
         value={value}
@@ -36,7 +36,7 @@ function MyFormField({
         passwordVisible={passwordVisible}
         {...otherProps}
       />
-      <MyErrorMessage error={errors[name]} visible={touched[name]} />
+      <MyErrorMessage error={errors[name]} visible={errors[name]} />
     </>
   )
 }
