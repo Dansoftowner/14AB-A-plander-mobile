@@ -28,10 +28,12 @@ import SelectAssociation from '../components/SelectAssociation'
 import { Form, Formik, useFormikContext } from 'formik'
 import AssContext from '../AssContext'
 import MyErrorMessage from '../components/MyErrorMessage'
-// import { FormProvider } from './components/form-context'
+import { FormProvider } from '../components/FormContext'
 import { useFormDispatch, useFormState } from '../components/FormContext'
+import NewMyAlert from '../components/NewMyAlert'
+import FancyAlert from '../components/MyAlert'
 
-export default function LoginScreen({ navigation, route }) {
+export default function LoginScreen({ navigation }) {
   const form = React.useRef()
   const dispatch = useFormDispatch()
   const { values: formValues, errors: formErrors } = useFormState('user')
@@ -49,6 +51,7 @@ export default function LoginScreen({ navigation, route }) {
         })
       }
     })
+
     return unsubscribe
   }, [navigation])
 
@@ -57,22 +60,15 @@ export default function LoginScreen({ navigation, route }) {
   const { user, setUser } = useContext(AuthContext)
   const { colors: colorsByTheme } = useTheme()
   const colorScheme = useColorScheme()
-  const [association, setAssociation] = useState()
-  const [isAssociationSelected, setIsAssociationSelected] = useState(true)
-  //const formikProps = useFormikContext()
-  // const [association, setAssociation] = useState('')
-  // const [associations, setAssociations] = useState()
 
   const handleForgettenPassword = () => {
     console.log('TODO forgotten password')
   }
 
-  const handleSubmitI = async ({user}) => {
+  const handleSubmitI = async (values) => {
     console.log('itt')
-    // if (!association) {
-    //   return setIsAssociationSelected(false)
-    // }
-    return console.log(user)
+    const { association, username, password } = values
+    console.log(values)
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
@@ -82,44 +78,31 @@ export default function LoginScreen({ navigation, route }) {
     console.log(result.data)
     setUser(result.data)
     console.log(user)
-    // return alert('You must choose an association!')
   }
 
   const validationSchema = Yup.object().shape({
-    user: Yup.object().shape({
-      valeus: Yup.object().shape({
-        username: Yup.string()
-          .required(i18n.t('fieldRequired'))
-          .label(i18n.t('username')),
-        password: Yup.string()
-          .required(i18n.t('fieldRequired'))
-          .label(i18n.t('password')),
-        association: Yup.object().required(i18n.t('fieldRequired')),
-      }),
-    }),
+    username: Yup.string()
+      .required(i18n.t('fieldRequired'))
+      .label(i18n.t('username')),
+    password: Yup.string()
+      .required(i18n.t('fieldRequired'))
+      .label(i18n.t('password')),
+    association: Yup.object().required(i18n.t('fieldRequired')),
   })
 
   const handleNavigateAssociation = () => {
     navigation.navigate('Associations')
   }
 
-  // useEffect(() => {
-  //   if (route.params?.association) {
-  //     //console.log(route.params?.association)
-  //     setAssociation(route.params?.association)
-  //     //console.log(association)
-  //     //formikProps.setFieldValue('association', route.params?.association) //ezt kell módosítani
-  //   }
-  // }, [route.params])
-  // const {setFieldValue} = useFormikContext();
-  // const handleGetAssociations = async () => {
-  //   const result = await associationsHook.getAssociations()
-  //   if (!result.ok) {
-  //     return console.log(result)
-  //   }
-  //   //console.log(result.data)
-  //   setAssociations([...result.data.items])
-  //   console.log(associations.length)
+  // const handleSubmitNew = async (values, validateForm) => {
+  //   // dispatch({
+  //   //   type: 'UPDATE_ERRORS',
+  //   //   payload: {
+  //   //     id: 'user',
+  //   //     data: { values, errors },
+  //   //   }})
+  //   //console.log(values)
+
   // }
 
   return (
@@ -129,6 +112,7 @@ export default function LoginScreen({ navigation, route }) {
         { backgroundColor: colorsByTheme.Login_background },
       ]}
     >
+      <FancyAlert icon='check' message="dejo messsssssssssssssssssssssss" button='Close' visible={true} />
       <View style={styles.headerContainer}>
         <Image
           source={
@@ -148,14 +132,15 @@ export default function LoginScreen({ navigation, route }) {
         innerRef={form}
         initialValues={formValues}
         initialErrors={formErrors}
-        // validationSchema={validationSchema}
+        validationSchema={validationSchema}
         onSubmit={handleSubmitI}
         enableReinitialize
       >
-        {({ values, errors, handleChange, handleSubmit, submitForm }) => (
+        {({ values, errors, handleChange, handleSubmit }) => (
           <View style={styles.form}>
             <SelectAssociation
               onPress={handleNavigateAssociation}
+              name="association"
               title={values.association?.name ?? 'Association'}
             />
             <MyFormField
@@ -181,10 +166,22 @@ export default function LoginScreen({ navigation, route }) {
               onPress={() => setIsPasswordVisible(!isPasswordVisible)}
               passwordVisible={isPasswordVisible}
             />
-            <Text>{JSON.stringify(values, null, 2)}</Text>
-            <Button
+            {/* {errors && <MyText>{JSON.stringify(errors, null, 2)}</MyText>} */}
+            <MyButton
               title={i18n.t('loginButton')}
-              onPress={submitForm}
+              onPress={(values) => {
+                // const result = await validateForm()
+                // console.log(result)
+                // if (result == {}) {
+                //   console.log('ready to log in')
+                // }
+                // console.log(errors)
+                handleSubmit(values)
+              }}
+            />
+            <MyButton
+              title={i18n.t('forgotMyPassword')}
+              onPress={handleForgettenPassword}
             />
             {/* <Button
               title="Submit"
@@ -204,15 +201,6 @@ export default function LoginScreen({ navigation, route }) {
           </View>
         )}
       </Formik>
-      {/* <View style={styles.form}>
-        <Button
-          title="Next"
-          mode="contained"
-          onPress={() => {
-            navigation.push('Associations')
-          }}
-        ></Button>
-      </View> */}
     </Screen>
   )
 }
