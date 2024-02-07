@@ -17,9 +17,6 @@ import { useNavigation } from '@react-navigation/native'
 
 function AutoComplete({
   data,
-  handleChange,
-  values,
-  onChangeText,
   selectAssociation,
   setFieldValue,
 }) {
@@ -50,7 +47,6 @@ function AutoComplete({
               onPress={() => {
                 setFieldValue('association', item)
                 navigation.navigate('Login')
-                //console.log(item)
               }}
             >
               <MyText
