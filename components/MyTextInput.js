@@ -4,6 +4,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
 import EyeToShowPassword from './EyeToShowPassword'
 import MyText from './MyText'
+import colors from '../config/colors'
+import EditField from './EditField'
 
 //import defaultStyles from "../config/styles";
 
@@ -14,6 +16,8 @@ function MyTextInput({
   onChangeText,
   style,
   value,
+  enabled = true,
+  themeColor = "white",
   isPasswordField = false,
   passwordVisible = false,
   width = '100%',
@@ -21,13 +25,24 @@ function MyTextInput({
   ...otherProps
 }) {
   const { colors: colorsByTheme } = useTheme()  
-
+  const colorCalculated = () => {
+    return colors.light_blue
+    // if (!enabled) {
+    //   return colorsByTheme.Login_dropDownFont
+    // }
+    // if (themeColor === "white") {
+    //   return colorsByTheme.Login_textColor
+    // }
+    // else {
+    //   return colorsByTheme.black_white
+    // }
+  }
   return (
     <View
       style={[
         styles.container,
         { width },
-        { borderColor: colorsByTheme.Login_textColor },
+        { borderColor: themeColor === "white" ? colorsByTheme.Login_textColor : colorsByTheme.black_white },
         style,
       ]}
     >
@@ -35,7 +50,7 @@ function MyTextInput({
         <MaterialCommunityIcons
           name={icon}
           size={20}
-          color={colorsByTheme.Login_textColor}
+          color={themeColor === "white" ? colorsByTheme.Login_textColor : colorsByTheme.black_white}
           style={styles.icon}
         />
       )}
@@ -49,11 +64,11 @@ function MyTextInput({
         </MyText>
       ) : (
         <TextInput
-          // value={value}
+          value={title}
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: colorsByTheme.Login_textColor }]}
+          style={[styles.text, { color: 'black' }]}
           {...otherProps}
         />
       )}
