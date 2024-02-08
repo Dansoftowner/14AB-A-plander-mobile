@@ -5,6 +5,7 @@ import MainScreen from '../screens/MainScreen'
 import SettingsScreen from '../screens/SettingsScreen'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
+import ProfileScreen from '../screens/ProfileScreen'
 
 
 const Drawer = createDrawerNavigator()
@@ -27,6 +28,7 @@ function MyDrawer(props) {
     >
       <Drawer.Screen name="Main" component={MainScreen} />
       <Drawer.Screen name="Settings" component={SettingsScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} options={{headerTitle: 'Profile'}} />
     </Drawer.Navigator>
   )
 }
