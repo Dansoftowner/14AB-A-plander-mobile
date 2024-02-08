@@ -14,7 +14,7 @@ function MainScreen(props) {
       <View style={[styles.container]}>
         <Logout />
         <ThemeSwitch />
-        <LanguageSelector />
+        {/* <LanguageSelector /> */}
       </View>
   )
 }
