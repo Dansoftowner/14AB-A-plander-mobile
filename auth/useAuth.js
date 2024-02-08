@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import AuthContext from "./authContext";
+import storage from "./storage";
 // import storage from "./storage";
 
 export default useAuth = () => {
@@ -7,6 +8,7 @@ export default useAuth = () => {
 
     const logOut = () => {
         setUser(null);
+        storage.removeToken();
         //storage.removeToken(); //mivel ezután nincs kód, nem kell await
     }
 

@@ -31,7 +31,7 @@ import { FormProvider } from '../components/FormContext'
 import { useFormDispatch, useFormState } from '../components/FormContext'
 import NewMyAlert from '../components/NewMyAlert'
 import FancyAlert from '../components/MyAlert'
-
+import { storeToken } from '../auth/storage'
 export default function LoginScreen({ navigation }) {
   const form = React.useRef()
   const dispatch = useFormDispatch()
@@ -77,6 +77,7 @@ export default function LoginScreen({ navigation }) {
     }
     setLoginFailed(false)
     setUser(result.data)
+    storeToken(result.headers['x-auth-token'])
   }
 
   const validationSchema = Yup.object().shape({
@@ -111,7 +112,13 @@ export default function LoginScreen({ navigation }) {
         { backgroundColor: colorsByTheme.Login_background },
       ]}
     >
-      <FancyAlert icon='exclamation' message={errorMessage} button='Close' visible={loginFailed} handleClose={() => setLoginFailed(false)} />
+      <FancyAlert
+        icon="exclamation"
+        message={errorMessage}
+        button="Close"
+        visible={loginFailed}
+        handleClose={() => setLoginFailed(false)}
+      />
       <View style={styles.headerContainer}>
         {/* {colorScheme === 'dark' ? (
           <LogoDark width={150} height={150} />
@@ -232,7 +239,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   loginButton: {
-    marginTop: 40
+    marginTop: 40,
   },
   image: {
     width: 125,
