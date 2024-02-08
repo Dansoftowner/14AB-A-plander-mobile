@@ -5,11 +5,13 @@ import defaultStyles from "../config/styles";
 import { useTheme } from '@react-navigation/native';
 
 
-function MyText({ children, style, ...otherProps }) {
+function MyText({ children, textColor = "white", style, ...otherProps }) {
   const { colors: colorsByTheme } = useTheme();
 
   return (
-    <Text style={[defaultStyles.text, {color: colorsByTheme.Login_textColor}, style]} {...otherProps}>
+    <Text style={[defaultStyles.text, 
+    {color: textColor === "white" ? colorsByTheme.Login_textColor : colorsByTheme.black_white}
+    , style]} {...otherProps}>
       {children}
     </Text>
   );
