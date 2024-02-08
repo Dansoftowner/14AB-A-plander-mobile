@@ -57,6 +57,7 @@ export default function LoginScreen({ navigation }) {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [loginFailed, setLoginFailed] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const { user, setUser } = useContext(AuthContext)
   const { colors: colorsByTheme } = useTheme()
   const colorScheme = useColorScheme()
@@ -72,6 +73,7 @@ export default function LoginScreen({ navigation }) {
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
+      setErrorMessage(result.data.message)
       return setLoginFailed(true)
     }
     setLoginFailed(false)
@@ -112,7 +114,7 @@ export default function LoginScreen({ navigation }) {
         { backgroundColor: colorsByTheme.Login_background },
       ]}
     >
-      <FancyAlert icon='check' message="dejo messsssssssssssssssssssssss" button='Close' visible={true} />
+      <FancyAlert icon='exclamation' message={errorMessage} button='Close' visible={loginFailed} handleClose={() => setLoginFailed(false)} />
       <View style={styles.headerContainer}>
         <Image
           source={
@@ -169,6 +171,7 @@ export default function LoginScreen({ navigation }) {
             {/* {errors && <MyText>{JSON.stringify(errors, null, 2)}</MyText>} */}
             <MyButton
               title={i18n.t('loginButton')}
+              style={styles.loginButton}
               onPress={(values) => {
                 // const result = await validateForm()
                 // console.log(result)
@@ -222,6 +225,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+  },
+  loginButton: {
+    marginTop: 40
   },
   image: {
     width: 125,
