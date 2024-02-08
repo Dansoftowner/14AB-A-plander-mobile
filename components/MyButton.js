@@ -4,12 +4,12 @@ import { useTheme } from '@react-navigation/native';
 
 //import colors from "../config/colors";
 
-function MyButton({ title, onPress, color = "medium_blue" }) {
+function MyButton({ title, onPress, style, color = "medium_blue" }) {
   const { colors: colorsByTheme } = useTheme();
 
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor: colorsByTheme.Login_buttonBg }]}
+      style={[styles.button, { backgroundColor: colorsByTheme.Login_buttonBg }, style]}
       onPress={onPress}
     >
       <Text style={[styles.text, {color: colorsByTheme.Login_buttonColor}]}>{title}</Text>

@@ -9,7 +9,7 @@ function EyeToShowPassword({onPress, passwordVisible = false}) {
 
     return (
     <TouchableWithoutFeedback style={styles.container} onPress={onPress}>
-        <MaterialCommunityIcons name={passwordVisible ? "eye" : "eye-off"} size={18} color={colorsByTheme.Login_eyeColor} />
+        <MaterialCommunityIcons name={!passwordVisible ? "eye" : "eye-off"} size={18} color={colorsByTheme.Login_eyeColor} />
     </TouchableWithoutFeedback>
   );
 }

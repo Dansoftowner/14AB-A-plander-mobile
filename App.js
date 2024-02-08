@@ -14,31 +14,29 @@ import MainScreen from './screens/MainScreen'
 import MyDrawer from './navigation/MyDrawer'
 import MyStack from './navigation/MyStack'
 import LoginScreen from './screens/LoginScreen'
-// import AutocompleteDropdownContextProvider from 'react-native-autocomplete-dropdown'
+
+import AssociationsScreen from './screens/AssociationsScreen'
 
 export default function App() {
   const colorScheme = useColorScheme()
-  Appearance.setColorScheme('light')
   const [user, setUser] = useState()
-  i18n.locale = 'en'
+  const [language, setLanguage] = useState('hu')
+  i18n.locale = language
+  //Appearance.setColorScheme('light')
   return (
-    // <AutocompleteDropdownContextProvider>
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthContext.Provider value={{ user, setUser }}>
         <NavigationContainer
           theme={colorScheme === 'light' ? AppLightTheme : AppDarkTheme}
         >          
-        {/* <MyDrawer/> */}
+          <MyStack/>
+          {/* <MyDrawer/> */}
           {/* <LoginScreen/> */}
           {/* <MainScreen /> */}
           { user ? <MyDrawer /> : <MyStack /> }
-          {/* <Drawer.Navigator initialRouteName="Main">
-            <Drawer.Screen name="Main" component={MainScreen} />
-            <Drawer.Screen name="Settings" component={SettingsScreen} />
-          </Drawer.Navigator> */}
+          {/* <AssociationsScreen/> */}
         </NavigationContainer>
       </AuthContext.Provider>
     </GestureHandlerRootView>
-    // </AutocompleteDropdownContextProvider>
   )
 }
