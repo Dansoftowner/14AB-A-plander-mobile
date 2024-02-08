@@ -28,7 +28,7 @@ function MyDrawer(props) {
     >
       <Drawer.Screen name="Main" component={MainScreen} />
       <Drawer.Screen name="Settings" component={SettingsScreen} />
-      <Drawer.Screen name="Profile" component={ProfileScreen} options={{headerTitle: 'Profile'}} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} options={{headerTitle: 'Edit Profile'}} />
     </Drawer.Navigator>
   )
 }
