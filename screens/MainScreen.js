@@ -12,12 +12,10 @@ function MainScreen(props) {
     const {user} = useAuth();
 
   return (
-    <Screen>
       <View style={[styles.container]}>
       <LogOut />
       <DarkMode/>
       </View>
-    </Screen>
   )
 }
 
