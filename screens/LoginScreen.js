@@ -20,7 +20,6 @@ import MyFormField from '../components/MyFormField'
 import MyText from '../components/MyText'
 import MySubmitButton from '../components/MySubmitButton'
 import Screen from './Screen'
-import useAuth from '../auth/useAuth'
 import AuthContext from '../auth/authContext'
 import AssociationSelector from '../components/AssociationSelector'
 import AutoComplete from '../components/AutoComplete'
@@ -77,9 +76,7 @@ export default function LoginScreen({ navigation }) {
       return setLoginFailed(true)
     }
     setLoginFailed(false)
-    console.log(result.data)
     setUser(result.data)
-    console.log(user)
   }
 
   const validationSchema = Yup.object().shape({
@@ -116,14 +113,22 @@ export default function LoginScreen({ navigation }) {
     >
       <FancyAlert icon='exclamation' message={errorMessage} button='Close' visible={loginFailed} handleClose={() => setLoginFailed(false)} />
       <View style={styles.headerContainer}>
-        <Image
-          source={
-            colorScheme === 'light'
-              ? require('../assets/plander_logo_light.png')
-              : require('../assets/plander_logo_dark.png')
-          }
-          style={styles.image}
-        />
+        {/* {colorScheme === 'dark' ? (
+          <LogoDark width={150} height={150} />
+        ) : (
+          <LogoLight width={150} height={150} />
+        )} */}
+        {colorScheme === 'dark' ? (
+          <Image
+            source={require('../assets/logos/dark.png')}
+            style={styles.logo}
+          />
+        ) : (
+          <Image
+            source={require('../assets/logos/light.png')}
+            style={styles.logo}
+          />
+        )}
         <MyText
           style={[styles.title, { color: colorsByTheme.Login_titleColor }]}
         >
@@ -237,5 +242,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     paddingLeft: 5,
     fontWeight: 'bold',
+  },
+  logo: {
+    width: 125,
+    height: 125,
   },
 })

@@ -14,13 +14,15 @@ import MainScreen from './screens/MainScreen'
 import MyDrawer from './navigation/MyDrawer'
 import MyStack from './navigation/MyStack'
 import LoginScreen from './screens/LoginScreen'
+
 import AssociationsScreen from './screens/AssociationsScreen'
 
 export default function App() {
   const colorScheme = useColorScheme()
-  Appearance.setColorScheme('light')
   const [user, setUser] = useState()
-  i18n.locale = 'en'
+  const [language, setLanguage] = useState('hu')
+  i18n.locale = language
+  //Appearance.setColorScheme('light')
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthContext.Provider value={{ user, setUser }}>
@@ -31,7 +33,7 @@ export default function App() {
           {/* <MyDrawer/> */}
           {/* <LoginScreen/> */}
           {/* <MainScreen /> */}
-          {/* { user ? <MyDrawer /> : <MyStack /> } */}
+          { user ? <MyDrawer /> : <MyStack /> }
           {/* <AssociationsScreen/> */}
         </NavigationContainer>
       </AuthContext.Provider>
