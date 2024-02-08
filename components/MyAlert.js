@@ -3,13 +3,18 @@ import React, { useCallback, useState } from 'react'
 import { View, StyleSheet, Button, TouchableOpacity, Text } from 'react-native'
 // import FancyAlert from '../components/MyAlert'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useTheme } from '@react-navigation/native'
+
 import { Screen } from 'react-native-screens'
 //import PropTypes from 'prop-types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 const ALERT_WIDTH = SCREEN_WIDTH - SCREEN_WIDTH / 4
 
-const FancyAlert = ({ visible, handleClose, icon, message, button }) => (
+
+export default function FancyAlert({ visible, handleClose, icon, message, button }) {
+  const { colors: colorsByTheme } = useTheme()
+  return (
   <Modal
     visible={visible}
     animationType="fade"
@@ -22,23 +27,38 @@ const FancyAlert = ({ visible, handleClose, icon, message, button }) => (
           <MaterialCommunityIcons name={icon} size={24} color="white" />
         </View>
       </View> */}
-        <View style={[
-            styles.iconCircle,
-            { top: 32, borderColor: 'white', zIndex: 1 },
-          ]}>
-          <View style={[styles.icon, { borderRadius: 32 }]}>
-            <MaterialCommunityIcons name={icon} size={24} color="white" />
+      <View
+        style={[
+          styles.iconCircle,
+          { top: 32, borderColor: 'white', zIndex: 1 },
+        ]}
+      >
+        <View style={[styles.icon, { borderRadius: 32, backgroundColor: colorsByTheme.medium_red_light_red }]}>
+          <MaterialCommunityIcons name={icon} size={24} color="white" />
+        </View>
+      </View>
+      <View style={[styles.content, {backgroundColor: 'white'}]}>
+        <View>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 33
+            }}
+          >
+            <Text style={{color: 'black'}}>{message}</Text>
+          </View>
+          <View style={{ backgroundColor: 'pink', marginBottom: 10, alignItems: 'center'}}>
+            <TouchableOpacity style={[styles.btn, { backgroundColor: colorsByTheme.medium_red_light_red}]} onPress={handleClose}>
+              <Text style={{color: 'white', fontWeight: '500'}}>{button}</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      <View style={[styles.content]}>
-        <Text style={styles.contentText}>{message}</Text>
-        <TouchableOpacity style={styles.btn} onPress={handleClose}>
-          <Text style={styles.btnText}>{button}</Text>
-        </TouchableOpacity>
       </View>
     </View>
-  </Modal>
-)
+  </Modal>)
+}
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
@@ -51,19 +71,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    backgroundColor: "blue",
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
     width: ALERT_WIDTH,
-    paddingVertical: 16,
-    // bottom: -32,
-    // paddingHorizontal: 8,
-    height: 120,
+    height: 150,
     borderRadius: 16,
-    // backgroundColor: '#EEEEEE',
-    // paddingBottom: 16,
   },
   iconCircle: {
     height: 64,
@@ -73,40 +86,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // btnPrimary: {
-  //   width: ALERT_WIDTH - 16,
-  //   margin: 8,
-  //   padding: 8,
-  //   flexDirection: 'row',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   borderRadius: 32,
-  // },
   btn: {
     borderRadius: 8,
-    // display: 'flex',
-    // flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    //paddingHorizontal: 8,
     paddingVertical: 8,
-    alignSelf: 'stretch',
-    backgroundColor: '#C3272B',
+    // alignSelf: 'stretch',
     height: 40,
-    marginHorizontal: 50
-    // marginTop: 16,
-    // paddingHorizontal: 16,
-  },
-  btnText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
+    width: 120
+    // marginHorizontal: 50,
   },
   icon: {
     flex: 1,
-    //display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#C3272B',
     width: '100%',
   },
 })
@@ -123,4 +116,3 @@ const styles = StyleSheet.create({
 //   onRequestClose: () => {},
 // };
 
-export default FancyAlert
