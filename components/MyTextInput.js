@@ -16,6 +16,7 @@ function MyTextInput({
   onChangeText,
   style,
   value,
+  showEye,
   enabled = true,
   themeColor = "white",
   isPasswordField = false,
@@ -64,7 +65,8 @@ function MyTextInput({
         </MyText>
       ) : (
         <TextInput
-          value={title}
+          value={value}
+          maxLength={50}
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
           placeholderTextColor={colorsByTheme.Login_placeholders}
@@ -72,7 +74,7 @@ function MyTextInput({
           {...otherProps}
         />
       )}
-      {isPasswordField && (
+      {isPasswordField && showEye && (
         <EyeToShowPassword
           style={styles.eye}
           onPress={onPress}

@@ -16,6 +16,7 @@ function MyFormField({
   themeColor,
   style,
   enabled,
+  showEye,
   isPasswordField = false,
   passwordVisible = false,
   ...otherProps
@@ -31,7 +32,7 @@ function MyFormField({
 
 
   return (
-    <>
+    <View>
       <MyTextInput
         title={title}
         //onBlur={() => setFieldTouched(name)}
@@ -46,9 +47,10 @@ function MyFormField({
         themeColor={themeColor}
         editable={enabled}
         style={style}
+        showEye={showEye}
       />
       <MyErrorMessage error={errors[name]} visible={errors[name]} />
-    </>
+    </View>
   )
 }
 
