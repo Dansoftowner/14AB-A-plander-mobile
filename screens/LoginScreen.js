@@ -32,6 +32,7 @@ import { useFormDispatch, useFormState } from '../components/FormContext'
 import NewMyAlert from '../components/NewMyAlert'
 import FancyAlert from '../components/MyAlert'
 import { storeToken } from '../auth/storage'
+
 export default function LoginScreen({ navigation }) {
   const form = React.useRef()
   const dispatch = useFormDispatch()
@@ -66,9 +67,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   const handleSubmitI = async (values) => {
-    console.log('itt')
     const { association, username, password } = values
-    console.log(values)
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
@@ -77,7 +76,8 @@ export default function LoginScreen({ navigation }) {
     }
     setLoginFailed(false)
     setUser(result.data)
-    storeToken(result.headers['x-auth-token'])
+    console.log(values)
+    const storeResult = storeToken(result.headers['x-auth-token'])
   }
 
   const validationSchema = Yup.object().shape({
@@ -197,6 +197,20 @@ export default function LoginScreen({ navigation }) {
             <MyButton
               title={i18n.t('forgotMyPassword')}
               onPress={handleForgettenPassword}
+            />
+            <MyButton
+              title='Gyors login'
+              style={styles.loginButton}
+              onPress={() => {
+                handleSubmitI({association: {_id: "652f7b95fc13ae3ce86c7cdf"}, username: "gizaac0", password: "Apple123"})
+              }
+                // const result = await validateForm()
+                // console.log(result)
+                // if (result == {}) {
+                //   console.log('ready to log in')
+                // }
+                // console.log(errors)
+              }
             />
             {/* <Button
               title="Submit"
