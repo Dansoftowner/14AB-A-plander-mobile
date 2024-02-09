@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, ScrollView, Text } from 'react-native'
 import Screen from './Screen'
 import MyText from '../components/MyText'
@@ -13,287 +13,171 @@ import MySubmitButton from '../components/MySubmitButton'
 import EditField from '../components/EditField'
 import EditProfileFields from '../components/EditProfileFields'
 import useAuth from '../auth/useAuth'
-// {
-//   "_id": "652f866cfc13ae3ce86c7ce7",
-//   "isRegistered": true,
-//   "email": "bverchambre0@alibaba.com",
-//   "username": "gizaac0",
-//   "name": "Reizinger Szabolcs",
-//   "address": "Hungary, 7300 PillaFalva Maniel utca 12.",
-//   "idNumber": "589376QN",
-//   "phoneNumber": "+86 (120) 344-7474",
-//   "guardNumber": "08/0019/161373",
-//   "roles": [
-//     "member",
-//     "president"
-//   ]
-// }
 
-function ProfileScreen({ navigation }) {
-  const form = React.useRef()
-  const dispatch = useFormDispatch()
-  const { values: formValues, errors: formErrors } = useFormState('user')
-  const [isPasswordVisible, setIsPasswordVisible] = React.useState(false)
+function ProfileScreen() {
+  const { user } = useAuth()
+  const savedUser = {
+    _id: '652f866cfc13ae3ce86c7ce7',
+    isRegistered: true,
+    email: 'bverchambre0@alibaba.com',
+    username: 'gizaac0',
+    name: 'Reizinger Szabolcs',
+    address: 'Hungary, 7300 PillaFalva Maniel utca 12.',
+    idNumber: '589376QN',
+    phoneNumber: '+86 (120) 344-7474',
+    guardNumber: '08/0019/161373',
+    roles: ['member', 'president'],
+  }
+  const originalUser = user
   const [newPwd, setNewPwd] = useState('00000000AA')
   const [newPwdRepeat, setNewPwdRepeat] = useState('00000000AA')
-  
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener('blur', () => {
-      if (form.current) {
-        const { values, errors } = form.current
-        dispatch({
-          type: 'UPDATE_FORM',
-          payload: {
-            id: 'user',
-            data: { values, errors },
-          },
-        })
-      }
-    })
-    return unsubscribe
-  }, [navigation])
-
-  React.useEffect(() => {
-    navigation.addListener('blur', () => {
-      //if (form.current) {
-        //const { values, errors } = form.current
-        dispatch({
-          type: 'UPDATE_VALUES',
-          payload: {
-            id: 'user',
-            data: { ...user },
-          },
-        })
-      //}
-    })
-  }, []) //talán így?
-
-  // const validationSchema = Yup.object().shape({
-    //   username: Yup.string()
-    //     .required(i18n.t('fieldRequired'))
-  //     .label(i18n.t('username')),
-  //   password: Yup.string()
-  //     .required(i18n.t('fieldRequired'))
-  //     .label(i18n.t('password')),
-  //   association: Yup.object().required(i18n.t('fieldRequired')),
-  // })
-  
+  const [isPasswordEditable, setisPasswordEditable] = useState(false)
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email().required(),
+  })
   const handleSubmit = () => {
     console.log('submit')
   }
-  
-  const { user } = useAuth()
-  // const user = {
-  //   _id: '652f866cfc13ae3ce86c7ce7',
-  //   isRegistered: true,
-  //   email: 'bverchambre0@alibaba.com',
-  //   username: 'gizaac0',
-  //   name: 'Reizinger Szabolcs',
-  //   address: 'Hungary, 7300 PillaFalva Maniel utca 12.',
-  //   idNumber: '589376QN',
-  //   phoneNumber: '+86 (120) 344-7474',
-  //   guardNumber: '08/0019/161373',
-  //   roles: ['member', 'president'],
-  // }
 
-  const originalUser = user
   return (
     <ScrollView>
       <View style={styles.container}>
-        <MaterialCommunityIcons
-          name="account-circle"
-          size={200}
-          color="black"
-        />
+          <MaterialCommunityIcons
+            name="account-circle-outline"
+            size={200}
+            color="black"
+          />
         <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
           {user.name}'s details
         </MyText>
+        {user.roles.includes('president') && (
+          <MyText textColor="black" style={styles.role}>
+            President
+          </MyText>
+        )}
         <Formik
-          innerRef={form}
-          initialValues={formValues}
-          initialErrors={formErrors}
-          // validationSchema={validationSchema}
+          // innerRef={form}
+          initialValues={user}
+          // initialErrors={formErrors}
+          validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          enableReinitialize
+          enableReinitialize //ez nagyon fontos!
         >
           {({ values, errors, handleChange, handleSubmit }) => (
             <View style={styles.form}>
               <EditProfileFields
-                enabled={false}
-                icon="email-outline"
-                title="Email"
-                value="email"
                 themeColor="black"
                 textColor="black"
                 values={values}
-                handleChange={handleChange}
+                onChangeText={handleChange('email')}
+                icon="email-outline"
+                name="email"
+                title="E-mail"
+                enabled={false}
               />
-              <MyText
+              <EditProfileFields
+                themeColor="black"
                 textColor="black"
-                style={{ fontSize: 16, fontWeight: 'bold' }}
-              >
-                Email
-              </MyText>
-              <View style={styles.field}>
-                <MyFormField
-                  themeColor="black"
-                  title={user.email}
-                  value={values.email}
-                  onChangeText={handleChange('email')}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  icon="email-outline"
-                  name="email"
-                  enabled={false}
-                  width={335}
-                  style={{ fontWeight: '400' }}
-                />
-                <EditField style={{ marginLeft: 10 }} />
-              </View>
-              <MyText
+                values={values}
+                onChangeText={handleChange('username')}
+                icon="at"
+                name="username"
+                title="Username"
+                enabled={false}
+              />
+              <EditProfileFields
+                themeColor="black"
                 textColor="black"
-                style={{ fontSize: 16, fontWeight: 'bold' }}
-              >
-                Username
-              </MyText>
-              <View style={styles.field}>
-                <MyFormField
+                value={newPwd}
+                values={values}
+                onChangeText={setNewPwd('password')}
+                icon="lock-outline"
+                name="password"
+                title="Password"
+                enabled={false}
+                isPasswordField={true}
+                showEye={false}
+                setPasswordEditable={() =>
+                  setisPasswordEditable(!isPasswordEditable)
+                }
+              />
+              {isPasswordEditable && (
+                <EditProfileFields
+                  visible={false}
                   themeColor="black"
-                  title={user.username}
-                  value={values.username}
-                  onChangeText={handleChange('username')}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  width={335}
-                  icon="at"
-                  name="username"
-                  enabled={false}
-                  style={{ fontWeight: '400' }}
-                />
-                <EditField style={{ marginLeft: 10 }} />
-              </View>
-              <MyText
-                textColor="black"
-                style={{ fontSize: 16, fontWeight: 'bold' }}
-              >
-                Password
-              </MyText>
-              <View style={styles.field}>
-                <MyFormField
-                  themeColor="black"
-                  autoCapitalize="none"
-                  autoCorrect={false}
+                  textColor="black"
+                  value={newPwdRepeat}
+                  values={values}
+                  onChangeText={setNewPwdRepeat('password')}
                   icon="lock-outline"
                   name="password"
-                  title={newPwd}
-                  enabled={false}
-                  width={335}
-                  value={values.password}
-                  onChangeText={handleChange('password')}
-                  secureTextEntry={!isPasswordVisible}
-                  textContentType="password"
-                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                  passwordVisible={isPasswordVisible}
-                  style={{ fontWeight: '400' }}
+                  title="Please type your password again"
+                  isPasswordField={true}
+                  showEye={false}
                 />
-                <EditField style={{ marginLeft: 10 }} />
-              </View>
-              <MyText
-                textColor="black"
-                style={{ fontSize: 16, fontWeight: 'bold' }}
-              >
-                Phone number
-              </MyText>
-              <View style={styles.field}>
-                <MyFormField
-                  themeColor="black"
-                  title={user.phoneNumber}
-                  value={values.phoneNumber}
-                  onChangeText={handleChange('phoneNumber')}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  icon="phone-outline"
-                  name="phone"
-                  enabled={false}
-                  width={335}
-                  style={{ fontWeight: '400' }}
-                />
-                <EditField style={{ marginLeft: 10 }} />
-              </View>
-              <MyText
-                textColor="black"
-                style={{ fontSize: 16, fontWeight: 'bold' }}
-              >
-                Address
-              </MyText>
-              <MyFormField
+              )}
+              <EditProfileFields
                 themeColor="black"
-                title={values.address}
-                value={values.address} //A userben minden mező értéke benne van, a values üres
-                onChangeText={() => {
-                  handleChange('address')
-                  console.log(values)
-                }}
-                autoCapitalize="none"
-                autoCorrect={false}
+                textColor="black"
+                values={values}
+                onChangeText={handleChange('phoneNumber')}
+                icon="phone-outline"
+                name="phoneNumber"
+                title="Phone number"
+                enabled={false}
+              />
+              <EditProfileFields
+                themeColor="black"
+                textColor="black"
+                values={values}
+                onChangeText={handleChange('address')}
                 icon="map-marker-outline"
                 name="address"
-                style={{ fontWeight: '400' }}
+                title="Address"
               />
-              <MyText
-                textColor="black"
-                style={{ fontSize: 16, fontWeight: 'bold' }}
-              >
-                Identity card number
-              </MyText>
-              <MyFormField
+
+              <EditProfileFields
                 themeColor="black"
-                title={user.idNumber}
-                value={values.idNumber}
+                textColor="black"
+                values={values}
                 onChangeText={handleChange('idNumber')}
-                autoCapitalize="none"
-                autoCorrect={false}
                 icon="card-account-details-outline"
                 name="idNumber"
-                style={{ fontWeight: '400' }}
+                title="Identity card number"
               />
-              <MyText
+              <EditProfileFields
+                themeColor="black"
                 textColor="black"
-                style={{ fontSize: 16, fontWeight: 'bold' }}
-              >
-                Guard number
-              </MyText>
-              <View style={styles.field}>
-                <MyFormField
-                  themeColor="black"
-                  title={user.guardNumber}
-                  value={values.guardNumber}
-                  onChangeText={handleChange('guardNumber')}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  icon="card-text-outline"
-                  name="guardNumber"
-                  style={{ fontWeight: '400' }}
-                />
-              </View>
+                values={values}
+                onChangeText={handleChange('guardNumber')}
+                icon="card-text-outline"
+                name="guardNumber"
+                title="Guard number"
+              />
               <View style={styles.regFinished}>
                 <MyText textColor="black" style={styles.reg}>
-                  Registration finished
+                  {values.isRegistered
+                    ? 'Registration finished'
+                    : 'You have not finished registration yet'}
                 </MyText>
                 <MaterialCommunityIcons
-                  name="check-decagram-outline"
+                  name={
+                    values.isRegistered
+                      ? 'check-decagram-outline'
+                      : 'alert-decagram-outline'
+                  }
                   size={24}
                   color="black"
                 />
               </View>
-              {originalUser != user && (
+              {values != user && (
                 <View>
                   <MySubmitButton title="Save" />
                 </View>
               )}
               <Text>
-                {JSON.stringify(user)}
-                {JSON.stringify(originalUser)}
+                {JSON.stringify(values)}
+                {JSON.stringify(savedUser)}
               </Text>
             </View>
           )}
@@ -306,15 +190,11 @@ function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
     alignItems: 'center',
   },
   field: {
     flexDirection: 'row',
-    // backgroundColor: "red",
-    //justifyContent: 'center',
     alignItems: 'center',
-    // paddingHorizontal: 10,
   },
   form: {
     marginHorizontal: 20,
@@ -322,6 +202,11 @@ const styles = StyleSheet.create({
   },
   reg: {
     marginRight: 5,
+  },
+  role: {
+    fontWeight: 'bold',
+    fontSize: 22,
+    marginVertical: 10,
   },
   regFinished: {
     flexDirection: 'row',
