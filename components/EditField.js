@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-function EditField({style}) {
+function EditField({onPress, style}) {
     const { colors: colorsByTheme } = useTheme()  
     return (
     <View style={[styles.container, {backgroundColor: colorsByTheme.medium_blue_yellow}, style]}>
+      <TouchableWithoutFeedback onPress={onPress} >
         <MaterialCommunityIcons name="pencil" size={15} color={colorsByTheme.white_dark_blue} />
+      </TouchableWithoutFeedback>
     </View>
   );
 }
