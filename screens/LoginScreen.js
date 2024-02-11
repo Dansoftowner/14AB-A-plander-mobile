@@ -32,6 +32,7 @@ import { useFormDispatch, useFormState } from '../components/FormContext'
 import NewMyAlert from '../components/NewMyAlert'
 import FancyAlert from '../components/MyAlert'
 import { storeToken } from '../auth/storage'
+import useAuth from '../auth/useAuth'
 
 export default function LoginScreen({ navigation }) {
   const form = React.useRef()
@@ -76,17 +77,18 @@ export default function LoginScreen({ navigation }) {
     }
     setLoginFailed(false)
     setUser(result.data)
-    console.log(values)
-    const storeResult = storeToken(result.headers['x-auth-token'])
+    //console.log(JSON.stringify(result.headers))
+    //login(result.headers['x-plander-auth'])
+    //const storeResult = storeToken(result.headers['x-plander-auth'])
   }
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
       .required(i18n.t('fieldRequired'))
-      .label(i18n.t('username')),
+      .label(i18n.t('username')).min(5, i18n.t('zodUsername')).max(20),
     password: Yup.string()
       .required(i18n.t('fieldRequired'))
-      .label(i18n.t('password')),
+      .label(i18n.t('password')).min(8, i18n.t('zodPasswordLength')).matches(/[A-Z]/, i18n.t('zodPassword')).matches(/[0-9]/, i18n.t('zodPassword')),
     association: Yup.object().required(i18n.t('fieldRequired')),
   })
 
@@ -200,7 +202,6 @@ export default function LoginScreen({ navigation }) {
             />
             <MyButton
               title='Gyors login'
-              style={styles.loginButton}
               onPress={() => {
                 handleSubmitI({association: {_id: "652f7b95fc13ae3ce86c7cdf"}, username: "gizaac0", password: "Apple123"})
               }
