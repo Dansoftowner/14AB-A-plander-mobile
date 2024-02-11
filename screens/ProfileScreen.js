@@ -13,40 +13,86 @@ import MySubmitButton from '../components/MySubmitButton'
 import EditField from '../components/EditField'
 import EditProfileFields from '../components/EditProfileFields'
 import useAuth from '../auth/useAuth'
+import { useTheme } from '@react-navigation/native'
+import members from '../api/members'
 
 function ProfileScreen() {
   const { user } = useAuth()
-  const savedUser = {
-    _id: '652f866cfc13ae3ce86c7ce7',
-    isRegistered: true,
-    email: 'bverchambre0@alibaba.com',
-    username: 'gizaac0',
-    name: 'Reizinger Szabolcs',
-    address: 'Hungary, 7300 PillaFalva Maniel utca 12.',
-    idNumber: '589376QN',
-    phoneNumber: '+86 (120) 344-7474',
-    guardNumber: '08/0019/161373',
-    roles: ['member', 'president'],
-  }
-  const originalUser = user
-  const [newPwd, setNewPwd] = useState('00000000AA')
-  const [newPwdRepeat, setNewPwdRepeat] = useState('00000000AA')
+  // const savedUser = {
+  //   _id: '652f866cfc13ae3ce86c7ce7',
+  //   isRegistered: true,
+  //   email: 'bverchambre0@alibaba.com',
+  //   username: 'gizaac0',
+  //   name: 'Reizinger Szabolcs',
+  //   address: 'Hungary, 7300 PillaFalva Maniel utca 12.',
+  //   idNumber: '589376QN',
+  //   phoneNumber: '+86 (120) 344-7474',
+  //   guardNumber: '08/0019/161373',
+  //   roles: ['member', 'president'],
+  // }
+  // const originalUser = user
+  const defaultPwd = '00000000AA'
+  const [newPwd, setNewPwd] = useState(defaultPwd)
+  const [newPwdRepeat, setNewPwdRepeat] = useState(defaultPwd)
   const [isPasswordEditable, setisPasswordEditable] = useState(false)
+
+  const { colors: colorsByTheme } = useTheme()
+
   const validationSchema = Yup.object().shape({
     email: Yup.string().email().required(),
+    username: Yup.string()
+      .required(i18n.t('fieldRequired'))
+      .label(i18n.t('username'))
+      .min(5, i18n.t('zodUsername'))
+      .max(20),
+    // password: Yup.string()
+    //   .required(i18n.t('fieldRequired'))
+    //   .label(i18n.t('password'))
+    //   .min(8, i18n.t('zodPasswordLength'))
+    //   .matches(/[A-Z]/, i18n.t('zodPassword'))
+    //   .matches(/[0-9]/, i18n.t('zodPassword')),
+    // repeatedPassword: Yup.string().oneOf(
+    //   [Yup.ref('password'), null],
+    //   i18n.t('zodRepeatedPwd'),
+    // ),
+    address: Yup.string()
+      .min(5, i18n.t('zodAddress'))
+      .matches(/[0-9]/, i18n.t('zodAddress')),
+    idNumber: Yup.string().min(3),
+    phoneNumber: Yup.string().min(1),
+    guardNumber: Yup.string()
+      .matches(/\d{2}\/\d{4}\/\d{5}/, i18n.t('zodGuardNumber'))
+      .max(13)
+      .optional()
+      .nullable(),
   })
-  const handleSubmit = () => {
-    console.log('submit')
+  const handleSubmit = async (values) => {
+    if (user.email !== values.email || user.username!== values.username || user.password != values.password) {
+      const { email, username } = values;
+      const result = await members.patchMeCredentials(email, username, newPwd, user, currentPassword)
+      if (!result.ok) {
+        console.log(result.headers)
+      }
+      console.log(result)
+    }
+    else{
+      const { name, address, idNumber, phoneNumber, guardNumber } = values;
+      const result = await members.patchMe(name, address, idNumber, phoneNumber, guardNumber)
+      if (!result.ok) {
+        console.log(result.headers)
+      }
+      console.log(result)
+    }
   }
 
   return (
     <ScrollView>
       <View style={styles.container}>
-          <MaterialCommunityIcons
-            name="account-circle-outline"
-            size={200}
-            color="black"
-          />
+        <MaterialCommunityIcons
+          name="account-circle-outline"
+          size={200}
+          color={colorsByTheme.black_white}
+        />
         <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
           {user.name}'s details
         </MyText>
@@ -90,16 +136,23 @@ function ProfileScreen() {
                 textColor="black"
                 value={newPwd}
                 values={values}
-                onChangeText={setNewPwd('password')}
+                onChangeText={(text) => setNewPwd(text)}
                 icon="lock-outline"
                 name="password"
                 title="Password"
                 enabled={false}
                 isPasswordField={true}
                 showEye={false}
-                setPasswordEditable={() =>
+                setPasswordEditable={() => {
                   setisPasswordEditable(!isPasswordEditable)
-                }
+                  if (newPwd === defaultPwd) {
+                    setNewPwd('')
+                    setNewPwdRepeat('')
+                  } else {
+                    setNewPwd(defaultPwd)
+                    setNewPwdRepeat(defaultPwd)
+                  }
+                }}
               />
               {isPasswordEditable && (
                 <EditProfileFields
@@ -108,9 +161,10 @@ function ProfileScreen() {
                   textColor="black"
                   value={newPwdRepeat}
                   values={values}
-                  onChangeText={setNewPwdRepeat('password')}
+                  onChangeText={(text) => setNewPwdRepeat(text)}
                   icon="lock-outline"
                   name="password"
+                  enabled={true}
                   title="Please type your password again"
                   isPasswordField={true}
                   showEye={false}
@@ -167,18 +221,18 @@ function ProfileScreen() {
                       : 'alert-decagram-outline'
                   }
                   size={24}
-                  color="black"
+                  color={colorsByTheme.black_white}
                 />
               </View>
               {values != user && (
                 <View>
-                  <MySubmitButton title="Save" />
+                  <MyButton title="Save" onPress={() => handleSubmit(values)}/>
                 </View>
               )}
-              <Text>
+              <MyText textColor={colorsByTheme.black_white}>
                 {JSON.stringify(values)}
-                {JSON.stringify(savedUser)}
-              </Text>
+                {JSON.stringify(user)}
+              </MyText>
             </View>
           )}
         </Formik>
