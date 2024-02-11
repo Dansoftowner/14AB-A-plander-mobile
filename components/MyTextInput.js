@@ -18,6 +18,7 @@ function MyTextInput({
   value,
   showEye,
   enabled = true,
+  isEditable,
   themeColor = "white",
   isPasswordField = false,
   passwordVisible = false,
@@ -70,7 +71,7 @@ function MyTextInput({
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: 'black' }]}
+          style={[styles.text, { color: isEditable ? colorsByTheme.black_white : colorsByTheme.medium_light }]}
           {...otherProps}
         />
       )}
