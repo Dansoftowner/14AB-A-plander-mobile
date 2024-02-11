@@ -6,6 +6,7 @@ import MyTextInput from './MyTextInput'
 import styles from '../config/styles'
 import EditField from './EditField'
 import { View } from 'react-native'
+import MyText from './MyText'
 function MyFormField({
   name,
   width,
@@ -17,6 +18,7 @@ function MyFormField({
   style,
   enabled,
   showEye,
+  isEditable = true,
   isPasswordField = false,
   passwordVisible = false,
   ...otherProps
@@ -30,9 +32,9 @@ function MyFormField({
     // touched,
   } = useFormikContext()
 
-
   return (
     <View>
+      {/* <MyText textColor='black'>{isEditable}</MyText> */}
       <MyTextInput
         title={title}
         //onBlur={() => setFieldTouched(name)}
@@ -44,6 +46,7 @@ function MyFormField({
         isPasswordField={isPasswordField}
         passwordVisible={passwordVisible}
         {...otherProps}
+        isEditable={isEditable}
         themeColor={themeColor}
         editable={enabled}
         style={style}

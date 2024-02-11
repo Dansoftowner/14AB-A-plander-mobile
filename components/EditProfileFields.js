@@ -17,33 +17,40 @@ function EditProfileFields({
   secure,
   showEye = false,
   isPasswordField = false,
-  setPasswordEditable
+  setPasswordEditable,
 }) {
-
+  const [isEditable, setIsEditable] = useState(false)
   return (
     <View>
-      <MyText
-        textColor={textColor}
-        style={{ fontSize: 16, fontWeight: 'bold' }}
-      >
-        {title}
-      </MyText>
+      {/* <MyText textColor="black">{isEditable ? 'true' : 'false'}</MyText>
+      <MyText textColor="black">{enabled ? 'true' : 'false'}</MyText> */}
       <View style={styles.field}>
         <MyFormField
           themeColor={themeColor}
-          value={values[name]}
+          value={isPasswordField ? value : values[name]}
           onChangeText={onChangeText}
           autoCapitalize="none"
           autoCorrect={false}
           icon={icon}
           name={name}
-          width={enabled ? 365 : 335}
+          width={enabled ? 350 : 320}
           style={{ fontWeight: '400' }}
           isPasswordField={isPasswordField}
-          enabled={enabled}
+          secureTextEntry={isPasswordField}
+          isEditable={enabled ? true : isEditable}
+          // textContentType="password"
           showEye={showEye}
+          enabled={enabled ? true : isEditable}
         />
-        {!enabled && <EditField style={{ marginLeft: 8 }} onPress={setPasswordEditable} />}
+        {!enabled && (
+          <EditField
+            style={{ marginLeft: 8 }}
+            onPress={() => {
+              setIsEditable(!isEditable)
+              setPasswordEditable && setPasswordEditable()
+            }}
+          />
+        )}
       </View>
     </View>
   )
