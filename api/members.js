@@ -10,11 +10,11 @@ const getMe = (memberId) =>
   const patchMe = (name, address, idNumber, phoneNumber, guardNumber) => apiClient.patch(`/members/me`, {name, address, idNumber, phoneNumber, guardNumber}, {headers: {"x-plander-auth": token}})
 
   const patchMeCredentials = (email, username, newPwd, user, currentPassword) => {
-    
-    apiClient.patch(`/members/me/credentials`, {email, username, newPwd}, {headers: {"x-plander-auth": token}, "x-current-pass": currentPassword})
+    apiClient.patch(`/members/me/credentials`, {email, username, newPwd}, {headers: {"x-plander-auth": token}, "x-current-pass": currentPassword}).then(res => res)
 }
 
 export default {
   getMe,
-  patchMe
+  patchMe,
+  patchMeCredentials
 }

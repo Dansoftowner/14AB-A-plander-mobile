@@ -77,6 +77,8 @@ export default function LoginScreen({ navigation }) {
     }
     setLoginFailed(false)
     setUser(result.data)
+    console.log(result.headers['x-plander-auth'])
+    storeToken(result.headers['x-plander-auth'])
     //console.log(JSON.stringify(result.headers))
     //login(result.headers['x-plander-auth'])
     //const storeResult = storeToken(result.headers['x-plander-auth'])
@@ -118,7 +120,7 @@ export default function LoginScreen({ navigation }) {
         icon="exclamation"
         message={errorMessage}
         button="Close"
-        visible={loginFailed}
+        visible={false}
         handleClose={() => setLoginFailed(false)}
       />
       <View style={styles.headerContainer}>
