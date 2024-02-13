@@ -52,7 +52,12 @@ function MyFormField({
         style={style}
         showEye={showEye}
       />
-      <MyErrorMessage error={errors[name]} visible={errors[name]} />
+      {
+        errors[name] && (
+          <MyErrorMessage error={errors[name]} visible={errors[name]} />
+        )
+      }
+      {/* <MyErrorMessage error={errors[name]} visible={errors[name]} /> */}
     </View>
   )
 }
