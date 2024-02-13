@@ -6,58 +6,122 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
 
 import { Screen } from 'react-native-screens'
+import MyText from './MyText'
 //import PropTypes from 'prop-types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 const ALERT_WIDTH = SCREEN_WIDTH - SCREEN_WIDTH / 4
 
-
-export default function FancyAlert({ visible, handleClose, icon, message, button }) {
+export default function FancyAlert({
+  visible,
+  handleClose,
+  icon,
+  message,
+  button,
+  color,
+  title,
+  alignment,
+}) {
   const { colors: colorsByTheme } = useTheme()
+  const colorCalcualted = (color) => {
+    if (color === 'red') {
+      return colorsByTheme.medium_red_light_red
+    }
+    if (color === 'green') {
+      return colorsByTheme.medium_green_light_green
+    }
+    if (color === 'yellow') {
+      return colorsByTheme.medium_yellow_light_yellow
+    }
+    if (color === 'blue') {
+      return colorsByTheme.medium_blue_light_blue
+    }
+  }
   return (
-  <Modal
-    visible={visible}
-    animationType="fade"
-    transparent
-    onRequestClose={handleClose}
-  >
-    <View style={styles.container}>
-      {/* <View style={[styles.iconCircle, { top: 32, borderColor: 'white' }]}>
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent
+      onRequestClose={handleClose}
+    >
+      <View style={styles.container}>
+        {/* <View style={[styles.iconCircle, { top: 32, borderColor: 'white' }]}>
         <View style={[styles.icon, { borderRadius: 32 }]}>
           <MaterialCommunityIcons name={icon} size={24} color="white" />
         </View>
       </View> */}
-      <View
-        style={[
-          styles.iconCircle,
-          { top: 32, borderColor: 'white', zIndex: 1 },
-        ]}
-      >
-        <View style={[styles.icon, { borderRadius: 32, backgroundColor: colorsByTheme.medium_red_light_red }]}>
-          <MaterialCommunityIcons name={icon} size={24} color="white" />
+        <View
+          style={[
+            styles.iconCircle,
+            { top: 32, borderColor: 'white', zIndex: 1 },
+          ]}
+        >
+          <View
+            style={[
+              styles.icon,
+              { borderRadius: 32, backgroundColor: colorCalcualted(color) },
+            ]}
+          >
+            <MaterialCommunityIcons name={icon} size={24} color="white" />
+          </View>
         </View>
-      </View>
-      <View style={[styles.content, {backgroundColor: 'white'}]}>
-        <View>
+        <View style={[styles.content, { backgroundColor: 'white' }]}>
           <View
             style={{
               flex: 1,
-              justifyContent: 'center',
+              // justifyContent: alignment,
               alignItems: 'center',
-              marginTop: 33
+              marginTop: 33,
+              // paddingTop: 33,
+              backgroundColor: 'blue',
+              // width: 200,
+              flexDirection: 'column',
             }}
           >
-            <Text style={{color: 'black'}}>{message}</Text>
+            {/* <View
+              style={{
+                flex: 1,
+                // justifyContent: alignment,
+                alignItems: 'center',
+                marginTop: 33,
+                paddingTop: 33,
+              }}
+            > */}
           </View>
-          <View style={{ backgroundColor: 'pink', marginBottom: 10, alignItems: 'center'}}>
-            <TouchableOpacity style={[styles.btn, { backgroundColor: colorsByTheme.medium_red_light_red}]} onPress={handleClose}>
-              <Text style={{color: 'white', fontWeight: '500'}}>{button}</Text>
+          <View style={{ backgroundColor: 'pink', width: "100%" }}>
+            <MyText
+              textColor="black"
+              style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                backgroundColor: 'pink',
+              }}
+            >
+              Helloooo
+            </MyText>
+            {/* <Text style={{ color: 'orange' }}>{message}</Text> */}
+          </View>
+          <View
+            style={{
+              marginBottom: 10,
+              alignItems: alignment,
+              backgroundColor: 'green',
+            }}
+          >
+            <TouchableOpacity
+              style={[styles.btn, { backgroundColor: colorCalcualted(color) }]}
+              onPress={handleClose}
+            >
+              <Text style={{ color: 'white', fontWeight: '500' }}>
+                {button}
+              </Text>
             </TouchableOpacity>
           </View>
+          {/* </View> */}
         </View>
       </View>
-    </View>
-  </Modal>)
+    </Modal>
+  )
 }
 const styles = StyleSheet.create({
   container: {
@@ -93,7 +157,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     // alignSelf: 'stretch',
     height: 40,
-    width: 120
+    width: 120,
     // marginHorizontal: 50,
   },
   icon: {
@@ -115,4 +179,3 @@ const styles = StyleSheet.create({
 //   style: {},
 //   onRequestClose: () => {},
 // };
-
