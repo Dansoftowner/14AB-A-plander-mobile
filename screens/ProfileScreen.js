@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, ScrollView, Text } from 'react-native'
 import Screen from './Screen'
 import MyText from '../components/MyText'
@@ -15,6 +15,8 @@ import EditProfileFields from '../components/EditProfileFields'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
 import members from '../api/members'
+import FancyAlert from '../components/MyAlert'
+import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
 
 function ProfileScreen() {
   const { user } = useAuth()
@@ -35,9 +37,12 @@ function ProfileScreen() {
   const [newPwd, setNewPwd] = useState(defaultPwd)
   const [newPwdRepeat, setNewPwdRepeat] = useState(defaultPwd)
   const [isPasswordEditable, setisPasswordEditable] = useState(false)
-
+  const [alertShown, setAlertShown] = useState(false)
+  const [prevoiusGuardNumber, setPreviousGuardNumber] = useState(
+    user.guardNumber,
+  )
   const { colors: colorsByTheme } = useTheme()
-
+  const formRef = useRef()
   const validationSchema = Yup.object().shape({
     email: Yup.string().email().required(),
     username: Yup.string()
@@ -66,8 +71,11 @@ function ProfileScreen() {
       .optional()
       .nullable(),
   })
-  const handleSubmit = async (values) => {
-    if (user.email !== values.email || user.username!== values.username || user.password != values.password) {
+  const handleSubmit = async (currentPassword) => {
+    const values = formRef.current.values
+    //console.log(values)
+    //console.log(currentPassword)
+    if (currentPassword === undefined) {
       const { email, username } = values;
       const result = await members.patchMeCredentials(email, username, newPwd, user, currentPassword)
       if (!result.ok) {
@@ -81,13 +89,35 @@ function ProfileScreen() {
       if (!result.ok) {
         console.log(result.headers)
       }
-      console.log(result)
+      //console.log(result)
     }
   }
 
   return (
     <ScrollView>
       <View style={styles.container}>
+        {/* <FancyAlert
+          visible={false}
+          type="error"
+          // color="yellow"
+          // icon="lock-open"
+          title="Adatok módosítása"
+          button="Mentés"
+          cancel={true}
+          alignment="left"
+        /> */}
+        <UpdatedAlertMessage
+          visible={alertShown}
+          type="confirmation"
+          size="large"
+          title="Adatok módosítása"
+          button="Mentés"
+          message="Adja meg jelenlegi jelszavát a módosítások mentéséhez!"
+          cancel={true}
+          close="Close"
+          onClose={() => setAlertShown(false)}
+          onPress={(text) => handleSubmit(text)}
+        />
         <MaterialCommunityIcons
           name="account-circle-outline"
           size={200}
@@ -107,9 +137,10 @@ function ProfileScreen() {
           // initialErrors={formErrors}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          innerRef={formRef}
           enableReinitialize //ez nagyon fontos!
         >
-          {({ values, errors, handleChange, handleSubmit }) => (
+          {({ values, errors, handleChange, handleSubmit, setFieldValue }) => (
             <View style={styles.form}>
               <EditProfileFields
                 themeColor="black"
@@ -120,6 +151,7 @@ function ProfileScreen() {
                 name="email"
                 title="E-mail"
                 enabled={false}
+                keyboardType="email-address"
               />
               <EditProfileFields
                 themeColor="black"
@@ -179,6 +211,7 @@ function ProfileScreen() {
                 name="phoneNumber"
                 title="Phone number"
                 enabled={false}
+                keyboardType="phone-pad"
               />
               <EditProfileFields
                 themeColor="black"
@@ -203,10 +236,22 @@ function ProfileScreen() {
                 themeColor="black"
                 textColor="black"
                 values={values}
-                onChangeText={handleChange('guardNumber')}
+                onChangeText={(text) => {
+                  if (text.length + 1 != prevoiusGuardNumber.length) {
+                    if (text.length == 2) {
+                      text = text + '/'
+                    } else if (text.length == 7) {
+                      text = text + '/'
+                    }
+                  }
+                  setFieldValue('guardNumber', text)
+                  setPreviousGuardNumber(text)
+                }}
+                maxLength={13}
                 icon="card-text-outline"
                 name="guardNumber"
                 title="Guard number"
+                keyboardType="number-pad"
               />
               <View style={styles.regFinished}>
                 <MyText textColor="black" style={styles.reg}>
@@ -226,7 +271,20 @@ function ProfileScreen() {
               </View>
               {values != user && (
                 <View>
-                  <MyButton title="Save" onPress={() => handleSubmit(values)}/>
+                  <MyButton
+                    title="Save"
+                    onPress={() => {
+                      if (
+                        user.email !== values.email ||
+                        user.username !== values.username ||
+                        user.password != values.password
+                      ) {
+                        setAlertShown(true)
+                      } else {
+                        handleSubmit()
+                      }
+                    }}
+                  />
                 </View>
               )}
               <MyText textColor={colorsByTheme.black_white}>
