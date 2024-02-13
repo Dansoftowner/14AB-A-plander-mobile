@@ -24,6 +24,7 @@ function MyTextInput({
   passwordVisible = false,
   width = '100%',
   isButton = false,
+  maxLength = 50,
   ...otherProps
 }) {
   const { colors: colorsByTheme } = useTheme()  
@@ -67,7 +68,7 @@ function MyTextInput({
       ) : (
         <TextInput
           value={value}
-          maxLength={50}
+          maxLength={maxLength}
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
           placeholderTextColor={colorsByTheme.Login_placeholders}

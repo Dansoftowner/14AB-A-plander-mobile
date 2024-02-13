@@ -17,7 +17,9 @@ function EditProfileFields({
   secure,
   showEye = false,
   isPasswordField = false,
+  maxLength,
   setPasswordEditable,
+  keyboardType
 }) {
   const [isEditable, setIsEditable] = useState(false)
   return (
@@ -38,7 +40,9 @@ function EditProfileFields({
           isPasswordField={isPasswordField}
           secureTextEntry={isPasswordField}
           isEditable={enabled ? true : isEditable}
+          maxLength={maxLength}
           // textContentType="password"
+          keyboardType={keyboardType}
           showEye={showEye}
           enabled={enabled ? true : isEditable}
         />
