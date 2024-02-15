@@ -6,6 +6,7 @@ import EyeToShowPassword from './EyeToShowPassword'
 import MyText from './MyText'
 import colors from '../config/colors'
 import EditField from './EditField'
+import i18n from '../locales/i18n'
 
 //import defaultStyles from "../config/styles";
 
@@ -60,10 +61,10 @@ function MyTextInput({
       {isButton ? (
         <MyText
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: title !== 'Association' ? colorsByTheme.Login_textColor :  colorsByTheme.Login_placeholders}]}
+          style={[styles.text, { color: title !== i18n.t('associationSelector') ? colorsByTheme.Login_textColor :  colorsByTheme.Login_placeholders}]}
           {...otherProps}
         >
-          {title ?? 'Association'}
+          {title ?? i18n.t('associationSelector')}
         </MyText>
       ) : (
         <TextInput
