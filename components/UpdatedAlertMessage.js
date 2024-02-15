@@ -11,7 +11,6 @@ import MyButton from './MyButton'
 import { Formik } from 'formik'
 import i18n from '../locales/i18n'
 import MyFormField from './MyFormField'
-//import PropTypes from 'prop-types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 // const ALERT_WIDTH = SCREEN_WIDTH - SCREEN_WIDTH / 4
@@ -27,20 +26,6 @@ function UpdatedAlertMessage({
   size,
 }) {
   const { colors: colorsByTheme } = useTheme()
-  // const colorCalcualted = (color) => {
-  //   if (color === 'red') {
-  //     return colorsByTheme.medium_red_light_red
-  //   }
-  //   if (color === 'green') {
-  //     return colorsByTheme.medium_green_light_green
-  //   }
-  //   if (color === 'yellow') {
-  //     return colorsByTheme.medium_yellow_light_yellow
-  //   }
-  //   if (color === 'blue') {
-  //     return colorsByTheme.medium_blue_light_blue
-  //   }
-  // }
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   const typeProps = {
@@ -135,13 +120,13 @@ function UpdatedAlertMessage({
               style={{
                 marginTop: 28,
                 width: '100%',
-                backgroundColor: 'pink',
+                //backgroundColor: 'pink',
                 flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
             >
-              <MyText textColor="black" style={styles[type]}>
+              <MyText textColor="black" style={[styles[type], {textAlign: 'center'}]}>
                 {message}
               </MyText>
             </View>
@@ -235,8 +220,11 @@ function UpdatedAlertMessage({
             <TouchableOpacity
               style={[styles.btn, { backgroundColor: typeProps[type].color }]}
               onPress={() => {
-                values = formRef.current.values
-                onPress(values.password)
+                console.log(formRef.current)
+                if (formRef.current !== undefined){
+                  values = formRef.current.values
+                  onPress(values.password)
+                }
                 onClose()
               }}
             >
@@ -246,57 +234,7 @@ function UpdatedAlertMessage({
                 {button}
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={[styles.btn, { backgroundColor: colorCalcualted(color) }]}
-              onPress={handleClose}
-            >
-              <Text style={{ color: 'white', fontWeight: '500' }}>
-                {button}
-              </Text>
-            </TouchableOpacity> */}
           </View>
-
-          {/* <View
-            style={{
-              flex: 1,
-              justifyContent: alignment,
-              alignItems: 'center',
-              marginTop: 33,
-              paddingTop: 33,
-              backgroundColor: 'blue',
-              width: 200,
-              flexDirection: 'column',
-            }}
-          >
-          </View>
-          <View style={{ backgroundColor: 'pink', width: '100%' }}>
-            <MyText
-              textColor="black"
-              style={{
-                fontSize: 18,
-                fontWeight: 'bold',
-                backgroundColor: 'pink',
-              }}
-            >
-              Helloooo
-            </MyText>
-          </View>
-          <View
-            style={{
-              marginBottom: 10,
-              alignItems: alignment,
-              backgroundColor: 'green',
-            }}
-          >
-            <TouchableOpacity
-              style={[styles.btn, { backgroundColor: colorCalcualted(color) }]}
-              onPress={handleClose}
-            >
-              <Text style={{ color: 'white', fontWeight: '500' }}>
-                {button}
-              </Text>
-            </TouchableOpacity>
-          </View> */}
         </View>
       </View>
     </Modal>
@@ -319,11 +257,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 8,
-    //marginBottom: 5,
-    // alignSelf: 'stretch',
+
     height: 40,
     width: 80,
-    // marginHorizontal: 50,
   },
   icon: {
     flex: 1,
