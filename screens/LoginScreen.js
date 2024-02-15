@@ -21,18 +21,15 @@ import MyText from '../components/MyText'
 import MySubmitButton from '../components/MySubmitButton'
 import Screen from './Screen'
 import AuthContext from '../auth/authContext'
-import AssociationSelector from '../components/AssociationSelector'
-import AutoComplete from '../components/AutoComplete'
 import SelectAssociation from '../components/SelectAssociation'
 import { Form, Formik, useFormikContext } from 'formik'
 import AssContext from '../AssContext'
 import MyErrorMessage from '../components/MyErrorMessage'
 import { FormProvider } from '../components/FormContext'
 import { useFormDispatch, useFormState } from '../components/FormContext'
-import NewMyAlert from '../components/NewMyAlert'
-import FancyAlert from '../components/MyAlert'
-import { storeToken } from '../auth/storage'
+import storage, { storeToken } from '../auth/storage'
 import useAuth from '../auth/useAuth'
+import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
 
 export default function LoginScreen({ navigation }) {
   const form = React.useRef()
@@ -77,37 +74,28 @@ export default function LoginScreen({ navigation }) {
     }
     setLoginFailed(false)
     setUser(result.data)
-    console.log(result.headers['x-plander-auth'])
-    storeToken(result.headers['x-plander-auth'])
-    //console.log(JSON.stringify(result.headers))
-    //login(result.headers['x-plander-auth'])
-    //const storeResult = storeToken(result.headers['x-plander-auth'])
-  }
+    storage.storeToken(result.headers['x-plander-auth'])
+    console.log(storage.getToken())
+}
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
       .required(i18n.t('fieldRequired'))
-      .label(i18n.t('username')).min(5, i18n.t('zodUsername')).max(20),
+      .label(i18n.t('username'))
+      .min(5, i18n.t('zodUsername'))
+      .max(20),
     password: Yup.string()
       .required(i18n.t('fieldRequired'))
-      .label(i18n.t('password')).min(8, i18n.t('zodPasswordLength')).matches(/[A-Z]/, i18n.t('zodPassword')).matches(/[0-9]/, i18n.t('zodPassword')),
+      .label(i18n.t('password'))
+      .min(8, i18n.t('zodPasswordLength'))
+      .matches(/[A-Z]/, i18n.t('zodPassword'))
+      .matches(/[0-9]/, i18n.t('zodPassword')),
     association: Yup.object().required(i18n.t('fieldRequired')),
   })
 
   const handleNavigateAssociation = () => {
     navigation.navigate('Associations')
   }
-
-  // const handleSubmitNew = async (values, validateForm) => {
-  //   // dispatch({
-  //   //   type: 'UPDATE_ERRORS',
-  //   //   payload: {
-  //   //     id: 'user',
-  //   //     data: { values, errors },
-  //   //   }})
-  //   //console.log(values)
-
-  // }
 
   return (
     <Screen
@@ -116,13 +104,22 @@ export default function LoginScreen({ navigation }) {
         { backgroundColor: colorsByTheme.Login_background },
       ]}
     >
-      <FancyAlert
+      <UpdatedAlertMessage
+        visible={loginFailed}
+        type="error"
+        size="small"
+        button="Close"
+        message={errorMessage}
+        onClose={() => setLoginFailed(false)}
+        //onPress={() => setErrorShown(false)}
+      />
+      {/* <FancyAlert
         icon="exclamation"
         message={errorMessage}
         button="Close"
         visible={false}
         handleClose={() => setLoginFailed(false)}
-      />
+      /> */}
       <View style={styles.headerContainer}>
         {/* {colorScheme === 'dark' ? (
           <LogoDark width={150} height={150} />
@@ -203,33 +200,19 @@ export default function LoginScreen({ navigation }) {
               onPress={handleForgettenPassword}
             />
             <MyButton
-              title='Gyors login'
-              onPress={() => {
-                handleSubmitI({association: {_id: "652f7b95fc13ae3ce86c7cdf"}, username: "gizaac0", password: "Apple123"})
-              }
-                // const result = await validateForm()
-                // console.log(result)
-                // if (result == {}) {
-                //   console.log('ready to log in')
-                // }
-                // console.log(errors)
+              title="Gyors login"
+              onPress={
+                () => {
+                  handleSubmitI({
+                    association: { _id: '652f7b95fc13ae3ce86c7cdf' },
+                    username: 'gizaac0',
+                    password: 'Apple123',
+                  })
+                }
+
               }
             />
-            {/* <Button
-              title="Submit"
-              mode="contained"
-              onPress={() => {
-                dispatch({
-                  type: 'UPDATE_FORM',
-                  payload: {
-                    id: 'user',
-                    data: { values, errors },
-                  },
-                })
-                alert(JSON.stringify(values, null, 2))
-                handleSubmit()
-              }}
-            ></Button> */}
+
           </View>
         )}
       </Formik>
@@ -243,11 +226,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   form: {
-    marginVertical: 40,
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    //a felső három most lett hozzáadva
+    marginVertical: 40
   },
   headerContainer: {
     flexDirection: 'row',
