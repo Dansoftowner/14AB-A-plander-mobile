@@ -7,6 +7,7 @@ import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
 import ProfileScreen from '../screens/ProfileScreen'
 import { FormProvider } from '../components/FormContext'
+import i18n from '../locales/i18n'
 
 const Drawer = createDrawerNavigator()
 
@@ -28,12 +29,12 @@ function MyDrawer(props) {
           drawerActiveBackgroundColor: colorsByTheme.medium_blue_dark_blue,
         }}
       >
-        <Drawer.Screen name="Main" component={MainScreen} />
-        <Drawer.Screen name="Settings" component={SettingsScreen} />
+        <Drawer.Screen name={i18n.t("navMain")} component={MainScreen} />
+        <Drawer.Screen name={i18n.t("navSettings")} component={SettingsScreen} />
         <Drawer.Screen
-          name="Profile"
+          name={i18n.t("navProfile")}
           component={ProfileScreen}
-          options={{ headerTitle: 'Edit Profile' }}
+          options={{ headerTitle: i18n.t("editProfile") }}
         />
       </Drawer.Navigator>
     </FormProvider>
