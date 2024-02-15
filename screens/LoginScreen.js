@@ -156,7 +156,7 @@ export default function LoginScreen({ navigation }) {
             <SelectAssociation
               onPress={handleNavigateAssociation}
               name="association"
-              title={values.association?.name ?? 'Association'}
+              title={values.association?.name ?? i18n.t('associationSelector')}
             />
             <MyFormField
               value={values.username}
