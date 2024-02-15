@@ -12,18 +12,23 @@ import memberTransEN from './en/member.json'
 import translationTransHU from './hu/translation.json'
 import translationTransEN from './en/translation.json'
 
+import navigationHU from './hu/navigation.json'
+import navigationEN from './en/navigation.json'
+
 const translations = {
     en: {
         ...loginTransEN, 
         ...registerTransEN,
         ...memberTransEN,
-        ...translationTransEN
+        ...translationTransEN,
+        ...navigationEN
     },
     hu: {
         ...loginTransHU, 
         ...registerTransHU,
         ...memberTransHU,
-        ...translationTransHU
+        ...translationTransHU,
+        ...navigationHU
     }
 }
 
