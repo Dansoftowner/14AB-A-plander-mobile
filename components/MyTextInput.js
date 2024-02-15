@@ -30,7 +30,15 @@ function MyTextInput({
 }) {
   const { colors: colorsByTheme } = useTheme()  
   const colorCalculated = () => {
-    return colors.light_blue
+    if (isEditable) {
+      if (themeColor === "white") {
+        return colorsByTheme.white_black
+      }
+      else {
+        return colorsByTheme.black_white
+      }
+    }
+      return colorsByTheme.medium_light
     // if (!enabled) {
     //   return colorsByTheme.Login_dropDownFont
     // }
@@ -46,7 +54,7 @@ function MyTextInput({
       style={[
         styles.container,
         { width },
-        { borderColor: themeColor === "white" ? colorsByTheme.Login_textColor : colorsByTheme.black_white },
+        { borderColor: themeColor === "white" ? colorsByTheme.white_black : colorsByTheme.black_white },
         style,
       ]}
     >
@@ -54,14 +62,14 @@ function MyTextInput({
         <MaterialCommunityIcons
           name={icon}
           size={20}
-          color={themeColor === "white" ? colorsByTheme.Login_textColor : colorsByTheme.black_white}
+          color={themeColor === "white" ? colorsByTheme.white_black : colorsByTheme.black_white}
           style={styles.icon}
         />
       )}
       {isButton ? (
         <MyText
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: title !== i18n.t('associationSelector') ? colorsByTheme.Login_textColor :  colorsByTheme.Login_placeholders}]}
+          style={[styles.text, { color: title !== i18n.t('associationSelector') ? colorsByTheme.white_black :  colorsByTheme.Login_placeholders}]}
           {...otherProps}
         >
           {title ?? i18n.t('associationSelector')}
@@ -73,7 +81,7 @@ function MyTextInput({
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: isEditable ? colorsByTheme.black_white : colorsByTheme.medium_light }]}
+          style={[styles.text, { color: colorCalculated() }]}
           {...otherProps}
         />
       )}
