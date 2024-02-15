@@ -24,6 +24,7 @@ const AppLightTheme = {
     black_white: colors.white,
     white_black: colors.black,
     white_white: colors.white,
+    white_darker_blue: colors.darker_blue,
     medium_red_light_red: colors.light_red,
     medium_green_light_green: colors.light_green,
     medium_yellow_light_yellow: colors.light_yellow,
