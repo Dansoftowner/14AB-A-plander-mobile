@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   Button,
   Image,
@@ -59,13 +59,24 @@ export default function LoginScreen({ navigation }) {
   const { user, setUser } = useContext(AuthContext)
   const { colors: colorsByTheme } = useTheme()
   const colorScheme = useColorScheme()
+  //const form = useRef()
 
   const handleForgettenPassword = () => {
     console.log('TODO forgotten password')
   }
 
-  const handleSubmitI = async (values) => {
-    const { association, username, password } = values
+  const handleSubmit = async (fastlogin, data) => {
+    const values = form.current.values
+    if (!fastlogin) {
+      form.current.setTouched({username: true, password: true, association: true});
+      form.current.validateForm()
+      console.log(form.current.errors)
+      if (Object.keys(form.current.errors).length !== 0) {
+        return
+      }
+    }
+    //const { association, username, password } = values
+    const { association, username, password } = data
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
@@ -76,7 +87,7 @@ export default function LoginScreen({ navigation }) {
     setUser(result.data)
     storage.storeToken(result.headers['x-plander-auth'])
     console.log(storage.getToken())
-}
+  }
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -147,11 +158,12 @@ export default function LoginScreen({ navigation }) {
         innerRef={form}
         initialValues={formValues}
         initialErrors={formErrors}
+        initialTouched={{username: false}}
         validationSchema={validationSchema}
-        onSubmit={handleSubmitI}
+        onSubmit={handleSubmit}
         enableReinitialize
       >
-        {({ values, errors, handleChange, handleSubmit }) => (
+        {({ values, errors, handleChange }) => (
           <View style={styles.form}>
             <SelectAssociation
               onPress={handleNavigateAssociation}
@@ -166,6 +178,7 @@ export default function LoginScreen({ navigation }) {
               icon="account-outline"
               name="username"
               placeholder={i18n.t('username')}
+              themeColor="white"
             />
             <MyFormField
               autoCapitalize="none"
@@ -180,19 +193,28 @@ export default function LoginScreen({ navigation }) {
               isPasswordField={true}
               onPress={() => setIsPasswordVisible(!isPasswordVisible)}
               passwordVisible={isPasswordVisible}
+              themeColor="white"
+              showEye={true}
             />
+            {/* <MyButton onPress={(values) => {
+              setTouched({username: true, password: true})
+              handleSubmit(values)
+              //setFieldTouched('username', true)
+              }} /> */}
             {/* {errors && <MyText>{JSON.stringify(errors, null, 2)}</MyText>} */}
             <MyButton
               title={i18n.t('loginButton')}
               style={styles.loginButton}
-              onPress={(values) => {
+              onPress={() => {
                 // const result = await validateForm()
                 // console.log(result)
                 // if (result == {}) {
                 //   console.log('ready to log in')
                 // }
                 // console.log(errors)
-                handleSubmit(values)
+                //setTouched({username: true})
+                //console.log('itt');
+                handleSubmit();
               }}
             />
             <MyButton
@@ -201,18 +223,18 @@ export default function LoginScreen({ navigation }) {
             />
             <MyButton
               title="Gyors login"
-              onPress={
-                () => {
-                  handleSubmitI({
-                    association: { _id: '652f7b95fc13ae3ce86c7cdf' },
-                    username: 'gizaac0',
-                    password: 'Apple123',
-                  })
-                }
-
-              }
+              onPress={() => {
+                handleSubmit(true, {
+                  association: { _id: '652f7b95fc13ae3ce86c7cdf' },
+                  username: 'gizaac0',
+                  password: 'Apple123',
+                })
+              }}
             />
-
+            {/* <MyText>
+              {JSON.stringify(errors)}
+              {JSON.stringify(touched)}
+            </MyText> */}
           </View>
         )}
       </Formik>
@@ -226,7 +248,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   form: {
-    marginVertical: 40
+    marginVertical: 40,
   },
   headerContainer: {
     flexDirection: 'row',
