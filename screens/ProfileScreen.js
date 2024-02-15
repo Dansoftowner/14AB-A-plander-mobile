@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, ScrollView, Text } from 'react-native'
 import Screen from './Screen'
 import MyText from '../components/MyText'
@@ -18,9 +18,10 @@ import members from '../api/members'
 import FancyAlert from '../components/MyAlert'
 import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
 import storage from '../auth/storage'
+import AuthContext from '../auth/authContext'
 
 function ProfileScreen() {
-  const { user, setUser, setDefaultUser } = useAuth()
+  const { user, setUser } = useContext(AuthContext)
   // const savedUser = {
   //   _id: '652f866cfc13ae3ce86c7ce7',
   //   isRegistered: true,
@@ -42,6 +43,12 @@ function ProfileScreen() {
   const [errorShown, setErrorShown] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
+  const [logoutShown,setLogoutShown] = useState(false)
+  const [userwPass, setUserWpass] = useState({
+    ...user,
+    password: newPwd,
+    repeatedPassword: newPwdRepeat,
+  })
   const [prevoiusGuardNumber, setPreviousGuardNumber] = useState(
     user.guardNumber,
   )
@@ -49,27 +56,28 @@ function ProfileScreen() {
   const { logOut } = useAuth()
   const formRef = useRef()
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
+    email: Yup.string()
+      .email(i18n.t('zodEmail'))
+      .required(i18n.t('fieldRequired')),
     username: Yup.string()
       .required(i18n.t('fieldRequired'))
       .label(i18n.t('username'))
       .min(5, i18n.t('zodUsername'))
       .max(20),
-    // password: Yup.string()
-    //   .required(i18n.t('fieldRequired'))
-    //   .label(i18n.t('password'))
-    //   .min(8, i18n.t('zodPasswordLength'))
-    //   .matches(/[A-Z]/, i18n.t('zodPassword'))
-    //   .matches(/[0-9]/, i18n.t('zodPassword')),
-    // repeatedPassword: Yup.string().oneOf(
-    //   [Yup.ref('password'), null],
-    //   i18n.t('zodRepeatedPwd'),
-    // ),
+    password: Yup.string()
+      .required(i18n.t('fieldRequired'))
+      .label(i18n.t('password'))
+      .min(8, i18n.t('zodPasswordLength'))
+      .matches(/[A-Z]/, i18n.t('zodPassword'))
+      .matches(/[0-9]/, i18n.t('zodPassword')),
+    repeatedPassword: Yup.string()
+      .required(i18n.t('fieldRequired'))
+      .oneOf([Yup.ref('password'), null], i18n.t('zodRepeatedPwd')),
     address: Yup.string()
       .min(5, i18n.t('zodAddress'))
       .matches(/[0-9]/, i18n.t('zodAddress')),
-    idNumber: Yup.string().min(3),
-    phoneNumber: Yup.string().min(9),
+    idNumber: Yup.string().min(3, i18n.t('zodIdNumber')),
+    phoneNumber: Yup.string().min(9, i18n.t('zodPhoneNumber')),
     guardNumber: Yup.string()
       .matches(/\d{2}\/\d{4}\/\d{5}/, i18n.t('zodGuardNumber'))
       .max(13)
@@ -77,16 +85,28 @@ function ProfileScreen() {
       .nullable(),
   })
 
-  const handleSubmit = async (currentPassword) => {
+  useEffect(() => {
+    formRef.current.setFieldValue('password', defaultPwd)
+    formRef.current.setFieldValue('repeatedPassword', defaultPwd)
+    const values = formRef.current.values
+    console.log(userwPass)
+    console.log(values)
+  }, [])
+
+  const handleSubmit = async (currentPassword = undefined) => {
     const values = formRef.current.values
     //const token = storage.getToken()
     //console.log('Műkszik', token)
     //console.log(values)
     //console.log(currentPassword)
-    //console.log(currentPassword)
-    if (currentPassword !== undefined) {
+    // console.log(currentPassword)
+    if (
+      user.email !== values.email ||
+      user.username !== values.username ||
+      defaultPwd != values.password
+    ) {
       const { email, username } = values
-      console.log('Safe')
+      console.log(currentPassword)
       const result = await members.patchMeCredentials(
         email === user.email ? undefined : email,
         username === user.username ? undefined : username,
@@ -113,12 +133,13 @@ function ProfileScreen() {
           setErrorShown(true)
           setErrorMessage(result.data.message)
         } else {
-          setSuccessShown(true)
+          setLogoutShown(true)
         }
         console.log(result)
       }
     } else {
       const { name, address, idNumber, phoneNumber, guardNumber } = values
+      console.log('basic')
       const result = await members.patchMe(
         name,
         address,
@@ -133,6 +154,8 @@ function ProfileScreen() {
         setErrorMessage(result.data.message)
       } else {
         setSuccessShown(true)
+        setUser({...values})
+        //setAlertShown()
       }
       console.log(result)
     }
@@ -163,16 +186,26 @@ function ProfileScreen() {
           //onPress={() => setErrorShown(false)}
         />
         <UpdatedAlertMessage
-          visible={successShown}
+          visible={logoutShown}
           type="success"
           size="small"
           button={i18n.t('close')}
           message={i18n.t('reLogin')}
           onClose={() => {
-            setSuccessShown(false)
+            setLogoutShown(false)
             logOut()
           }}
           //onPress={() => setSuccessShown(false)}
+        />
+        <UpdatedAlertMessage
+          visible={successShown}
+          type="success"
+          size="small"
+          button={i18n.t('close')}
+          message={i18n.t('detailsSuccess')}
+          onClose={() => {
+            setSuccessShown(false)
+          }}
         />
         <MaterialCommunityIcons
           name="account-circle-outline"
@@ -180,7 +213,8 @@ function ProfileScreen() {
           color={colorsByTheme.black_white}
         />
         <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
-          {user.name}{i18n.t('details')}
+          {user.name}
+          {i18n.t('details')}
         </MyText>
         {user.roles.includes('president') && (
           <MyText textColor="black" style={styles.role}>
@@ -189,14 +223,27 @@ function ProfileScreen() {
         )}
         <Formik
           // innerRef={form}
-          initialValues={user}
+          initialValues={{
+            ...user,
+            password: newPwd,
+            repeatedPassword: newPwdRepeat,
+          }}
           // initialErrors={formErrors}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
           innerRef={formRef}
           enableReinitialize //ez nagyon fontos!
         >
-          {({ values, errors, handleChange, handleSubmit, setFieldValue }) => (
+          {({
+            values,
+            errors,
+            handleChange,
+            handleSubmit,
+            setFieldValue,
+            validateForm,
+            setTouched,
+            touched,
+          }) => (
             <View style={styles.form}>
               <EditProfileFields
                 themeColor="black"
@@ -222,9 +269,12 @@ function ProfileScreen() {
               <EditProfileFields
                 themeColor="black"
                 textColor="black"
-                value={newPwd}
+                //value={newPwd}
                 values={values}
-                onChangeText={(text) => setNewPwd(text)}
+                onChangeText={(text) => {
+                  setFieldValue('password', text)
+                  setNewPwd(text)
+                }}
                 icon="lock-outline"
                 name="password"
                 title={i18n.t('password')}
@@ -234,11 +284,15 @@ function ProfileScreen() {
                 setPasswordEditable={() => {
                   setisPasswordEditable(!isPasswordEditable)
                   if (newPwd === defaultPwd) {
+                    setFieldValue('password', '')
+                    setFieldValue('repeatedPassword', '')
                     setNewPwd('')
                     setNewPwdRepeat('')
                   } else {
                     setNewPwd(defaultPwd)
                     setNewPwdRepeat(defaultPwd)
+                    setFieldValue('password', defaultPwd)
+                    setFieldValue('repeatedPassword', defaultPwd)
                   }
                 }}
               />
@@ -247,11 +301,14 @@ function ProfileScreen() {
                   visible={false}
                   themeColor="black"
                   textColor="black"
-                  value={newPwdRepeat}
+                  //value={newPwdRepeat}
                   values={values}
-                  onChangeText={(text) => setNewPwdRepeat(text)}
+                  onChangeText={(text) => {
+                    setNewPwdRepeat(text)
+                    setFieldValue('repeatedPassword', text)
+                  }}
                   icon="lock-outline"
-                  name="password"
+                  name="repeatedPassword"
                   enabled={true}
                   title={i18n.t('repeatPwd')}
                   isPasswordField={true}
@@ -265,7 +322,7 @@ function ProfileScreen() {
                 onChangeText={handleChange('phoneNumber')}
                 icon="phone-outline"
                 name="phoneNumber"
-                title={i18n.t("phone")}
+                title={i18n.t('phone')}
                 keyboardType="phone-pad"
               />
               <EditProfileFields
@@ -285,7 +342,7 @@ function ProfileScreen() {
                 onChangeText={handleChange('idNumber')}
                 icon="card-account-details-outline"
                 name="idNumber"
-                title={i18n.t("idNumber")}
+                title={i18n.t('idNumber')}
               />
               <EditProfileFields
                 themeColor="black"
@@ -324,15 +381,32 @@ function ProfileScreen() {
                   color={colorsByTheme.black_white}
                 />
               </View>
-              {values != user && (
+              {(JSON.stringify(values) != JSON.stringify(user)) && (
                 <View>
                   <MyButton
                     title={i18n.t('save')}
                     onPress={() => {
+                      setTouched({
+                        email: true,
+                        username: true,
+                        password: true,
+                        repeatedPassword: true,
+                        address: true,
+                        idNumber: true,
+                        phoneNumber: true,
+                        guardNumber: true,
+                      })
+                      validateForm()
+                      console.log(errors)
+                      if (Object.keys(formRef.current.errors).length !== 0) {
+                        setErrorMessage(i18n.t('wrongFields'))
+                        setErrorShown(true)
+                        return
+                      }
                       if (
                         user.email !== values.email ||
                         user.username !== values.username ||
-                        user.password != values.password
+                        defaultPwd != values.password
                       ) {
                         setAlertShown(true)
                       } else {
@@ -343,8 +417,12 @@ function ProfileScreen() {
                 </View>
               )}
               <MyText textColor={colorsByTheme.black_white}>
+                  {newPwd}
+                {/* {JSON.stringify(touched)}
+                {JSON.stringify(errors)}
                 {JSON.stringify(values)}
-                {JSON.stringify(user)}
+                {JSON.stringify(user)} */}
+                {/* {JSON.stringify(userwPass)} */}
               </MyText>
             </View>
           )}

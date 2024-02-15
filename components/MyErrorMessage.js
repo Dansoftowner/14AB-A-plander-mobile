@@ -8,7 +8,7 @@ function MyErrorMessage({ error, visible }) {
 }
 
 const styles = StyleSheet.create({
-  error: { color: "red" },
+  error: { color: "red", maxWidth: "95%" },
 });
 
 export default MyErrorMessage;

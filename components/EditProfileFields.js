@@ -25,14 +25,14 @@ function EditProfileFields({
   return (
     <View>
       <MyText textColor="black" style={{fontWeight: "bold"}}>
-        {title}
+        {values[name]}
       </MyText>
       {/* <MyText textColor="black">{isEditable ? 'true' : 'false'}</MyText>
       <MyText textColor="black">{enabled ? 'true' : 'false'}</MyText> */}
       <View style={styles.field}>
         <MyFormField
           themeColor={themeColor}
-          value={isPasswordField ? value : values[name]}
+          value={values[name]}
           onChangeText={onChangeText}
           autoCapitalize="none"
           autoCorrect={false}
