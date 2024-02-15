@@ -24,6 +24,9 @@ function EditProfileFields({
   const [isEditable, setIsEditable] = useState(false)
   return (
     <View>
+      <MyText textColor="black" style={{fontWeight: "bold"}}>
+        {title}
+      </MyText>
       {/* <MyText textColor="black">{isEditable ? 'true' : 'false'}</MyText>
       <MyText textColor="black">{enabled ? 'true' : 'false'}</MyText> */}
       <View style={styles.field}>
