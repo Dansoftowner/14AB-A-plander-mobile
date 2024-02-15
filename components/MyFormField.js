@@ -24,12 +24,9 @@ function MyFormField({
   ...otherProps
 }) {
   const {
-    // setFieldTouched,
-    handleChange,
-    setFieldValue,
-    values,
+    setFieldTouched,
     errors,
-    // touched,
+    touched,
   } = useFormikContext()
 
   return (
@@ -37,7 +34,7 @@ function MyFormField({
       {/* <MyText textColor='black'>{isEditable}</MyText> */}
       <MyTextInput
         title={title}
-        //onBlur={() => setFieldTouched(name)}
+        onBlur={() => setFieldTouched(name)}
         //onChangeText={(text) => setFieldValue(name, text)}
         onChangeText={onChangeText}
         value={value}
@@ -54,7 +51,7 @@ function MyFormField({
       />
       {
         errors[name] && (
-          <MyErrorMessage error={errors[name]} visible={errors[name]} />
+          <MyErrorMessage error={errors[name]} visible={touched[name]} />
         )
       }
       {/* <MyErrorMessage error={errors[name]} visible={errors[name]} /> */}

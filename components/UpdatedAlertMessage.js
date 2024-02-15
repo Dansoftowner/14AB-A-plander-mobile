@@ -1,7 +1,6 @@
 import { Modal, Dimensions } from 'react-native'
 import React, { useCallback, useRef, useState } from 'react'
 import { View, StyleSheet, Button, TouchableOpacity, Text } from 'react-native'
-// import FancyAlert from '../components/MyAlert'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
 import * as Yup from 'yup'
@@ -105,7 +104,7 @@ function UpdatedAlertMessage({
         </View>
         <View
           style={{
-            backgroundColor: 'white',
+            backgroundColor: colorsByTheme.white_darker_blue,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -229,7 +228,7 @@ function UpdatedAlertMessage({
               }}
             >
               <Text
-                style={{ color: colorsByTheme.white_black, fontWeight: '500' }}
+                style={{ color: "white", fontWeight: '500' }}
               >
                 {button}
               </Text>
@@ -257,7 +256,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 8,
-
     height: 40,
     width: 80,
   },
