@@ -17,6 +17,7 @@ import { useTheme } from '@react-navigation/native'
 import members from '../api/members'
 import FancyAlert from '../components/MyAlert'
 import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
+import storage from '../auth/storage'
 
 function ProfileScreen() {
   const { user } = useAuth()
@@ -38,10 +39,14 @@ function ProfileScreen() {
   const [newPwdRepeat, setNewPwdRepeat] = useState(defaultPwd)
   const [isPasswordEditable, setisPasswordEditable] = useState(false)
   const [alertShown, setAlertShown] = useState(false)
+  const [errorShown, setErrorShown] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successShown, setSuccessShown] = useState(false)
   const [prevoiusGuardNumber, setPreviousGuardNumber] = useState(
     user.guardNumber,
   )
   const { colors: colorsByTheme } = useTheme()
+  const { logOut } = useAuth()
   const formRef = useRef()
   const validationSchema = Yup.object().shape({
     email: Yup.string().email().required(),
@@ -64,48 +69,78 @@ function ProfileScreen() {
       .min(5, i18n.t('zodAddress'))
       .matches(/[0-9]/, i18n.t('zodAddress')),
     idNumber: Yup.string().min(3),
-    phoneNumber: Yup.string().min(1),
+    phoneNumber: Yup.string().min(9),
     guardNumber: Yup.string()
       .matches(/\d{2}\/\d{4}\/\d{5}/, i18n.t('zodGuardNumber'))
       .max(13)
       .optional()
       .nullable(),
   })
+
   const handleSubmit = async (currentPassword) => {
     const values = formRef.current.values
+    //const token = storage.getToken()
+    //console.log('Műkszik', token)
     //console.log(values)
     //console.log(currentPassword)
-    if (currentPassword === undefined) {
-      const { email, username } = values;
-      const result = await members.patchMeCredentials(email, username, newPwd, user, currentPassword)
+    //console.log(currentPassword)
+    if (currentPassword !== undefined) {
+      const { email, username } = values
+      console.log('Safe')
+      const result = await members.patchMeCredentials(
+        email === user.email ? undefined : email,
+        username === user.username ? undefined : username,
+        newPwd === defaultPwd ? undefined : newPwd,
+        currentPassword,
+      )
+      console.log(result)
       if (!result.ok) {
         console.log(result.headers)
+        setErrorShown(true)
+        setErrorMessage(result.data.message)
+      } else {
+        const { name, address, idNumber, phoneNumber, guardNumber } = values
+        const result = await members.patchMe(
+          name,
+          address,
+          idNumber,
+          phoneNumber,
+          guardNumber,
+        )
+        //const result = await members.patchMeCredentials("652f866cfc13ae3ce86c7ce7")
+        if (!result.ok) {
+          console.log(result.headers)
+          setErrorShown(true)
+          setErrorMessage(result.data.message)
+        } else {
+          setSuccessShown(true)
+        }
+        console.log(result)
+      }
+    } else {
+      const { name, address, idNumber, phoneNumber, guardNumber } = values
+      const result = await members.patchMe(
+        name,
+        address,
+        idNumber,
+        phoneNumber,
+        guardNumber,
+      )
+      //const result = await members.patchMeCredentials("652f866cfc13ae3ce86c7ce7")
+      if (!result.ok) {
+        console.log(result.headers)
+        setErrorShown(true)
+        setErrorMessage(result.data.message)
+      } else {
+        setSuccessShown(true)
       }
       console.log(result)
-    }
-    else{
-      const { name, address, idNumber, phoneNumber, guardNumber } = values;
-      const result = await members.patchMe(name, address, idNumber, phoneNumber, guardNumber)
-      if (!result.ok) {
-        console.log(result.headers)
-      }
-      //console.log(result)
     }
   }
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        {/* <FancyAlert
-          visible={false}
-          type="error"
-          // color="yellow"
-          // icon="lock-open"
-          title="Adatok módosítása"
-          button="Mentés"
-          cancel={true}
-          alignment="left"
-        /> */}
         <UpdatedAlertMessage
           visible={alertShown}
           type="confirmation"
@@ -117,6 +152,27 @@ function ProfileScreen() {
           close="Close"
           onClose={() => setAlertShown(false)}
           onPress={(text) => handleSubmit(text)}
+        />
+        <UpdatedAlertMessage
+          visible={errorShown}
+          type="error"
+          size="small"
+          button="Close"
+          message={errorMessage}
+          onClose={() => setErrorShown(false)}
+          //onPress={() => setErrorShown(false)}
+        />
+        <UpdatedAlertMessage
+          visible={successShown}
+          type="success"
+          size="small"
+          button="Close"
+          message="Az adatok módosítása sikeres volt. Kérjük jelentkezzen be újra."
+          onClose={() => {
+            setSuccessShown(false)
+            logOut()
+          }}
+          //onPress={() => setSuccessShown(false)}
         />
         <MaterialCommunityIcons
           name="account-circle-outline"
@@ -210,7 +266,6 @@ function ProfileScreen() {
                 icon="phone-outline"
                 name="phoneNumber"
                 title="Phone number"
-                enabled={false}
                 keyboardType="phone-pad"
               />
               <EditProfileFields
