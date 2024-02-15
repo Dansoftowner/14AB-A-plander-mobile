@@ -20,7 +20,7 @@ import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
 import storage from '../auth/storage'
 
 function ProfileScreen() {
-  const { user } = useAuth()
+  const { user, setUser, setDefaultUser } = useAuth()
   // const savedUser = {
   //   _id: '652f866cfc13ae3ce86c7ce7',
   //   isRegistered: true,
@@ -145,11 +145,11 @@ function ProfileScreen() {
           visible={alertShown}
           type="confirmation"
           size="large"
-          title="Adatok módosítása"
-          button="Mentés"
-          message="Adja meg jelenlegi jelszavát a módosítások mentéséhez!"
+          title={i18n.t('editCredentials')}
+          button={i18n.t('save')}
+          message={i18n.t('reEnterPwd')}
           cancel={true}
-          close="Close"
+          close={i18n.t('close')}
           onClose={() => setAlertShown(false)}
           onPress={(text) => handleSubmit(text)}
         />
@@ -157,7 +157,7 @@ function ProfileScreen() {
           visible={errorShown}
           type="error"
           size="small"
-          button="Close"
+          button={i18n.t('close')}
           message={errorMessage}
           onClose={() => setErrorShown(false)}
           //onPress={() => setErrorShown(false)}
@@ -166,8 +166,8 @@ function ProfileScreen() {
           visible={successShown}
           type="success"
           size="small"
-          button="Close"
-          message="Az adatok módosítása sikeres volt. Kérjük jelentkezzen be újra."
+          button={i18n.t('close')}
+          message={i18n.t('reLogin')}
           onClose={() => {
             setSuccessShown(false)
             logOut()
@@ -180,11 +180,11 @@ function ProfileScreen() {
           color={colorsByTheme.black_white}
         />
         <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
-          {user.name}'s details
+          {user.name}{i18n.t('details')}
         </MyText>
         {user.roles.includes('president') && (
           <MyText textColor="black" style={styles.role}>
-            President
+            {i18n.t('president')}
           </MyText>
         )}
         <Formik
@@ -205,7 +205,7 @@ function ProfileScreen() {
                 onChangeText={handleChange('email')}
                 icon="email-outline"
                 name="email"
-                title="E-mail"
+                title={i18n.t('email')}
                 enabled={false}
                 keyboardType="email-address"
               />
@@ -216,7 +216,7 @@ function ProfileScreen() {
                 onChangeText={handleChange('username')}
                 icon="at"
                 name="username"
-                title="Username"
+                title={i18n.t('username')}
                 enabled={false}
               />
               <EditProfileFields
@@ -227,7 +227,7 @@ function ProfileScreen() {
                 onChangeText={(text) => setNewPwd(text)}
                 icon="lock-outline"
                 name="password"
-                title="Password"
+                title={i18n.t('password')}
                 enabled={false}
                 isPasswordField={true}
                 showEye={false}
@@ -253,7 +253,7 @@ function ProfileScreen() {
                   icon="lock-outline"
                   name="password"
                   enabled={true}
-                  title="Please type your password again"
+                  title={i18n.t('repeatPwd')}
                   isPasswordField={true}
                   showEye={false}
                 />
@@ -265,7 +265,7 @@ function ProfileScreen() {
                 onChangeText={handleChange('phoneNumber')}
                 icon="phone-outline"
                 name="phoneNumber"
-                title="Phone number"
+                title={i18n.t("phone")}
                 keyboardType="phone-pad"
               />
               <EditProfileFields
@@ -275,7 +275,7 @@ function ProfileScreen() {
                 onChangeText={handleChange('address')}
                 icon="map-marker-outline"
                 name="address"
-                title="Address"
+                title={i18n.t('address')}
               />
 
               <EditProfileFields
@@ -285,7 +285,7 @@ function ProfileScreen() {
                 onChangeText={handleChange('idNumber')}
                 icon="card-account-details-outline"
                 name="idNumber"
-                title="Identity card number"
+                title={i18n.t("idNumber")}
               />
               <EditProfileFields
                 themeColor="black"
@@ -305,7 +305,7 @@ function ProfileScreen() {
                 maxLength={13}
                 icon="card-text-outline"
                 name="guardNumber"
-                title="Guard number"
+                title={i18n.t('guardNumber')}
                 keyboardType="number-pad"
               />
               <View style={styles.regFinished}>
@@ -327,7 +327,7 @@ function ProfileScreen() {
               {values != user && (
                 <View>
                   <MyButton
-                    title="Save"
+                    title={i18n.t('save')}
                     onPress={() => {
                       if (
                         user.email !== values.email ||
