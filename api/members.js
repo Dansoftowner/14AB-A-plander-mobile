@@ -9,8 +9,8 @@ const getMe = (memberId) =>
 
   const patchMe = (name, address, idNumber, phoneNumber, guardNumber) => apiClient.patch(`/members/me`, {name, address, idNumber, phoneNumber, guardNumber}).then(res => res)
 
-  const patchMeCredentials = (email, username, newPwd, currentPassword) =>
-    apiClient.patch(`/members/me/credentials`, {email, username, newPwd}, {headers: {"x-current-pass": currentPassword}}).catch(err => err)
+  const patchMeCredentials = (email, username, password, currentPassword) =>
+    apiClient.patch(`/members/me/credentials`, {email, username, password}, {headers: {"x-current-pass": currentPassword}}).catch(err => err)
     //console.log(currentPassword)
 
 export default {
