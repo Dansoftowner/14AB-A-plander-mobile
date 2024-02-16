@@ -4,17 +4,18 @@ const key = "authToken";
 const storeToken = async (authToken) => {
   try {
     await SecureStore.setItemAsync(key, authToken);
+    //return console.log(authToken)
   } catch (error) {
     console.log("Error storing the auth token");
   }
 };
 
-const getToken = async () => {
-  try {
-    return await SecureStore.getItemAsync(key);
-  } catch (error) {
-    console.log("Error getting the auth token", error);
-  }
+const getToken = () => {
+  return SecureStore.getItem(key)
+  // if(token){
+  //   return token;
+  // }
+  // return console.log("nincs tárolt token a kulcshoz")
   // return token;
 }
 

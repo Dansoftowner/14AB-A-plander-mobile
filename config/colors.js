@@ -1,8 +1,10 @@
 export default {
+    white_blue: "#edf2f7",
     soft_blue: "#89d0df",
     light_blue: "#3393df",
     medium_blue: "#0078d7",
     dark_blue: "#004881",
+    darker_blue: "#0b3e66",
     black: "#000",
     white: "#fff",
     medium: "#6e6969",
@@ -15,6 +17,9 @@ export default {
     dark_red: '#d91d1d',
     light_green: '#68d391',
     medium_green: '#38a169',
-    dark_green: '#328e5e'
+    dark_green: '#328e5e',
+    light_yellow: "#f5e571",
+    medium_yellow: "#fce953",
+    dark_yellow: "#ffe524",
   };
   

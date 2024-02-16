@@ -3,30 +3,38 @@ import { useFormikContext } from 'formik'
 
 import MyErrorMessage from './MyErrorMessage'
 import MyTextInput from './MyTextInput'
+import styles from '../config/styles'
+import EditField from './EditField'
+import { View } from 'react-native'
+import MyText from './MyText'
 function MyFormField({
   name,
   width,
   onPress,
   onChangeText,
   value,
+  title,
+  themeColor,
+  style,
+  enabled,
+  showEye,
+  isEditable = true,
   isPasswordField = false,
   passwordVisible = false,
   ...otherProps
 }) {
   const {
-    // setFieldTouched,
-    handleChange,
-    setFieldValue,
-    values,
+    setFieldTouched,
     errors,
-    // touched,
+    touched,
   } = useFormikContext()
 
-
   return (
-    <>
+    <View>
+      {/* <MyText textColor='black'>{isEditable}</MyText> */}
       <MyTextInput
-        //onBlur={() => setFieldTouched(name)}
+        title={title}
+        onBlur={() => setFieldTouched(name)}
         //onChangeText={(text) => setFieldValue(name, text)}
         onChangeText={onChangeText}
         value={value}
@@ -35,9 +43,19 @@ function MyFormField({
         isPasswordField={isPasswordField}
         passwordVisible={passwordVisible}
         {...otherProps}
+        isEditable={isEditable}
+        themeColor={themeColor}
+        editable={enabled}
+        style={style}
+        showEye={showEye}
       />
-      <MyErrorMessage error={errors[name]} visible={errors[name]} />
-    </>
+      {
+        errors[name] && (
+          <MyErrorMessage error={errors[name]} visible={touched[name]} />
+        )
+      }
+      {/* <MyErrorMessage error={errors[name]} visible={errors[name]} /> */}
+    </View>
   )
 }
 

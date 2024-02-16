@@ -14,7 +14,7 @@ import MainScreen from './screens/MainScreen'
 import MyDrawer from './navigation/MyDrawer'
 import MyStack from './navigation/MyStack'
 import LoginScreen from './screens/LoginScreen'
-
+import LanguageContext from './locales/LanguageContext'
 import AssociationsScreen from './screens/AssociationsScreen'
 
 export default function App() {
@@ -26,16 +26,18 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthContext.Provider value={{ user, setUser }}>
-        <NavigationContainer
-          theme={colorScheme === 'light' ? AppLightTheme : AppDarkTheme}
-        >          
-          <MyStack/>
-          {/* <MyDrawer/> */}
-          {/* <LoginScreen/> */}
-          {/* <MainScreen /> */}
-          { user ? <MyDrawer /> : <MyStack /> }
-          {/* <AssociationsScreen/> */}
-        </NavigationContainer>
+        <LanguageContext.Provider value={{ language, setLanguage }}>
+          <NavigationContainer
+            theme={colorScheme === 'light' ? AppLightTheme : AppDarkTheme}
+          >
+            {/* <MyStack/> */}
+            {/* <MyDrawer/> */}
+            {/* <LoginScreen/> */}
+            {/* <MainScreen /> */}
+            {user ? <MyDrawer /> : <MyStack />}
+            {/* <AssociationsScreen/> */}
+          </NavigationContainer>
+        </LanguageContext.Provider>
       </AuthContext.Provider>
     </GestureHandlerRootView>
   )

@@ -5,13 +5,14 @@ import MyText from './MyText'
 import { useTheme } from '@react-navigation/native'
 
 import i18n from '../locales/i18n'
-import logout from '../auth/useAuth'
+import useAuth from '../auth/useAuth'
 import AuthContext from '../auth/authContext'
 
 function Logout() {
   const { colors: colorsByTheme } = useTheme()
+  const {logOut} = useAuth()
     const handleOnPress = () => {
-        logout()
+        logOut()
     }
   return (
     <View style={[styles.container, {backgroundColor: colorsByTheme.medium_blue_dark_blue}]}>

@@ -7,17 +7,18 @@ import MyText from './MyText'
 
 function SelectAssociation({ onPress, title, name }) {
   const {
-    //setFieldTouched,
+    setFieldTouched,
+    setTouched,
     // handleChange,
     // setFieldValue,
     // values,
     errors,
-    //touched,
+    touched,
   } = useFormikContext()
 
   return (
     <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={onPress} 
+      <TouchableWithoutFeedback onPress={onPress} onBlur={() => setTouched(...touched, {name: true})}
       //onBlur={() => setFieldTouched(name)}
       >
         <MyTextInput
@@ -26,7 +27,7 @@ function SelectAssociation({ onPress, title, name }) {
           isButton={true}
         />
       </TouchableWithoutFeedback>
-      <MyErrorMessage error={errors[name]} visible={errors[name]} />
+      <MyErrorMessage error={errors[name]} visible={touched[name]} />
       {/* <MyText>
         {errors[name]}
       </MyText> */}

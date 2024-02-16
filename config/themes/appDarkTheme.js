@@ -7,7 +7,7 @@ const AppLightTheme = {
   colors: {
     ...DarkTheme.colors,
     Login_background: colors.light_blue,
-    Login_dropDownFont: colors.white,
+    Login_dropDownFont: colors.light,
     Login_placeholders: colors.dark_blue,
     Login_textColor: colors.white,
     Login_buttonBg: colors.yellow,
@@ -16,6 +16,7 @@ const AppLightTheme = {
     Login_eyeColor: colors.white,
     soft_blue_light_blue: colors.light_blue,
     medium_white: colors.white,
+    medium_light: colors.light,
     light_dark_blue: colors.dark_blue,
     medium_blue_yellow: colors.yellow,
     white_dark_blue: colors.dark_blue,
@@ -23,8 +24,11 @@ const AppLightTheme = {
     black_white: colors.white,
     white_black: colors.black,
     white_white: colors.white,
+    white_darker_blue: colors.darker_blue,
     medium_red_light_red: colors.light_red,
-    medium_green_light_green: colors.light_green 
+    medium_green_light_green: colors.light_green,
+    medium_yellow_light_yellow: colors.light_yellow,
+    light_medium: colors.medium
   }
 }
 

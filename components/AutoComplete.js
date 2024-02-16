@@ -14,6 +14,7 @@ import MyText from './MyText'
 import MyTextInput from './MyTextInput'
 import { useTheme } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
+import colors from '../config/colors'
 
 function AutoComplete({
   data,
@@ -39,7 +40,7 @@ function AutoComplete({
           }}
           style={[
             styles.list,
-            { backgroundColor: colorsByTheme.white_black, borderRadius: 15 },
+            { backgroundColor: "white", borderRadius: 15 },
           ]}
           data={data}
           renderItem={({ item }) => (
@@ -50,7 +51,7 @@ function AutoComplete({
               }}
             >
               <MyText
-                style={[styles.text, { color: colorsByTheme.medium_white }]}
+                style={[styles.text, { color: colors.medium_dark}]}
               >
                 {item.name ?? ''}
               </MyText>

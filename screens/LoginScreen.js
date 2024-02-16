@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   Button,
   Image,
@@ -21,16 +21,14 @@ import MyText from '../components/MyText'
 import MySubmitButton from '../components/MySubmitButton'
 import Screen from './Screen'
 import AuthContext from '../auth/authContext'
-import AssociationSelector from '../components/AssociationSelector'
-import AutoComplete from '../components/AutoComplete'
 import SelectAssociation from '../components/SelectAssociation'
 import { Form, Formik, useFormikContext } from 'formik'
-import AssContext from '../AssContext'
 import MyErrorMessage from '../components/MyErrorMessage'
 import { FormProvider } from '../components/FormContext'
 import { useFormDispatch, useFormState } from '../components/FormContext'
-import NewMyAlert from '../components/NewMyAlert'
-import FancyAlert from '../components/MyAlert'
+import storage, { storeToken } from '../auth/storage'
+import useAuth from '../auth/useAuth'
+import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
 
 export default function LoginScreen({ navigation }) {
   const form = React.useRef()
@@ -60,15 +58,24 @@ export default function LoginScreen({ navigation }) {
   const { user, setUser } = useContext(AuthContext)
   const { colors: colorsByTheme } = useTheme()
   const colorScheme = useColorScheme()
+  //const form = useRef()
 
   const handleForgettenPassword = () => {
     console.log('TODO forgotten password')
   }
 
-  const handleSubmitI = async (values) => {
-    console.log('itt')
-    const { association, username, password } = values
-    console.log(values)
+  const handleSubmit = async (fastlogin, data) => {
+    const values = form.current.values
+    if (!fastlogin) {
+      form.current.setTouched({username: true, password: true, association: true});
+      form.current.validateForm()
+      console.log(form.current.errors)
+      if (Object.keys(form.current.errors).length !== 0) {
+        return
+      }
+    }
+    //const { association, username, password } = values
+    const { association, username, password } = data
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
@@ -77,32 +84,28 @@ export default function LoginScreen({ navigation }) {
     }
     setLoginFailed(false)
     setUser(result.data)
+    storage.storeToken(result.headers['x-plander-auth'])
+    console.log(storage.getToken())
   }
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
       .required(i18n.t('fieldRequired'))
-      .label(i18n.t('username')),
+      .label(i18n.t('username'))
+      .min(5, i18n.t('zodUsername'))
+      .max(20),
     password: Yup.string()
       .required(i18n.t('fieldRequired'))
-      .label(i18n.t('password')),
+      .label(i18n.t('password'))
+      .min(8, i18n.t('zodPasswordLength'))
+      .matches(/[A-Z]/, i18n.t('zodPassword'))
+      .matches(/[0-9]/, i18n.t('zodPassword')),
     association: Yup.object().required(i18n.t('fieldRequired')),
   })
 
   const handleNavigateAssociation = () => {
     navigation.navigate('Associations')
   }
-
-  // const handleSubmitNew = async (values, validateForm) => {
-  //   // dispatch({
-  //   //   type: 'UPDATE_ERRORS',
-  //   //   payload: {
-  //   //     id: 'user',
-  //   //     data: { values, errors },
-  //   //   }})
-  //   //console.log(values)
-
-  // }
 
   return (
     <Screen
@@ -111,7 +114,22 @@ export default function LoginScreen({ navigation }) {
         { backgroundColor: colorsByTheme.Login_background },
       ]}
     >
-      <FancyAlert icon='exclamation' message={errorMessage} button='Close' visible={loginFailed} handleClose={() => setLoginFailed(false)} />
+      <UpdatedAlertMessage
+        visible={loginFailed}
+        type="error"
+        size="small"
+        button="Close"
+        message={errorMessage}
+        onClose={() => setLoginFailed(false)}
+        //onPress={() => setErrorShown(false)}
+      />
+      {/* <FancyAlert
+        icon="exclamation"
+        message={errorMessage}
+        button="Close"
+        visible={false}
+        handleClose={() => setLoginFailed(false)}
+      /> */}
       <View style={styles.headerContainer}>
         {/* {colorScheme === 'dark' ? (
           <LogoDark width={150} height={150} />
@@ -139,16 +157,17 @@ export default function LoginScreen({ navigation }) {
         innerRef={form}
         initialValues={formValues}
         initialErrors={formErrors}
+        initialTouched={{username: false}}
         validationSchema={validationSchema}
-        onSubmit={handleSubmitI}
+        onSubmit={handleSubmit}
         enableReinitialize
       >
-        {({ values, errors, handleChange, handleSubmit }) => (
+        {({ values, errors, handleChange }) => (
           <View style={styles.form}>
             <SelectAssociation
               onPress={handleNavigateAssociation}
               name="association"
-              title={values.association?.name ?? 'Association'}
+              title={values.association?.name ?? i18n.t('associationSelector')}
             />
             <MyFormField
               value={values.username}
@@ -158,6 +177,7 @@ export default function LoginScreen({ navigation }) {
               icon="account-outline"
               name="username"
               placeholder={i18n.t('username')}
+              themeColor="white"
             />
             <MyFormField
               autoCapitalize="none"
@@ -172,40 +192,48 @@ export default function LoginScreen({ navigation }) {
               isPasswordField={true}
               onPress={() => setIsPasswordVisible(!isPasswordVisible)}
               passwordVisible={isPasswordVisible}
+              themeColor="white"
+              showEye={true}
             />
+            {/* <MyButton onPress={(values) => {
+              setTouched({username: true, password: true})
+              handleSubmit(values)
+              //setFieldTouched('username', true)
+              }} /> */}
             {/* {errors && <MyText>{JSON.stringify(errors, null, 2)}</MyText>} */}
             <MyButton
               title={i18n.t('loginButton')}
               style={styles.loginButton}
-              onPress={(values) => {
+              onPress={() => {
                 // const result = await validateForm()
                 // console.log(result)
                 // if (result == {}) {
                 //   console.log('ready to log in')
                 // }
                 // console.log(errors)
-                handleSubmit(values)
+                //setTouched({username: true})
+                //console.log('itt');
+                handleSubmit();
               }}
             />
             <MyButton
               title={i18n.t('forgotMyPassword')}
               onPress={handleForgettenPassword}
             />
-            {/* <Button
-              title="Submit"
-              mode="contained"
+            <MyButton
+              title="Gyors login"
               onPress={() => {
-                dispatch({
-                  type: 'UPDATE_FORM',
-                  payload: {
-                    id: 'user',
-                    data: { values, errors },
-                  },
+                handleSubmit(true, {
+                  association: { _id: '652f7b95fc13ae3ce86c7cdf' },
+                  username: 'gizaac0',
+                  password: 'Apple123',
                 })
-                alert(JSON.stringify(values, null, 2))
-                handleSubmit()
               }}
-            ></Button> */}
+            />
+            {/* <MyText>
+              {JSON.stringify(errors)}
+              {JSON.stringify(touched)}
+            </MyText> */}
           </View>
         )}
       </Formik>
@@ -220,10 +248,6 @@ const styles = StyleSheet.create({
   },
   form: {
     marginVertical: 40,
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    //a felső három most lett hozzáadva
   },
   headerContainer: {
     flexDirection: 'row',
@@ -232,7 +256,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   loginButton: {
-    marginTop: 40
+    marginTop: 40,
   },
   image: {
     width: 125,

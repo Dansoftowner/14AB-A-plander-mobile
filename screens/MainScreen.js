@@ -11,13 +11,11 @@ import Logout from '../components/LogOut'
 
 function MainScreen(props) {
   return (
-    <Screen>
       <View style={[styles.container]}>
         <Logout />
         <ThemeSwitch />
         <LanguageSelector />
       </View>
-    </Screen>
   )
 }
 

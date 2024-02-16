@@ -1,20 +1,25 @@
 import { useContext } from "react"
 import AuthContext from "./authContext";
+import storage from "./storage";
 // import storage from "./storage";
 
 export default useAuth = () => {
     const {user, setUser} = useContext(AuthContext);
 
     const logOut = () => {
+        console.log("logout")
         setUser(null);
+        storage.removeToken();
         //storage.removeToken(); //mivel ezután nincs kód, nem kell await
     }
 
-    const login = (associationId, username, password) => {
-        const user = {
-            associationId, username, password
-        }
-        setUser(user);
+    const login = (authToken) => {
+        // const user = {
+        //     associationId, username, password
+        // }
+        // setUser(user);
+        storage.storeToken(authToken)
+        //console.log(storage.getToken())
     }
 
     // const login = (authToken) => {

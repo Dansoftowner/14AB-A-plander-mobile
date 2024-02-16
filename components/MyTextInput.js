@@ -4,6 +4,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
 import EyeToShowPassword from './EyeToShowPassword'
 import MyText from './MyText'
+import colors from '../config/colors'
+import EditField from './EditField'
+import i18n from '../locales/i18n'
 
 //import defaultStyles from "../config/styles";
 
@@ -14,20 +17,44 @@ function MyTextInput({
   onChangeText,
   style,
   value,
+  showEye,
+  enabled = true,
+  isEditable,
+  themeColor = "white",
   isPasswordField = false,
   passwordVisible = false,
   width = '100%',
   isButton = false,
+  maxLength = 50,
   ...otherProps
 }) {
   const { colors: colorsByTheme } = useTheme()  
-
+  const colorCalculated = () => {
+    if (isEditable) {
+      if (themeColor === "white") {
+        return colorsByTheme.white_black
+      }
+      else {
+        return colorsByTheme.black_white
+      }
+    }
+      return colorsByTheme.medium_light
+    // if (!enabled) {
+    //   return colorsByTheme.Login_dropDownFont
+    // }
+    // if (themeColor === "white") {
+    //   return colorsByTheme.Login_textColor
+    // }
+    // else {
+    //   return colorsByTheme.black_white
+    // }
+  }
   return (
     <View
       style={[
         styles.container,
         { width },
-        { borderColor: colorsByTheme.Login_textColor },
+        { borderColor: themeColor === "white" ? colorsByTheme.white_black : colorsByTheme.black_white },
         style,
       ]}
     >
@@ -35,29 +62,30 @@ function MyTextInput({
         <MaterialCommunityIcons
           name={icon}
           size={20}
-          color={colorsByTheme.Login_textColor}
+          color={themeColor === "white" ? colorsByTheme.white_black : colorsByTheme.black_white}
           style={styles.icon}
         />
       )}
       {isButton ? (
         <MyText
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: title !== 'Association' ? colorsByTheme.Login_textColor :  colorsByTheme.Login_placeholders}]}
+          style={[styles.text, { color: title !== i18n.t('associationSelector') ? colorsByTheme.white_black :  colorsByTheme.Login_placeholders}]}
           {...otherProps}
         >
-          {title ?? 'Association'}
+          {title ?? i18n.t('associationSelector')}
         </MyText>
       ) : (
         <TextInput
-          // value={value}
+          value={value}
+          maxLength={maxLength}
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: colorsByTheme.Login_textColor }]}
+          style={[styles.text, { color: colorCalculated() }]}
           {...otherProps}
         />
       )}
-      {isPasswordField && (
+      {isPasswordField && showEye && (
         <EyeToShowPassword
           style={styles.eye}
           onPress={onPress}
