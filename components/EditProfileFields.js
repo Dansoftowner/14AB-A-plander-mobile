@@ -25,7 +25,7 @@ function EditProfileFields({
   return (
     <View>
       <MyText textColor="black" style={{fontWeight: "bold"}}>
-        {values[name]}
+        {title}
       </MyText>
       {/* <MyText textColor="black">{isEditable ? 'true' : 'false'}</MyText>
       <MyText textColor="black">{enabled ? 'true' : 'false'}</MyText> */}
