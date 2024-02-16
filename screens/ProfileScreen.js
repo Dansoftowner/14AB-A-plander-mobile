@@ -22,33 +22,21 @@ import AuthContext from '../auth/authContext'
 
 function ProfileScreen() {
   const { user, setUser } = useContext(AuthContext)
-  // const savedUser = {
-  //   _id: '652f866cfc13ae3ce86c7ce7',
-  //   isRegistered: true,
-  //   email: 'bverchambre0@alibaba.com',
-  //   username: 'gizaac0',
-  //   name: 'Reizinger Szabolcs',
-  //   address: 'Hungary, 7300 PillaFalva Maniel utca 12.',
-  //   idNumber: '589376QN',
-  //   phoneNumber: '+86 (120) 344-7474',
-  //   guardNumber: '08/0019/161373',
-  //   roles: ['member', 'president'],
-  // }
-  // const originalUser = user
+
   const defaultPwd = '00000000AA'
-  const [newPwd, setNewPwd] = useState(defaultPwd)
-  const [newPwdRepeat, setNewPwdRepeat] = useState(defaultPwd)
+  // const [newPwd, setNewPwd] = useState(defaultPwd)
+  // const [newPwdRepeat, setNewPwdRepeat] = useState(defaultPwd)
   const [isPasswordEditable, setisPasswordEditable] = useState(false)
   const [alertShown, setAlertShown] = useState(false)
   const [errorShown, setErrorShown] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
-  const [logoutShown,setLogoutShown] = useState(false)
-  const [userwPass, setUserWpass] = useState({
-    ...user,
-    password: newPwd,
-    repeatedPassword: newPwdRepeat,
-  })
+  const [logoutShown, setLogoutShown] = useState(false)
+  // const [userwPass, setUserWpass] = useState({
+  //   ...user,
+  //   password: newPwd,
+  //   repeatedPassword: newPwdRepeat,
+  // })
   const [prevoiusGuardNumber, setPreviousGuardNumber] = useState(
     user.guardNumber,
   )
@@ -88,55 +76,64 @@ function ProfileScreen() {
   useEffect(() => {
     formRef.current.setFieldValue('password', defaultPwd)
     formRef.current.setFieldValue('repeatedPassword', defaultPwd)
-    const values = formRef.current.values
-    console.log(userwPass)
-    console.log(values)
+
   }, [])
 
   const handleSubmit = async (currentPassword = undefined) => {
     const values = formRef.current.values
-    //const token = storage.getToken()
-    //console.log('Műkszik', token)
-    //console.log(values)
-    //console.log(currentPassword)
-    // console.log(currentPassword)
+
     if (
       user.email !== values.email ||
       user.username !== values.username ||
       defaultPwd != values.password
     ) {
-      const { email, username } = values
+      const { email, username, password } = values
       console.log(currentPassword)
-      const result = await members.patchMeCredentials(
-        email === user.email ? undefined : email,
-        username === user.username ? undefined : username,
-        newPwd === defaultPwd ? undefined : newPwd,
-        currentPassword,
-      )
-      console.log(result)
-      if (!result.ok) {
-        console.log(result.headers)
+      console.log(password)
+      if (password === currentPassword) {
+        console.log('itt van az error')
+        // setisPasswordEditable(false)
+        setErrorMessage(i18n.t('passwordChangeError'))
         setErrorShown(true)
-        setErrorMessage(result.data.message)
+        console.log('itt van az error')
+        setFieldValue('password', defaultPwd)
+        setFieldValue('repeatedPassword', defaultPwd)
       } else {
-        const { name, address, idNumber, phoneNumber, guardNumber } = values
-        const result = await members.patchMe(
-          name,
-          address,
-          idNumber,
-          phoneNumber,
-          guardNumber,
+        const result = await members.patchMeCredentials(
+          email === user.email ? undefined : email,
+          username === user.username ? undefined : username,
+          password === defaultPwd || password === currentPassword
+            ? undefined
+            : password,
+          currentPassword,
         )
-        //const result = await members.patchMeCredentials("652f866cfc13ae3ce86c7ce7")
+        console.log(result)
         if (!result.ok) {
           console.log(result.headers)
+
           setErrorShown(true)
           setErrorMessage(result.data.message)
         } else {
-          setLogoutShown(true)
+          const { name, address, idNumber, phoneNumber, guardNumber } = values
+          const result = await members.patchMe(
+            name,
+            address,
+            idNumber,
+            phoneNumber,
+            guardNumber,
+          )
+          //const result = await members.patchMeCredentials("652f866cfc13ae3ce86c7ce7")
+          if (!result.ok) {
+            console.log(result.headers)
+            setErrorShown(true)
+            setErrorMessage(result.data.message)
+          } else {
+            setLogoutShown(true)
+          }
+          console.log(result)
         }
-        console.log(result)
       }
+      //console.log(newPwd)
     } else {
       const { name, address, idNumber, phoneNumber, guardNumber } = values
       console.log('basic')
@@ -154,7 +151,7 @@ function ProfileScreen() {
         setErrorMessage(result.data.message)
       } else {
         setSuccessShown(true)
-        setUser({...values})
+        setUser({ ...values })
         //setAlertShown()
       }
       console.log(result)
@@ -225,8 +222,8 @@ function ProfileScreen() {
           // innerRef={form}
           initialValues={{
             ...user,
-            password: newPwd,
-            repeatedPassword: newPwdRepeat,
+            password: defaultPwd,
+            repeatedPassword: defaultPwd,
           }}
           // initialErrors={formErrors}
           validationSchema={validationSchema}
@@ -273,7 +270,7 @@ function ProfileScreen() {
                 values={values}
                 onChangeText={(text) => {
                   setFieldValue('password', text)
-                  setNewPwd(text)
+                  //setNewPwd(text)
                 }}
                 icon="lock-outline"
                 name="password"
@@ -283,14 +280,14 @@ function ProfileScreen() {
                 showEye={false}
                 setPasswordEditable={() => {
                   setisPasswordEditable(!isPasswordEditable)
-                  if (newPwd === defaultPwd) {
+                  if (values.password === defaultPwd) {
                     setFieldValue('password', '')
                     setFieldValue('repeatedPassword', '')
-                    setNewPwd('')
-                    setNewPwdRepeat('')
+                    // setNewPwd('')
+                    // setNewPwdRepeat('')
                   } else {
-                    setNewPwd(defaultPwd)
-                    setNewPwdRepeat(defaultPwd)
+                    // setNewPwd(defaultPwd)
+                    // setNewPwdRepeat(defaultPwd)
                     setFieldValue('password', defaultPwd)
                     setFieldValue('repeatedPassword', defaultPwd)
                   }
@@ -304,7 +301,7 @@ function ProfileScreen() {
                   //value={newPwdRepeat}
                   values={values}
                   onChangeText={(text) => {
-                    setNewPwdRepeat(text)
+                    //setNewPwdRepeat(text)
                     setFieldValue('repeatedPassword', text)
                   }}
                   icon="lock-outline"
@@ -368,8 +365,8 @@ function ProfileScreen() {
               <View style={styles.regFinished}>
                 <MyText textColor="black" style={styles.reg}>
                   {values.isRegistered
-                    ? 'Registration finished'
-                    : 'You have not finished registration yet'}
+                    ? i18n.t('finishedRegistration')
+                    : i18n.t('notRegistered')}
                 </MyText>
                 <MaterialCommunityIcons
                   name={
@@ -381,7 +378,7 @@ function ProfileScreen() {
                   color={colorsByTheme.black_white}
                 />
               </View>
-              {(JSON.stringify(values) != JSON.stringify(user)) && (
+              {JSON.stringify(values) != JSON.stringify({...user, password: defaultPwd, repeatedPassword: defaultPwd}) && (
                 <View>
                   <MyButton
                     title={i18n.t('save')}
@@ -416,14 +413,6 @@ function ProfileScreen() {
                   />
                 </View>
               )}
-              <MyText textColor={colorsByTheme.black_white}>
-                  {newPwd}
-                {/* {JSON.stringify(touched)}
-                {JSON.stringify(errors)}
-                {JSON.stringify(values)}
-                {JSON.stringify(user)} */}
-                {/* {JSON.stringify(userwPass)} */}
-              </MyText>
             </View>
           )}
         </Formik>
