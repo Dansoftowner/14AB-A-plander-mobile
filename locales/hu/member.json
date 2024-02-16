@@ -4,5 +4,6 @@
   "promoteBody": "A tag előléptetéséhez adja meg jelenlegi jelszavát!",
   "reLogin": "Kérjük jelentkezzen be újra adataival.",
   "noChange": "Nem történt változás.",
-  "detailsSuccess": "Az adatainak módosítása sikeres!"
+  "detailsSuccess": "Az adatainak módosítása sikeres!",
+  "passwordChangeError": "A jelenlegi jelszava megegyezik a beállítani kívánttal!"
 }

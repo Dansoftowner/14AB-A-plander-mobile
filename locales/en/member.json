@@ -4,5 +4,6 @@
   "promoteBody": "Enter your password to confirm the promotion!",
   "reLogin": "Please login again with your new credentials!",
   "noChange": "Nothing changed.",
-  "detailsSuccess": "You're details changed successfully!"
+  "detailsSuccess": "You're details changed successfully!",
+  "passwordChangeError": "You're current password matches the new one!"
 }
