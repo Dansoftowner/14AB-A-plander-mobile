@@ -28,7 +28,8 @@ const AppLightTheme = {
     medium_red_light_red: colors.light_red,
     medium_green_light_green: colors.light_green,
     medium_yellow_light_yellow: colors.light_yellow,
-    light_medium: colors.medium
+    light_medium: colors.medium,
+    light_blue_dark_blue: colors.dark_blue
   }
 }
 
