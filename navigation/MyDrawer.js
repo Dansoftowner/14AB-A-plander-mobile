@@ -8,17 +8,20 @@ import { useTheme } from '@react-navigation/native'
 import ProfileScreen from '../screens/ProfileScreen'
 import { FormProvider } from '../components/FormContext'
 import i18n from '../locales/i18n'
-
+import AssingmentsScreen from '../screens/AssingmentsScreen'
+// import ExampleForCalendar from '../screens/ExampleForCalendar'
+//import ExampleForAgenda from '../screens/ExampleForAgenda'
+import ExpandableCalendarScreen from '../components/calendar/AgendaList'
 const Drawer = createDrawerNavigator()
 
 function MyDrawer(props) {
   const { colors: colorsByTheme } = useTheme()
   const { user } = useAuth()
-  
+
   return (
     <FormProvider>
       <Drawer.Navigator
-        initialRouteName="Main"
+        initialRouteName={i18n.t('assignments')}
         screenOptions={{
           headerShown: true,
           headerTitle: user ? user.name : 'Plander',
@@ -29,12 +32,20 @@ function MyDrawer(props) {
           drawerActiveBackgroundColor: colorsByTheme.medium_blue_dark_blue,
         }}
       >
-        <Drawer.Screen name={i18n.t("navMain")} component={MainScreen} />
-        <Drawer.Screen name={i18n.t("navSettings")} component={SettingsScreen} />
+        <Drawer.Screen name={i18n.t('navMain')} component={MainScreen} />
         <Drawer.Screen
-          name={i18n.t("navProfile")}
+          name={i18n.t('navSettings')}
+          component={SettingsScreen}
+        />
+        <Drawer.Screen
+          name={i18n.t('assignments')}
+          component={ExpandableCalendarScreen}
+          options={{ headerTitle: i18n.t('assignments') }}
+        />
+        <Drawer.Screen
+          name={i18n.t('navProfile')}
           component={ProfileScreen}
-          options={{ headerTitle: i18n.t("editProfile") }}
+          options={{ headerTitle: i18n.t('editProfile') }}
         />
       </Drawer.Navigator>
     </FormProvider>
