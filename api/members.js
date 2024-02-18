@@ -5,16 +5,28 @@ import apiClient from './client'
 //const associations = await apiClient.get("/associations", { headers: { "x-auth-token": token } });
 const token = storage.getToken()
 const getMe = (memberId) =>
-  apiClient.get(`/members/${memberId}`).then(res => res)
+  apiClient.get(`/members/${memberId}`).then((res) => res)
 
-  const patchMe = (name, address, idNumber, phoneNumber, guardNumber) => apiClient.patch(`/members/me`, {name, address, idNumber, phoneNumber, guardNumber}).then(res => res)
+const getMembers = (q) => apiClient.get('/members', { q: q })
 
-  const patchMeCredentials = (email, username, password, currentPassword) =>
-    apiClient.patch(`/members/me/credentials`, {email, username, password}, {headers: {"x-current-pass": currentPassword}}).catch(err => err)
-    //console.log(currentPassword)
+const patchMe = (name, address, idNumber, phoneNumber, guardNumber) =>
+  apiClient
+    .patch(`/members/me`, { name, address, idNumber, phoneNumber, guardNumber })
+    .then((res) => res)
+
+const patchMeCredentials = (email, username, password, currentPassword) =>
+  apiClient
+    .patch(
+      `/members/me/credentials`,
+      { email, username, password },
+      { headers: { 'x-current-pass': currentPassword } },
+    )
+    .catch((err) => err)
+//console.log(currentPassword)
 
 export default {
   getMe,
+  getMembers,
   patchMe,
-  patchMeCredentials
+  patchMeCredentials,
 }
