@@ -12,6 +12,7 @@ import AssingmentsScreen from '../screens/AssingmentsScreen'
 // import ExampleForCalendar from '../screens/ExampleForCalendar'
 //import ExampleForAgenda from '../screens/ExampleForAgenda'
 import ExpandableCalendarScreen from '../components/calendar/AgendaList'
+import RefactoredCalendar from '../components/new calendars/RefactoredCalendar'
 const Drawer = createDrawerNavigator()
 
 function MyDrawer(props) {
@@ -39,7 +40,7 @@ function MyDrawer(props) {
         />
         <Drawer.Screen
           name={i18n.t('assignments')}
-          component={ExpandableCalendarScreen}
+          component={RefactoredCalendar}
           options={{ headerTitle: i18n.t('assignments') }}
         />
         <Drawer.Screen
