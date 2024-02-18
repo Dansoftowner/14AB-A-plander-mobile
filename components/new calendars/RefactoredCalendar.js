@@ -13,7 +13,6 @@ import colors from '../../config/colors'
 import assignments from '../../api/assignments'
 import MyButton from '../MyButton'
 import MyText from '../MyText'
-// import { agendaItems } from '../calendar/agendaItems'
 
 LocaleConfig.locales['hu'] = {
   monthNames: [
@@ -62,7 +61,6 @@ export default function RefactoredCalendar(props) {
   const rightArrowIcon = require('../../assets/arrows/next.png')
   const [markedDays, setMarkedDays] = useState(null)
   const [agendaItems, setAgendaItems] = useState(null)
-//   const ITEMS = agendaItems
   const { colors: colorsByTheme } = useTheme()
   const periodColor = colors.light_green
   const dotColor = colors.light_yellow
@@ -176,20 +174,14 @@ export default function RefactoredCalendar(props) {
   }
 
   const convertAgendaItem = (assignment) => {
-    // const start = new Date(assignment.start)
-    // const end = new Date(assignment.end)
     const startFormattedString = formatDate(new Date(assignment.start))
     const endFormattedString = formatDate(new Date(assignment.end))
-    //const duration = getHoursDifference(start, end)
     const titleDate = formatDate(new Date(assignment.start))
-    //const hour = new Date(assignment.start).getHours()
     const title = assignment.title
     const eventObject = {
       title: titleDate,
       data: [
         {
-          //duration: duration + ' óra',
-          //hour: hour,
           _id: assignment._id,
           title: title,
           color: startFormattedString == endFormattedString ? dotColor : periodColor
@@ -203,7 +195,6 @@ export default function RefactoredCalendar(props) {
     const result = await assignments.getAssignments()
     if (!result?.ok) {
     } else {
-      // marked = result.data
       const eventsVector = []
       result.data.items.forEach((element) => {
         const i = convertAgendaItem(element)
@@ -211,8 +202,6 @@ export default function RefactoredCalendar(props) {
       })
       console.log(eventsVector)
       setAgendaItems(eventsVector)
-      //const markedDays = result.data.items.map(item => {})
-      //return result.data.items
     }
   }
 
@@ -226,9 +215,6 @@ export default function RefactoredCalendar(props) {
   return (
     <>
       <CalendarProvider
-      //date={new Date()}
-      //showTodayButton={true}
-      //theme={todayBtnTheme.current}
       >
         <Calendar
           //current={Date.now()}
@@ -254,9 +240,6 @@ export default function RefactoredCalendar(props) {
           dayFormat={'MMMM d'}
         />
       </CalendarProvider>
-      {/* <MyButton onPress={() => getAgendaItems()}></MyButton> */}
-      {/* <MyText textColor="black">{JSON.stringify(agendaItemsMine ?? [])}</MyText> */}
-      {/* <MyText textColor="black">{JSON.stringify(ITEMS ?? [])}</MyText> */}
     </>
   )
 }
