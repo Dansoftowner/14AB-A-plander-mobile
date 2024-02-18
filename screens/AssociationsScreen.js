@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import Screen from './Screen'
 import { useTheme } from '@react-navigation/native'
-import AutoComplete from '../components/AutoComplete'
+import AutoComplete from '../components/AssociationsAutoComplete'
 import associationsHook from '../api/associations'
 import { useFormDispatch, useFormState } from '../components/FormContext'
 import { Formik } from 'formik'
@@ -51,21 +51,21 @@ function AssociationsScreen({ navigation }) {
       initialErrors={formErrors}
       enableReinitialize
     >
-      {({values, handleChange, setFieldValue}) => (
-      <Screen
-        style={[
-          styles.container,
-          { backgroundColor: colorsByTheme.Login_background },
-        ]}
-      >
-        <AutoComplete
-          data={associations}
-          values={values.association}
-          handleChange={handleChange}
-          setFieldValue={setFieldValue}
-          selectAssociation={(text) => handleGetAssociations(text)}
-        />
-      </Screen>
+      {({ values, handleChange, setFieldValue }) => (
+        <Screen
+          style={[
+            styles.container,
+            { backgroundColor: colorsByTheme.Login_background },
+          ]}
+        >
+          <AutoComplete
+            data={associations}
+            values={values.association}
+            handleChange={handleChange}
+            setFieldValue={setFieldValue}
+            selectAssociation={(text) => handleGetAssociations(text)}
+          />
+        </Screen>
       )}
     </Formik>
   )
