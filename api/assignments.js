@@ -4,6 +4,9 @@ import apiClient from "./client";
 
 const getAssignments = () => apiClient.get("/assignments");
 
+const getAssignmentById = (assignmentId) => apiClient.get(`/assignments/${assignmentId}`, {projection: 'full'})
+
 export default {
-    getAssignments
+    getAssignments,
+    getAssignmentById
 }
