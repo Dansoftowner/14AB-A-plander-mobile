@@ -15,18 +15,18 @@ export function getTheme() {
     // month
     monthTextColor: 'black',
     textMonthFontSize: 16,
-    textMonthFontFamily: 'HelveticaNeue',
+    // textMonthFontFamily: 'HelveticaNeue',
     textMonthFontWeight: 'bold',
     // day names
     textSectionTitleColor: 'black',
     textDayHeaderFontSize: 12,
-    textDayHeaderFontFamily: 'HelveticaNeue',
+    // textDayHeaderFontFamily: 'HelveticaNeue',
     textDayHeaderFontWeight: 'normal',
     // dates
-    dayTextColor: themeColor,
+    dayTextColor: "black",
     todayTextColor: '#af0078',
     textDayFontSize: 18,
-    textDayFontFamily: 'HelveticaNeue',
+    // textDayFontFamily: 'HelveticaNeue',
     textDayFontWeight: 500,
     textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
     // selected date

@@ -1,4 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
+import apiClient from '../../api/client';
+import associations from '../../api/associations';
+import assignments from '../../api/assignments';
 
 const today = new Date().toISOString().split('T')[0];
 const fastDate = getPastDate(3);
@@ -116,16 +119,24 @@ export const agendaItems = [
   }
 ];
 
-export function getMarkedDates() {
+export async function getMarkedDates() {
   const marked = {};
 
-  agendaItems.forEach(item => {
-    // NOTE: only mark dates with data
-    if (item.data && item.data.length > 0 && !isEmpty(item.data[0])) {
-      marked[item.title] = {marked: true};
-    } else {
-      marked[item.title] = {disabled: true};
-    }
-  });
+  // const result = await assignments.getAssignments()
+  // if (!result?.ok) {
+  //   console.log(result)
+  // }
+  // else{
+  //   // marked = result.data
+  //   console.log(result.data)
+  // }
+  // agendaItems.forEach(item => {
+  //   // NOTE: only mark dates with data
+  //   if (item.data && item.data.length > 0 && !isEmpty(item.data[0])) {
+  //     marked[item.title] = {marked: true};
+  //   } else {
+  //     marked[item.title] = {disabled: true};
+  //   }
+  // });
   return marked;
 }
