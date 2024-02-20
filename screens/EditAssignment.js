@@ -22,15 +22,23 @@ import AuthContext from '../auth/authContext'
 import AutoComplete from '../components/AssociationsAutoComplete'
 import MembersAutoComplete from '../components/MembersAutoComplete'
 import assignments from '../api/assignments'
+import { format, set } from 'date-fns'
+import { hu } from 'date-fns/locale'
+import DateTimeFormInput from '../components/DateTimeFormInput'
 
-function EditAssignment({id}) {
+import DateTimePicker from '@react-native-community/datetimepicker'
+
+function EditAssignment({ route, navigation }) {
   const [alertShown, setAlertShown] = useState(false)
   const [errorShown, setErrorShown] = useState(false)
+  const [datePickerShown, setDatePickerShown] = useState(false)
+  const [timePickerShown, setTimePickerShown] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
   const [members, setMembers] = useState([])
-  const [assignment, setAssignment] = useState(null)
+  const [assignment, setAssignment] = useState()
   const { colors: colorsByTheme } = useTheme()
+  const [isStartDate, setIsStartDate] = useState(true)
   const formRef = useRef()
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -62,6 +70,38 @@ function EditAssignment({id}) {
       .nullable(),
   })
 
+  const onChangeDate = ({ type }, selectedDate) => {
+    if (type == 'set') {
+      const currentDate = selectedDate
+      formRef.current.setFieldValue(isStartDate ? 'assignmentStart' : 'assignmentEnd', currentDate)
+      setTimePickerShown(true)
+      setDatePickerShown(!datePickerShown)
+      //console.log('beállítani a dátumot', currentDate)
+    }
+    else{
+      setDatePickerShown(!datePickerShown)
+    }
+  }
+
+  const onChangeTime = ({ type }, selectedDate) => {
+    if (type =='set') {
+      const currentDate = selectedDate
+      console.log('beállítani a dátumot', currentDate)
+      formRef.current.setFieldValue(isStartDate ? 'assignmentStart' : 'assignmentEnd', currentDate)
+      setTimePickerShown(!timePickerShown)
+    }
+    else{
+      setTimePickerShown(!timePickerShown)
+    }
+  }
+
+  // const [startDate, setStartDate] = useState(format(
+  //   assignment.start == undefined ? new Date() : assignment.start,
+  //   'yyyy. MMMM. dd. HH:mm', {locale: hu}
+  // ))
+
+  const [assignmentId, setAssignmentId] = useState(route.params.id)
+
   const handleGetMembers = async (q) => {
     const result = await membersApi.getMembers(q)
     if (!result.ok) {
@@ -76,13 +116,18 @@ function EditAssignment({id}) {
       return console.log(result) //TODO Hibakezelés
     }
     console.log(result.data)
-    setAssignment([...result.data])
+    setAssignment(result.data)
+    console.log(assignment)
+    console.log('lefutott')
   }
 
   useEffect(() => {
     handleGetMembers()
-    handleGetAssignment('65ce57a4f88434b54445a9c8')
+    console.log(assignmentId)
+    handleGetAssignment(assignmentId)
   }, [])
+
+  // handleGetAssignment(assignmentId)
 
   //   const handleSubmit = async (currentPassword = undefined) => {
   //     const values = formRef.current.values
@@ -165,51 +210,18 @@ function EditAssignment({id}) {
   return (
     <ScrollView>
       <View style={styles.container}>
-        {/* <UpdatedAlertMessage
-          visible={false}
-          type="confirmation"
-          size="large"
-          title={i18n.t('editCredentials')}
-          button={i18n.t('save')}
-          message={i18n.t('reEnterPwd')}
-          cancel={true}
-          close={i18n.t('close')}
-          onClose={() => setAlertShown(false)}
-        //   onPress={(text) => handleSubmit(text)}
-        /> */}
-        {/* <UpdatedAlertMessage
-          visible={false}
-          type="error"
-          size="small"
-          button={i18n.t('close')}
-          message={errorMessage}
-          onClose={() => setErrorShown(false)}
-        /> */}
-        {/* <UpdatedAlertMessage
-          type="success"
-          size="small"
-          button={i18n.t('close')}
-          message={i18n.t('reLogin')}
-        //   onClose={() => {
-        //     logOut()
-        //   }}
-        /> */}
-        {/* <UpdatedAlertMessage
-          visible={false}
-          type="success"
-          size="small"
-          button={i18n.t('close')}
-          message={i18n.t('detailsSuccess')}
-          onClose={() => {
-            setSuccessShown(false)
-          }}
-        /> */}
         <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
           {i18n.t('editAssignment')}
         </MyText>
         <Formik
-          // innerRef={form}
-          initialValues={{}}
+          initialValues={{
+            assignmentTitle: assignment?.title == null ? '' : assignment.title,
+            assignmentLocation:
+              assignment?.location == null ? '' : assignment.location,
+            assignmentStart:
+              assignment?.start == undefined ? '' : new Date(assignment.start),
+            assignmentEnd: assignment?.end == undefined ? '' : new Date(assignment.end),
+          }}
           // initialErrors={formErrors}
           validationSchema={validationSchema}
           //   onSubmit={handleSubmit}
@@ -231,26 +243,84 @@ function EditAssignment({id}) {
                 themeColor="black"
                 textColor="black"
                 values={values}
-                onChangeText={handleChange('phoneNumber')}
+                onChangeText={handleChange('assignmentTitle')}
                 icon="format-letter-case"
-                name="phoneNumber"
+                name="assignmentTitle"
                 title={i18n.t('assignmentName')}
               />
               <EditProfileFields
                 themeColor="black"
                 textColor="black"
                 values={values}
-                onChangeText={handleChange('address')}
+                onChangeText={handleChange('assignmentLocation')}
                 icon="map-marker-outline"
-                name="address"
+                name="assignmentLocation"
                 title={i18n.t('assignmentLocation')}
               />
+              <MyText
+                textColor="black"
+                style={{ fontWeight: 'bold', paddingBottom: 5 }}
+              >
+                Szolgálat kezdete
+              </MyText>
+              <DateTimeFormInput
+                themeColor="black"
+                values={values}
+                textColor="black"
+                name="assignmentStart"
+                subtitle={format(
+                  values?.assignmentStart == ''
+                    ? new Date()
+                    : values.assignmentStart,
+                  'yyyy. MMMM. dd. HH:mm',
+                  { locale: hu },
+                )}
+                onPress={() => {
+                  setDatePickerShown(!datePickerShown)
+                  setIsStartDate(true)
+                }}
+              />
+              <MyText
+                textColor="black"
+                style={{ fontWeight: 'bold', paddingBottom: 5 }}
+              >
+                Szolgálat vége
+              </MyText>
+              <DateTimeFormInput
+                themeColor="black"
+                values={values}
+                textColor="black"
+                name="assignmentEnd"
+                subtitle={format(
+                  values?.assignmentEnd == ''
+                    ? new Date()
+                    : values.assignmentEnd,
+                  'yyyy. MMMM. dd. HH:mm',
+                  { locale: hu },
+                )}
+                onPress={() => {
+                  setDatePickerShown(!datePickerShown)
+                  setIsStartDate(false)
+                }}
+              />
+              {datePickerShown && (
+                <DateTimePicker mode="date" value={new Date(isStartDate ? values.assignmentStart : values.assignmentEnd)} onChange={onChangeDate} />
+              )}
+              {timePickerShown && (
+                <DateTimePicker mode="time" value={new Date(isStartDate ? values.assignmentStart : values.assignmentEnd)} onChange={onChangeTime} />
+              )}
+              <MyText
+                textColor="black"
+                style={{ fontWeight: 'bold', paddingBottom: 5 }}
+              >
+                {i18n.t('membersInDuty')}
+              </MyText>
 
-            <MyText textColor='black' style={{fontWeight: 'bold', paddingBottom: 5}}>
-            {i18n.t('membersInDuty')} 
-            </MyText>
-
-              <MembersAutoComplete data={members} />
+              {/* <MembersAutoComplete data={members} /> */}
+              <MyButton onPress={() => console.log(assignment)}></MyButton>
+              <MyText textColor="black">{assignmentId}</MyText>
+              <MyText textColor="black">{JSON.stringify(assignment)}</MyText>
+              <MyText textColor="black">{JSON.stringify(values)}</MyText>
               {JSON.stringify(values) != JSON.stringify(values) && (
                 <View>
                   <MyButton
