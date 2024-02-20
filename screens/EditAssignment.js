@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, ScrollView, Text } from 'react-native'
+import { View, StyleSheet, ScrollView, Text, FlatList } from 'react-native'
 import Screen from './Screen'
 import MyText from '../components/MyText'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -27,6 +27,7 @@ import { hu } from 'date-fns/locale'
 import DateTimeFormInput from '../components/DateTimeFormInput'
 
 import DateTimePicker from '@react-native-community/datetimepicker'
+import MemberListItem from './MemberListItem'
 
 function EditAssignment({ route, navigation }) {
   const [alertShown, setAlertShown] = useState(false)
@@ -73,24 +74,28 @@ function EditAssignment({ route, navigation }) {
   const onChangeDate = ({ type }, selectedDate) => {
     if (type == 'set') {
       const currentDate = selectedDate
-      formRef.current.setFieldValue(isStartDate ? 'assignmentStart' : 'assignmentEnd', currentDate)
+      formRef.current.setFieldValue(
+        isStartDate ? 'assignmentStart' : 'assignmentEnd',
+        currentDate,
+      )
       setTimePickerShown(true)
       setDatePickerShown(!datePickerShown)
       //console.log('beállítani a dátumot', currentDate)
-    }
-    else{
+    } else {
       setDatePickerShown(!datePickerShown)
     }
   }
 
   const onChangeTime = ({ type }, selectedDate) => {
-    if (type =='set') {
+    if (type == 'set') {
       const currentDate = selectedDate
       console.log('beállítani a dátumot', currentDate)
-      formRef.current.setFieldValue(isStartDate ? 'assignmentStart' : 'assignmentEnd', currentDate)
+      formRef.current.setFieldValue(
+        isStartDate ? 'assignmentStart' : 'assignmentEnd',
+        currentDate,
+      )
       setTimePickerShown(!timePickerShown)
-    }
-    else{
+    } else {
       setTimePickerShown(!timePickerShown)
     }
   }
@@ -220,7 +225,10 @@ function EditAssignment({ route, navigation }) {
               assignment?.location == null ? '' : assignment.location,
             assignmentStart:
               assignment?.start == undefined ? '' : new Date(assignment.start),
-            assignmentEnd: assignment?.end == undefined ? '' : new Date(assignment.end),
+            assignmentEnd:
+              assignment?.end == undefined ? '' : new Date(assignment.end),
+            assignees:
+              assignment?.assignees == undefined ? [] : assignment.assignees,
           }}
           // initialErrors={formErrors}
           validationSchema={validationSchema}
@@ -303,18 +311,50 @@ function EditAssignment({ route, navigation }) {
                   setIsStartDate(false)
                 }}
               />
-              {datePickerShown && (
-                <DateTimePicker mode="date" value={new Date(isStartDate ? values.assignmentStart : values.assignmentEnd)} onChange={onChangeDate} />
-              )}
-              {timePickerShown && (
-                <DateTimePicker mode="time" value={new Date(isStartDate ? values.assignmentStart : values.assignmentEnd)} onChange={onChangeTime} />
-              )}
               <MyText
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
                 {i18n.t('membersInDuty')}
               </MyText>
+                <MembersAutoComplete
+                data={values.assignees}
+                values={values.assignees}
+                />
+              {/* {values.assignees && (
+                <FlatList
+                  data={values.assignees}
+                  renderItem={({ item }) => <MemberListItem name={item.name} />}
+                  key={item._id}
+                />
+              )} */}
+              <MemberListItem name="Miklós" />
+              {datePickerShown && (
+                <DateTimePicker
+                  mode="date"
+                  value={
+                    new Date(
+                      isStartDate
+                        ? values.assignmentStart
+                        : values.assignmentEnd,
+                    )
+                  }
+                  onChange={onChangeDate}
+                />
+              )}
+              {timePickerShown && (
+                <DateTimePicker
+                  mode="time"
+                  value={
+                    new Date(
+                      isStartDate
+                        ? values.assignmentStart
+                        : values.assignmentEnd,
+                    )
+                  }
+                  onChange={onChangeTime}
+                />
+              )}
 
               {/* <MembersAutoComplete data={members} /> */}
               <MyButton onPress={() => console.log(assignment)}></MyButton>
