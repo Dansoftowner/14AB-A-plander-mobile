@@ -52,6 +52,7 @@ function EditProfileFields({
         {!enabled && (
           <EditField
             style={{ marginLeft: 8 }}
+            type='edit'
             onPress={() => {
               setIsEditable(!isEditable)
               setPasswordEditable && setPasswordEditable()
