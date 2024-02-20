@@ -12,9 +12,9 @@ function AssingmentStack(props) {
   const { colors: colorsByTheme } = useTheme()
   return (
       <Stack.Navigator screenOptions={{ headerShown: false }}
-      initialRouteName='EditAssingment'>
+      initialRouteName='Assingments'>
           <Stack.Screen
-            name="EditAssingment"
+            name="EditAssignment"
             component={EditAssignment}
             options={{
               headerShown: false,
