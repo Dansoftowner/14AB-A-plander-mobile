@@ -20,6 +20,7 @@ function MyTextInput({
   showEye,
   enabled = true,
   isEditable,
+  subtitle,
   themeColor = "white",
   isPasswordField = false,
   passwordVisible = false,
@@ -69,10 +70,10 @@ function MyTextInput({
       {isButton ? (
         <MyText
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: title !== i18n.t('associationSelector') ? colorsByTheme.white_black :  colorsByTheme.Login_placeholders}]}
+          style={[styles.text, { color: title !== subtitle ? (themeColor === "white" ? colorsByTheme.white_black : colorsByTheme.black_white) :  colorsByTheme.Login_placeholders}]}
           {...otherProps}
         >
-          {title ?? i18n.t('associationSelector')}
+          {title ?? subtitle}
         </MyText>
       ) : (
         <TextInput
