@@ -15,6 +15,8 @@ import MyTextInput from './MyTextInput'
 import { useTheme } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import colors from '../config/colors'
+import MemberListItem from '../screens/MemberListItem'
+import EditField from './EditField'
 
 function MembersAutoComplete({
   data,
@@ -27,14 +29,17 @@ function MembersAutoComplete({
   return (
     <TouchableWithoutFeedback>
       <View>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <MyTextInput
+        width={300}
           themeColor='black'
           onChangeText={(text) => {
             selectAssociation(text)
           }}
-          icon="magnify"
           style={{ marginVertical: 2, borderRadius: 15 }}
         />
+        <EditField type='add' style={{position: 'absolute', right: 25}}/>
+        </View>
         <FlatList
           contentContainerStyle={{
             alignItems: 'center',
@@ -45,18 +50,19 @@ function MembersAutoComplete({
           ]}
           data={data}
           renderItem={({ item }) => (
-            <TouchableOpacity
+            <MemberListItem
               onPress={() => {
                 setFieldValue('association', item)
                 navigation.navigate('Login')
               }}
+              name={item.name}
             >
-              <MyText
+              {/* <MyText
                 style={[styles.text, { color: colors.medium_dark}]}
               >
                 {item.name ?? ''}
-              </MyText>
-            </TouchableOpacity>
+              </MyText> */}
+            </MemberListItem>
           )}
           keyExtractor={(item) => item._id}
         ></FlatList>
@@ -67,9 +73,6 @@ function MembersAutoComplete({
 
 const styles = StyleSheet.create({
   container: {},
-  list: {
-    height: '80%',
-  },
   text: {
     paddingVertical: 2,
   },
