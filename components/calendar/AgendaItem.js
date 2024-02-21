@@ -9,12 +9,18 @@ import {
   Button,
   TouchableWithoutFeedback,
 } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
+import { format, set } from 'date-fns'
+import { hu } from 'date-fns/locale'
+import MyText from '../MyText'
 
-
-
-export default function AgendaItem({ item, onPress, onItemPress, dotColor = "blue" }) {
+export default function AgendaItem({
+  item,
+  onPress,
+  onItemPress,
+  dotColor = 'blue',
+}) {
   // const buttonPressed = useCallback(() => {
   //   Alert.alert('Show me more');
   // }, []);
@@ -35,7 +41,7 @@ export default function AgendaItem({ item, onPress, onItemPress, dotColor = "blu
 
   return (
     <TouchableOpacity onPress={onItemPress} style={styles.item}>
-      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <View
           style={{
             backgroundColor: dotColor,
@@ -52,14 +58,26 @@ export default function AgendaItem({ item, onPress, onItemPress, dotColor = "blu
           alignItems: 'center',
         }}
       >
-        <Text style={styles.itemTitleText}>{item.title}</Text>
+        <View>
+          <Text style={styles.itemTitleText}>{item.title}</Text>
+          <MyText
+            textColor="black"
+            style={{ fontSize: 14, paddingHorizontal: 10 }}
+          >
+            Kezdés: {format(item.start, 'HH:mm', { locale: hu })}
+          </MyText>
+        </View>
       </View>
       <View
         style={{ justifyContent: 'center', alignItems: 'flex-end', flex: 1 }}
       >
-      <TouchableWithoutFeedback onPress={onPress} >
-        <MaterialCommunityIcons name="pencil" size={15} color={colorsByTheme.black_white} />
-      </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={onPress}>
+          <MaterialCommunityIcons
+            name="pencil"
+            size={15}
+            color={colorsByTheme.black_white}
+          />
+        </TouchableWithoutFeedback>
       </View>
     </TouchableOpacity>
   )
