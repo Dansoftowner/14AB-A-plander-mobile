@@ -31,6 +31,7 @@ function MembersAutoComplete({
     <TouchableWithoutFeedback>
       <View>
         <MyTextInput
+          icon="magnify"
           onChangeText={(text) => {
             onSelectMember(text)
           }}
@@ -42,22 +43,23 @@ function MembersAutoComplete({
           }}
           style={[
             styles.list,
-            { backgroundColor: "white", borderRadius: 15, flexGrow: 0 },
+            { backgroundColor: 'white', borderRadius: 15, flexGrow: 0 },
           ]}
           data={data}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
                 //onSelectMember(item._id)
-                navigation.navigate('EditAssignment', {id: -1, member: item})
+                navigation.navigate('EditAssignment', { id: -1, member: item })
                 // setFieldValue('association', item)
               }}
             >
-              <MyText
-                style={[styles.text, { color: colors.medium_dark}]}
-              >
-                {item.name ?? ''}
+              {item?.name && 
+              (
+              <MyText style={[styles.text, { color: colors.medium_dark }]}>
+                {item.name}
               </MyText>
+              )}
             </TouchableOpacity>
           )}
           keyExtractor={(item) => item._id}
