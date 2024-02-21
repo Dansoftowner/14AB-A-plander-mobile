@@ -23,8 +23,11 @@ const patchAssignmentById = (
     assignees,
   })
 
+const deleteAssignment = (assignmentId) => apiClient.delete(`/assignments/${assignmentId}`)
+
 export default {
   getAssignments,
   getAssignmentById,
-  patchAssignmentById
+  patchAssignmentById,
+  deleteAssignment
 }
