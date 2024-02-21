@@ -6,6 +6,7 @@ import AssingmentsScreen from '../screens/AssingmentsScreen'
 import EditAssignment from '../screens/EditAssignment'
 import RefactoredCalendar from '../components/new calendars/RefactoredCalendar'
 import MembersScreen from '../screens/MembersScreen'
+import colors from '../config/colors'
 // import { FormProvider } from '../components/FormContext'
 
 const Stack = createStackNavigator()
@@ -18,10 +19,10 @@ function AssingmentStack(props) {
             name="EditAssignment"
             component={EditAssignment}
             options={{
-              headerShown: false,
+              headerShown: true,
               headerTitle: '',
-              headerTintColor: colorsByTheme.white_dark_blue,
-              headerStyle: { backgroundColor: colorsByTheme.Login_background },
+              // headerTintColor: colorsByTheme.white_dark_blue,
+              // headerStyle: { backgroundColor: colorsByTheme.Login_background },
             }}
             // screenOptions={{headerShown: true}}
           />
@@ -30,7 +31,12 @@ function AssingmentStack(props) {
         } />
                 <Stack.Screen name="Members" component={
             MembersScreen
-        } />
+        }             options={{
+          headerShown: true,
+          headerTitle: '',
+          headerTintColor: colorsByTheme.white_dark_blue,
+          headerStyle: { backgroundColor: colors.medium_blue, shadowColor: colors.medium_blue },
+        }}/>
       </Stack.Navigator>
   )
 }
