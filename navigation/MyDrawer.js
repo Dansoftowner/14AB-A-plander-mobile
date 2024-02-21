@@ -28,7 +28,7 @@ function MyDrawer(props) {
           headerShown: true,
           headerTitle: user ? user.name : 'Plander',
           headerTintColor: colorsByTheme.white_white,
-          headerStyle: { backgroundColor: colorsByTheme.medium_blue_dark_blue },
+          headerStyle: { backgroundColor: colorsByTheme.medium_blue_dark_blue, shadowColor: colorsByTheme.medium_blue_dark_blue },
           headerTitleStyle: { fontWeight: 'bold' },
           drawerActiveTintColor: colorsByTheme.white_white,
           drawerActiveBackgroundColor: colorsByTheme.medium_blue_dark_blue,
