@@ -63,7 +63,7 @@ LocaleConfig.locales['hu'] = {
   today: 'Ma',
 }
 
-export default function RefactoredCalendar({navigation}) {
+export default function RefactoredCalendar({navigation, route}) {
   const leftArrowIcon = require('../../assets/arrows/previous.png')
   const rightArrowIcon = require('../../assets/arrows/next.png')
   const [markedDays, setMarkedDays] = useState(null)
@@ -86,10 +86,12 @@ export default function RefactoredCalendar({navigation}) {
     textDisabledColor: colors.light,
     arrowColor: colorsByTheme.medium_blue_yellow,
   }
+
   useEffect(() => {
     getMarkedDays()
     getAgendaItems()
-  }, [])
+    console.log('lefut a getAgendaItems függvény')
+  }, [route.params?.delete])
 
   const formatDate = (date) => {
     const year = date.getFullYear()
@@ -249,6 +251,7 @@ export default function RefactoredCalendar({navigation}) {
         {
           _id: assignment._id,
           title: title,
+          start: assignment.start,
           color:
             startFormattedString == endFormattedString ? dotColor : periodColor,
         },
