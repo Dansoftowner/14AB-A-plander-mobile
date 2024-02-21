@@ -36,7 +36,6 @@ function EditAssignment({ route, navigation }) {
   const [timePickerShown, setTimePickerShown] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
-  const [members, setMembers] = useState([])
   const [assignment, setAssignment] = useState()
   const { colors: colorsByTheme } = useTheme()
   const [isStartDate, setIsStartDate] = useState(true)
@@ -71,6 +70,8 @@ function EditAssignment({ route, navigation }) {
       .nullable(),
   })
 
+  const isShown = useRef()
+
   const onChangeDate = ({ type }, selectedDate) => {
     if (type == 'set') {
       const currentDate = selectedDate
@@ -78,8 +79,8 @@ function EditAssignment({ route, navigation }) {
         isStartDate ? 'assignmentStart' : 'assignmentEnd',
         currentDate,
       )
-      setTimePickerShown(true)
       setDatePickerShown(!datePickerShown)
+      setTimePickerShown(true)
       //console.log('beállítani a dátumot', currentDate)
     } else {
       setDatePickerShown(!datePickerShown)
@@ -105,14 +106,34 @@ function EditAssignment({ route, navigation }) {
   //   'yyyy. MMMM. dd. HH:mm', {locale: hu}
   // ))
 
-  const [assignmentId, setAssignmentId] = useState(route.params.id)
+  const [assignmentId, setAssignmentId] = useState()
 
-  const handleGetMembers = async (q) => {
-    const result = await membersApi.getMembers(q)
-    if (!result.ok) {
-      return console.log(result) //TODO Hibakezelés
+  useEffect(() => {
+    if (route.params.id !== -1) {
+      setAssignmentId(route.params.id)
+      handleGetAssignment(route.params.id)
+    } 
+  }, [route.params.id])
+
+  useEffect(() => {
+    if (route.params.member !== undefined) {
+      //console.log('itt')
+      // setAssignmentId(route.params.id)
+      // handleGetAssignment(route.params.id)
+      handleAddMember(route.params.member)
+    } 
+  }, [route.params.member])
+
+  const handleAddMember = (member) => {
+    // console.log(_id)
+    const isMemberAlreadyAdded = formRef.current.values.assignees.filter(x => x._id === member._id).length > 0
+    if (!isMemberAlreadyAdded) {
+      formRef.current.setFieldValue(
+        'assignees',
+        [...formRef.current.values.assignees, {_id: member._id, name: member.name}],
+      )
     }
-    setMembers([...result.data.items])
+    console.log(formRef.current.values.assignees)
   }
 
   const handleGetAssignment = async (assingmentId) => {
@@ -126,11 +147,19 @@ function EditAssignment({ route, navigation }) {
     console.log('lefutott')
   }
 
-  useEffect(() => {
-    handleGetMembers()
-    console.log(assignmentId)
-    handleGetAssignment(assignmentId)
-  }, [])
+  const handleDeleteMember = (_id) => {
+    console.log(_id)
+    formRef.current.setFieldValue(
+      'assignees',
+      formRef.current.values.assignees.filter((x) => x._id !== _id),
+    )
+    console.log(formRef.current.values.assignees)
+  }
+
+  // useEffect(() => {
+  //   //handleGetMembers()
+  //   console.log(assignmentId)
+  // }, [])
 
   // handleGetAssignment(assignmentId)
 
@@ -317,18 +346,35 @@ function EditAssignment({ route, navigation }) {
               >
                 {i18n.t('membersInDuty')}
               </MyText>
-                <MembersAutoComplete
-                data={values.assignees}
+              {/* <MembersAutoComplete
+                data={members}
                 values={values.assignees}
-                />
-              {/* {values.assignees && (
+                /> */}
+              {values.assignees.length !== 0 ? (
                 <FlatList
+                  style={{ flexGrow: 0 }}
                   data={values.assignees}
-                  renderItem={({ item }) => <MemberListItem name={item.name} />}
-                  key={item._id}
+                  renderItem={({ item }) => (
+                    <MemberListItem
+                      name={item.name}
+                      _id={item._id}
+                      onPress={(_id) => handleDeleteMember(_id)}
+                    />
+                  )}
+                  //key={item._id}
                 />
+              ) : (
+                <MyText textColor="black" style={{ fontWeight: 'bold' }}>
+                  A szolgálathoz nincsenek beosztva tagok!
+                </MyText>
+              )}
+              {/* {values.assignees.length === 0 &&
+              (
+                <MyText textColor='black' style={{fontWeight: 'bold'}}>
+                  A szolgálathoz nincsenek beosztva tagok!
+                </MyText>
               )} */}
-              <MemberListItem name="Miklós" />
+              {/* <MemberListItem name="Miklós" /> */}
               {datePickerShown && (
                 <DateTimePicker
                   mode="date"
@@ -357,10 +403,18 @@ function EditAssignment({ route, navigation }) {
               )}
 
               {/* <MembersAutoComplete data={members} /> */}
-              <MyButton onPress={() => console.log(assignment)}></MyButton>
+              {/* <MyButton onPress={() => console.log(assignment)}></MyButton> */}
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <MyButton onPress={() => navigation.navigate('Members')} title='Új tag beosztása' style={{marginTop: 10, width: "auto"}}/>
+              </View>
+
               <MyText textColor="black">{assignmentId}</MyText>
-              <MyText textColor="black">{JSON.stringify(assignment)}</MyText>
-              <MyText textColor="black">{JSON.stringify(values)}</MyText>
+              <MyText textColor="black">
+                {JSON.stringify(values.assignees)}
+              </MyText>
+
+              {/* <MyText textColor="black">{JSON.stringify(assignment)}</MyText> */}
+              {/* <MyText textColor="black">{JSON.stringify(values)}</MyText> */}
               {JSON.stringify(values) != JSON.stringify(values) && (
                 <View>
                   <MyButton
