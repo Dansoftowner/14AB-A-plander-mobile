@@ -4,11 +4,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
 import EyeToShowPassword from './EyeToShowPassword'
 import MyText from './MyText'
-import colors from '../config/colors'
-import EditField from './EditField'
-import i18n from '../locales/i18n'
-
-//import defaultStyles from "../config/styles";
 
 function MyTextInput({
   title,
@@ -40,15 +35,6 @@ function MyTextInput({
       }
     }
       return colorsByTheme.medium_light
-    // if (!enabled) {
-    //   return colorsByTheme.Login_dropDownFont
-    // }
-    // if (themeColor === "white") {
-    //   return colorsByTheme.Login_textColor
-    // }
-    // else {
-    //   return colorsByTheme.black_white
-    // }
   }
   return (
     <View
@@ -115,12 +101,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   text: {
-    //color: colors.white,
     fontWeight: '700',
     flex: 1,
     fontSize: 14
-    //width: "300",
-    // backgroundColor: "red"
   },
 })
 
