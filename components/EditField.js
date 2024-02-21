@@ -12,7 +12,7 @@ function EditField({onPress, style, type, themeColor}) {
         icon: 'trash-can',
       },
       edit: {
-        color: colorsByTheme.white_dark_blue,
+        color: colorsByTheme.medium_blue_yellow,
         icon: 'pencil',
       },
       add: {
