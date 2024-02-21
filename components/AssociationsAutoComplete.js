@@ -32,7 +32,7 @@ function AutoComplete({
             selectAssociation(text)
           }}
           icon="magnify"
-          style={{ marginVertical: 2, borderRadius: 15 }}
+          style={{ marginVertical: 2, borderRadius: 15, color: colorsByTheme.white_black }}
         />
         <FlatList
           contentContainerStyle={{
@@ -66,9 +66,9 @@ function AutoComplete({
 
 const styles = StyleSheet.create({
   container: {},
-  list: {
-    height: '80%',
-  },
+  // list: {
+  //   height: '80%',
+  // },
   text: {
     paddingVertical: 2,
   },
