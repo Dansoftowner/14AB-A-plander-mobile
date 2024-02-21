@@ -20,6 +20,7 @@ import EditField from './EditField'
 
 function MembersAutoComplete({
   data,
+  onSelectMember,
   selectAssociation,
   setFieldValue,
 }) {
@@ -29,40 +30,35 @@ function MembersAutoComplete({
   return (
     <TouchableWithoutFeedback>
       <View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <MyTextInput
-        width={300}
-          themeColor='black'
           onChangeText={(text) => {
-            selectAssociation(text)
+            onSelectMember(text)
           }}
           style={{ marginVertical: 2, borderRadius: 15 }}
         />
-        <EditField type='add' style={{position: 'absolute', right: 25}}/>
-        </View>
         <FlatList
           contentContainerStyle={{
             alignItems: 'center',
           }}
           style={[
             styles.list,
-            {borderColor: 'black', borderWidth: 1, borderRadius: 15 },
+            { backgroundColor: "white", borderRadius: 15, flexGrow: 0 },
           ]}
           data={data}
           renderItem={({ item }) => (
-            <MemberListItem
+            <TouchableOpacity
               onPress={() => {
-                setFieldValue('association', item)
-                navigation.navigate('Login')
+                //onSelectMember(item._id)
+                navigation.navigate('EditAssignment', {id: -1, member: item})
+                // setFieldValue('association', item)
               }}
-              name={item.name}
             >
-              {/* <MyText
+              <MyText
                 style={[styles.text, { color: colors.medium_dark}]}
               >
                 {item.name ?? ''}
-              </MyText> */}
-            </MemberListItem>
+              </MyText>
+            </TouchableOpacity>
           )}
           keyExtractor={(item) => item._id}
         ></FlatList>
