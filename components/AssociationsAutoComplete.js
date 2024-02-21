@@ -40,7 +40,7 @@ function AutoComplete({
           }}
           style={[
             styles.list,
-            { backgroundColor: "white", borderRadius: 15 },
+            { backgroundColor: "white", borderRadius: 15, flexGrow: 0 },
           ]}
           data={data}
           renderItem={({ item }) => (
