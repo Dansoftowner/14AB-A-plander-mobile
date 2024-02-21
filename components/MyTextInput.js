@@ -82,7 +82,7 @@ function MyTextInput({
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
           placeholderTextColor={colorsByTheme.Login_placeholders}
-          style={[styles.text, { color: colorCalculated() }]}
+          style={[styles.text, { color: colorCalculated() }, style]}
           {...otherProps}
         />
       )}
