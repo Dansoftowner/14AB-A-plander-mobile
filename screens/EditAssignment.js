@@ -30,8 +30,11 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import MemberListItem from './MemberListItem'
 
 function EditAssignment({ route, navigation }) {
+  const { user, setUser } = useContext(AuthContext)
+
   const [alertShown, setAlertShown] = useState(false)
   const [errorShown, setErrorShown] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
   const [datePickerShown, setDatePickerShown] = useState(false)
   const [timePickerShown, setTimePickerShown] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -40,45 +43,39 @@ function EditAssignment({ route, navigation }) {
   const { colors: colorsByTheme } = useTheme()
   const [isStartDate, setIsStartDate] = useState(true)
   const formRef = useRef()
-  const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email(i18n.t('zodEmail'))
-      .required(i18n.t('fieldRequired')),
-    username: Yup.string()
-      .required(i18n.t('fieldRequired'))
-      .label(i18n.t('username'))
-      .min(5, i18n.t('zodUsername'))
-      .max(20),
-    password: Yup.string()
-      .required(i18n.t('fieldRequired'))
-      .label(i18n.t('password'))
-      .min(8, i18n.t('zodPasswordLength'))
-      .matches(/[A-Z]/, i18n.t('zodPassword'))
-      .matches(/[0-9]/, i18n.t('zodPassword')),
-    repeatedPassword: Yup.string()
-      .required(i18n.t('fieldRequired'))
-      .oneOf([Yup.ref('password'), null], i18n.t('zodRepeatedPwd')),
-    address: Yup.string()
-      .min(5, i18n.t('zodAddress'))
-      .matches(/[0-9]/, i18n.t('zodAddress')),
-    idNumber: Yup.string().min(3, i18n.t('zodIdNumber')),
-    phoneNumber: Yup.string().min(9, i18n.t('zodPhoneNumber')),
-    guardNumber: Yup.string()
-      .matches(/\d{2}\/\d{4}\/\d{5}/, i18n.t('zodGuardNumber'))
-      .max(13)
-      .optional()
-      .nullable(),
-  })
 
   const isShown = useRef()
+
+  const handleSubmit = async () => {
+    const values = formRef.current.values
+    if (values.start > values.end) {
+      setErrorMessage('A kezdet nem lehet később, mint a vég')
+      return setErrorShown(true)
+    } else {
+      const assignees = values.assignees.map((assignee) => assignee._id)
+      const result = await assignments.patchAssignmentById(
+        values._id,
+        values.title,
+        values.location,
+        values.start,
+        values.end,
+        assignees,
+      )
+      if (!result.ok) {
+        console.log(result.data.message)
+        setErrorMessage(result.data.message)
+        return setErrorShown(true)
+      }
+      setAssignment({...values})
+      setSuccessMessage('A szolgálat sikeresen frissítve')
+      return setSuccessShown(true)
+    }
+  }
 
   const onChangeDate = ({ type }, selectedDate) => {
     if (type == 'set') {
       const currentDate = selectedDate
-      formRef.current.setFieldValue(
-        isStartDate ? 'assignmentStart' : 'assignmentEnd',
-        currentDate,
-      )
+      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
       setDatePickerShown(!datePickerShown)
       setTimePickerShown(true)
       //console.log('beállítani a dátumot', currentDate)
@@ -91,28 +88,20 @@ function EditAssignment({ route, navigation }) {
     if (type == 'set') {
       const currentDate = selectedDate
       console.log('beállítani a dátumot', currentDate)
-      formRef.current.setFieldValue(
-        isStartDate ? 'assignmentStart' : 'assignmentEnd',
-        currentDate,
-      )
+      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
       setTimePickerShown(!timePickerShown)
     } else {
       setTimePickerShown(!timePickerShown)
     }
   }
 
-  // const [startDate, setStartDate] = useState(format(
-  //   assignment.start == undefined ? new Date() : assignment.start,
-  //   'yyyy. MMMM. dd. HH:mm', {locale: hu}
-  // ))
-
-  const [assignmentId, setAssignmentId] = useState()
+  // const [assignmentId, setAssignmentId] = useState()
 
   useEffect(() => {
     if (route.params.id !== -1) {
-      setAssignmentId(route.params.id)
+      // setAssignmentId(route.params.id)
       handleGetAssignment(route.params.id)
-    } 
+    }
   }, [route.params.id])
 
   useEffect(() => {
@@ -121,17 +110,19 @@ function EditAssignment({ route, navigation }) {
       // setAssignmentId(route.params.id)
       // handleGetAssignment(route.params.id)
       handleAddMember(route.params.member)
-    } 
+    }
   }, [route.params.member])
 
   const handleAddMember = (member) => {
     // console.log(_id)
-    const isMemberAlreadyAdded = formRef.current.values.assignees.filter(x => x._id === member._id).length > 0
+    const isMemberAlreadyAdded =
+      formRef.current.values.assignees.filter((x) => x._id === member._id)
+        .length > 0
     if (!isMemberAlreadyAdded) {
-      formRef.current.setFieldValue(
-        'assignees',
-        [...formRef.current.values.assignees, {_id: member._id, name: member.name}],
-      )
+      formRef.current.setFieldValue('assignees', [
+        ...formRef.current.values.assignees,
+        { _id: member._id, name: member.name },
+      ])
     }
     console.log(formRef.current.values.assignees)
   }
@@ -147,6 +138,18 @@ function EditAssignment({ route, navigation }) {
     console.log('lefutott')
   }
 
+  const handleDeleteAssignment = async () => {
+    const assignmentId = formRef.current.values._id
+    const result = await assignments.deleteAssignment(assignmentId)
+    if (!result.ok) {
+      return console.log(result)
+    }
+    console.log(result.data)
+    // setSuccessMessage('A szolgálat sikeresen törölve!')
+    // setSuccessShown(true)
+    return navigation.navigate('Assingments', {delete: true})
+  }
+
   const handleDeleteMember = (_id) => {
     console.log(_id)
     formRef.current.setFieldValue(
@@ -156,112 +159,47 @@ function EditAssignment({ route, navigation }) {
     console.log(formRef.current.values.assignees)
   }
 
-  // useEffect(() => {
-  //   //handleGetMembers()
-  //   console.log(assignmentId)
-  // }, [])
-
-  // handleGetAssignment(assignmentId)
-
-  //   const handleSubmit = async (currentPassword = undefined) => {
-  //     const values = formRef.current.values
-
-  //     if (
-  //       user.email !== values.email ||
-  //       user.username !== values.username ||
-  //       defaultPwd != values.password
-  //     ) {
-  //       const { email, username, password } = values
-  //       console.log(currentPassword)
-  //       console.log(password)
-  //       if (password === currentPassword) {
-  //         console.log('itt van az error')
-  //         // setisPasswordEditable(false)
-  //         setErrorMessage(i18n.t('passwordChangeError'))
-  //         setErrorShown(true)
-  //         console.log('itt van az error')
-  //         setFieldValue('password', defaultPwd)
-  //         setFieldValue('repeatedPassword', defaultPwd)
-  //       } else {
-  //         const result = await members.patchMeCredentials(
-  //           email === user.email ? undefined : email,
-  //           username === user.username ? undefined : username,
-  //           password === defaultPwd || password === currentPassword
-  //             ? undefined
-  //             : password,
-  //           currentPassword,
-  //         )
-  //         console.log(result)
-  //         if (!result.ok) {
-  //           console.log(result.headers)
-
-  //           setErrorShown(true)
-  //           setErrorMessage(result.data.message)
-  //         } else {
-  //           const { name, address, idNumber, phoneNumber, guardNumber } = values
-  //           const result = await members.patchMe(
-  //             name,
-  //             address,
-  //             idNumber,
-  //             phoneNumber,
-  //             guardNumber,
-  //           )
-  //           //const result = await members.patchMeCredentials("652f866cfc13ae3ce86c7ce7")
-  //           if (!result.ok) {
-  //             console.log(result.headers)
-  //             setErrorShown(true)
-  //             setErrorMessage(result.data.message)
-  //           } else {
-  //           }
-  //           console.log(result)
-  //         }
-  //       }
-  //       //console.log(newPwd)
-  //     } else {
-  //       const { name, address, idNumber, phoneNumber, guardNumber } = values
-  //       console.log('basic')
-  //       const result = await members.patchMe(
-  //         name,
-  //         address,
-  //         idNumber,
-  //         phoneNumber,
-  //         guardNumber,
-  //       )
-  //       //const result = await members.patchMeCredentials("652f866cfc13ae3ce86c7ce7")
-  //       if (!result.ok) {
-  //         console.log(result.headers)
-  //         setErrorShown(true)
-  //         setErrorMessage(result.data.message)
-  //       } else {
-  //         setSuccessShown(true)
-  //         setUser({ ...values })
-  //         //setAlertShown()
-  //       }
-  //       console.log(result)
-  //     }
-  //   }
-
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: 'white'}}>
+      <UpdatedAlertMessage
+        visible={errorShown}
+        type="error"
+        size="small"
+        button={i18n.t('close')}
+        message={errorMessage}
+        onClose={() => setErrorShown(false)}
+        //onPress={() => setErrorShown(false)}
+      />
+      <UpdatedAlertMessage
+        visible={successShown}
+        type="success"
+        size="small"
+        button={i18n.t('close')}
+        message={successMessage}
+        onClose={() => {
+          setSuccessShown(false)
+        }}
+        //onPress={() => setSuccessShown(false)}
+      />
       <View style={styles.container}>
         <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
           {i18n.t('editAssignment')}
         </MyText>
         <Formik
           initialValues={{
-            assignmentTitle: assignment?.title == null ? '' : assignment.title,
-            assignmentLocation:
-              assignment?.location == null ? '' : assignment.location,
-            assignmentStart:
-              assignment?.start == undefined ? '' : new Date(assignment.start),
-            assignmentEnd:
-              assignment?.end == undefined ? '' : new Date(assignment.end),
+            _id: assignment?._id,
+            title: assignment?.title == null ? '' : assignment.title,
+            location: assignment?.location == null ? '' : assignment.location,
+            start:
+              assignment?.start == undefined ? '' : new Date(assignment.start.slice(0, -1)),
+            end: assignment?.end == undefined ? '' : new Date(assignment.end.slice(0, -1)),
             assignees:
               assignment?.assignees == undefined ? [] : assignment.assignees,
+            report: assignment?.report,
           }}
           // initialErrors={formErrors}
-          validationSchema={validationSchema}
-          //   onSubmit={handleSubmit}
+          //validationSchema={validationSchema}
+          onSubmit={handleSubmit}
           innerRef={formRef}
           enableReinitialize //ez nagyon fontos!
         >
@@ -280,66 +218,21 @@ function EditAssignment({ route, navigation }) {
                 themeColor="black"
                 textColor="black"
                 values={values}
-                onChangeText={handleChange('assignmentTitle')}
+                onChangeText={handleChange('title')}
                 icon="format-letter-case"
-                name="assignmentTitle"
+                name="title"
                 title={i18n.t('assignmentName')}
               />
               <EditProfileFields
                 themeColor="black"
                 textColor="black"
                 values={values}
-                onChangeText={handleChange('assignmentLocation')}
+                onChangeText={handleChange('location')}
                 icon="map-marker-outline"
-                name="assignmentLocation"
+                name="location"
                 title={i18n.t('assignmentLocation')}
               />
-              <MyText
-                textColor="black"
-                style={{ fontWeight: 'bold', paddingBottom: 5 }}
-              >
-                Szolgálat kezdete
-              </MyText>
-              <DateTimeFormInput
-                themeColor="black"
-                values={values}
-                textColor="black"
-                name="assignmentStart"
-                subtitle={format(
-                  values?.assignmentStart == ''
-                    ? new Date()
-                    : values.assignmentStart,
-                  'yyyy. MMMM. dd. HH:mm',
-                  { locale: hu },
-                )}
-                onPress={() => {
-                  setDatePickerShown(!datePickerShown)
-                  setIsStartDate(true)
-                }}
-              />
-              <MyText
-                textColor="black"
-                style={{ fontWeight: 'bold', paddingBottom: 5 }}
-              >
-                Szolgálat vége
-              </MyText>
-              <DateTimeFormInput
-                themeColor="black"
-                values={values}
-                textColor="black"
-                name="assignmentEnd"
-                subtitle={format(
-                  values?.assignmentEnd == ''
-                    ? new Date()
-                    : values.assignmentEnd,
-                  'yyyy. MMMM. dd. HH:mm',
-                  { locale: hu },
-                )}
-                onPress={() => {
-                  setDatePickerShown(!datePickerShown)
-                  setIsStartDate(false)
-                }}
-              />
+
               <MyText
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
@@ -368,6 +261,56 @@ function EditAssignment({ route, navigation }) {
                   A szolgálathoz nincsenek beosztva tagok!
                 </MyText>
               )}
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <MyButton
+                  onPress={() => navigation.navigate('Members')}
+                  title="Új tag beosztása"
+                  style={{ marginTop: 10, width: 'auto' }}
+                />
+              </View>
+              <MyText
+                textColor="black"
+                style={{ fontWeight: 'bold', paddingBottom: 5 }}
+              >
+                Szolgálat kezdete
+              </MyText>
+              <DateTimeFormInput
+                themeColor="black"
+                values={values}
+                textColor="black"
+                name="start"
+                subtitle={format(
+                  values?.start == '' ? new Date() : values.start,
+                  'yyyy. MMMM. dd. HH:mm',
+                  { locale: hu },
+                )}
+                onPress={() => {
+                  setDatePickerShown(!datePickerShown)
+                  setIsStartDate(true)
+                }}
+              />
+              <MyText
+                textColor="black"
+                style={{ fontWeight: 'bold', paddingBottom: 5 }}
+              >
+                Szolgálat vége
+              </MyText>
+              <DateTimeFormInput
+                themeColor="black"
+                values={values}
+                textColor="black"
+                name="end"
+                subtitle={format(
+                  values?.end == '' ? new Date() : values.end,
+                  'yyyy. MMMM. dd. HH:mm',
+                  { locale: hu },
+                )}
+                onPress={() => {
+                  setDatePickerShown(!datePickerShown)
+                  setIsStartDate(false)
+                }}
+              />
+
               {/* {values.assignees.length === 0 &&
               (
                 <MyText textColor='black' style={{fontWeight: 'bold'}}>
@@ -378,78 +321,49 @@ function EditAssignment({ route, navigation }) {
               {datePickerShown && (
                 <DateTimePicker
                   mode="date"
-                  value={
-                    new Date(
-                      isStartDate
-                        ? values.assignmentStart
-                        : values.assignmentEnd,
-                    )
-                  }
+                  value={new Date(isStartDate ? values.start : values.end)}
                   onChange={onChangeDate}
                 />
               )}
               {timePickerShown && (
                 <DateTimePicker
                   mode="time"
-                  value={
-                    new Date(
-                      isStartDate
-                        ? values.assignmentStart
-                        : values.assignmentEnd,
-                    )
-                  }
+                  value={new Date(isStartDate ? values.start : values.end)}
                   onChange={onChangeTime}
                 />
               )}
 
               {/* <MembersAutoComplete data={members} /> */}
               {/* <MyButton onPress={() => console.log(assignment)}></MyButton> */}
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <MyButton onPress={() => navigation.navigate('Members')} title='Új tag beosztása' style={{marginTop: 10, width: "auto"}}/>
-              </View>
 
-              <MyText textColor="black">{assignmentId}</MyText>
-              <MyText textColor="black">
-                {JSON.stringify(values.assignees)}
+              {/* <MyText textColor="black">{assignmentId}</MyText> */}
+              {/* <MyText textColor="black">
+                {JSON.stringify(values)}
               </MyText>
-
+              <MyText textColor="black">
+                {JSON.stringify(assignment)}
+              </MyText> */}
               {/* <MyText textColor="black">{JSON.stringify(assignment)}</MyText> */}
               {/* <MyText textColor="black">{JSON.stringify(values)}</MyText> */}
-              {JSON.stringify(values) != JSON.stringify(values) && (
-                <View>
-                  <MyButton
-                    title={i18n.t('save')}
-                    onPress={() => {
-                      setTouched({
-                        email: true,
-                        username: true,
-                        password: true,
-                        repeatedPassword: true,
-                        address: true,
-                        idNumber: true,
-                        phoneNumber: true,
-                        guardNumber: true,
-                      })
-                      validateForm()
-                      console.log(errors)
-                      if (Object.keys(formRef.current.errors).length !== 0) {
-                        setErrorMessage(i18n.t('wrongFields'))
-                        // setErrorShown(true)
-                        return
-                      }
-                      //   if (
-                      //     user.email !== values.email ||
-                      //     user.username !== values.username ||
-                      //     defaultPwd != values.password
-                      //   ) {
-                      //     setAlertShown(true)
-                      //   } else {
-                      //     handleSubmit()
-                      //   }
-                    }}
-                  />
-                </View>
-              )}
+
+              <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
+                <MyButton
+                  title="Törlés"
+                  style={{ width: 100, backgroundColor: 'red' }}
+                  onPress={handleDeleteAssignment}
+                />
+
+                {JSON.stringify(values) != JSON.stringify(assignment) &&
+                  user.roles.includes('president') && (
+                    <View>
+                      <MyButton
+                        title={i18n.t('save')}
+                        style={{backgroundColor: 'green', width: 100, marginLeft: 20}}
+                        onPress={handleSubmit}
+                      />
+                    </View>
+                  )}
+              </View>
             </View>
           )}
         </Formik>
