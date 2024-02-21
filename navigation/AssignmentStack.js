@@ -5,6 +5,7 @@ import { useTheme } from '@react-navigation/native'
 import AssingmentsScreen from '../screens/AssingmentsScreen'
 import EditAssignment from '../screens/EditAssignment'
 import RefactoredCalendar from '../components/new calendars/RefactoredCalendar'
+import MembersScreen from '../screens/MembersScreen'
 // import { FormProvider } from '../components/FormContext'
 
 const Stack = createStackNavigator()
@@ -26,6 +27,9 @@ function AssingmentStack(props) {
           />
         <Stack.Screen name="Assingments" component={
             RefactoredCalendar
+        } />
+                <Stack.Screen name="Members" component={
+            MembersScreen
         } />
       </Stack.Navigator>
   )
