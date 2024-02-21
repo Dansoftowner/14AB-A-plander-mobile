@@ -1,12 +1,30 @@
-import i18n from "../locales/i18n";
-import apiClient from "./client";
+import i18n from '../locales/i18n'
+import apiClient from './client'
 
+const getAssignments = () =>
+  apiClient.get('/assignments', { projection: 'full' })
 
-const getAssignments = () => apiClient.get("/assignments");
+const getAssignmentById = (assignmentId) =>
+  apiClient.get(`/assignments/${assignmentId}`, { projection: 'full' })
 
-const getAssignmentById = (assignmentId) => apiClient.get(`/assignments/${assignmentId}`, {projection: 'full'})
+const patchAssignmentById = (
+  assignmentId,
+  title,
+  location,
+  start,
+  end,
+  assignees,
+) =>
+  apiClient.patch(`/assignments/${assignmentId}`, {
+    title,
+    location,
+    start,
+    end,
+    assignees,
+  })
 
 export default {
-    getAssignments,
-    getAssignmentById
+  getAssignments,
+  getAssignmentById,
+  patchAssignmentById
 }
