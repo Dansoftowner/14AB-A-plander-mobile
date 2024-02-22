@@ -67,7 +67,7 @@ function MyTextInput({
           maxLength={maxLength}
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
-          placeholderTextColor={colorsByTheme.Login_placeholders}
+          placeholderTextColor={themeColor == 'white' ? colorsByTheme.Login_placeholders : colorsByTheme.black_white}
           style={[styles.text, { color: colorCalculated() }, style]}
           {...otherProps}
         />
