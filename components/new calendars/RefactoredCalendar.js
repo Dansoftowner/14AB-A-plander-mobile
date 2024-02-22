@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useContext,
 } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import {
   AgendaList,
   CalendarProvider,
@@ -63,7 +63,7 @@ LocaleConfig.locales['hu'] = {
   today: 'Ma',
 }
 
-export default function RefactoredCalendar({navigation, route}) {
+export default function RefactoredCalendar({ navigation, route }) {
   const leftArrowIcon = require('../../assets/arrows/previous.png')
   const rightArrowIcon = require('../../assets/arrows/next.png')
   const [markedDays, setMarkedDays] = useState(null)
@@ -86,6 +86,23 @@ export default function RefactoredCalendar({navigation, route}) {
     textDisabledColor: colors.light,
     arrowColor: colorsByTheme.medium_blue_yellow,
   }
+
+  // const didBlurSubscription = navigation.addListener(
+  //   'focus',
+  //   payload => {
+  //     console.debug('', payload);
+  //   }
+  // );
+  
+  // Remove the listener when you are done
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getAgendaItems()
+    });
+    return unsubscribe;
+
+  }, [navigation])
 
   useEffect(() => {
     getMarkedDays()
@@ -282,7 +299,9 @@ export default function RefactoredCalendar({navigation, route}) {
         item={item}
         dotColor={item.color}
         onPress={() => console.log('szerkesztés')}
-        onItemPress={() => navigation.navigate('EditAssignment', { id: item._id })}
+        onItemPress={() =>
+          navigation.navigate('EditAssignment', { id: item._id })
+        }
       />
     )
   }, [])
@@ -304,20 +323,47 @@ export default function RefactoredCalendar({navigation, route}) {
           firstDay={1}
           markingType={'period'}
           markedDates={{
-            '2024-02-15': {color:periodColor, startingDay: true, endingDay: true},
-            '2024-02-18': {color:periodColor, startingDay: true, endingDay: true, dotColor: dotColor, marked: true},
+            '2024-02-15': {
+              color: periodColor,
+              startingDay: true,
+              endingDay: true,
+            },
+            '2024-02-18': {
+              color: periodColor,
+              startingDay: true,
+              endingDay: true,
+              dotColor: dotColor,
+              marked: true,
+            },
             //'2024-02-18': {dotColor: dotColor, marked: true},
-            '2024-02-19': {marked: true, dotColor: dotColor},
-            '2024-02-20': {marked: true, dotColor: dotColor},
-            '2024-02-21': {marked: true, dotColor: dotColor, startingDay: true, color: periodColor},
-            '2024-02-22': {endingDay: true, color: periodColor},
-            '2024-02-28': {startingDay: true, color: periodColor},
-            '2024-02-29': {endingDay: true, color: periodColor, startingDay: false},
-
+            '2024-02-19': { marked: true, dotColor: dotColor },
+            '2024-02-20': { marked: true, dotColor: dotColor },
+            '2024-02-21': {
+              marked: true,
+              dotColor: dotColor,
+              startingDay: true,
+              color: periodColor,
+            },
+            '2024-02-22': { endingDay: true, color: periodColor },
+            '2024-02-28': { startingDay: true, color: periodColor },
+            '2024-02-29': {
+              endingDay: true,
+              color: periodColor,
+              startingDay: false,
+            },
           }}
           leftArrowImageSource={leftArrowIcon}
           rightArrowImageSource={rightArrowIcon}
         />
+        {user.roles.includes('president') && (
+          <View style={{ alignItems: 'center' }}>
+            <MyButton
+              style={{ width: 200, marginTop: 20 }}
+              title="Beosztás felvétele"
+              onPress={() => navigation.navigate('AddAssignment')}
+            />
+          </View>
+        )}
         <AgendaList
           sections={agendaItems ?? []}
           renderItem={renderItem}
