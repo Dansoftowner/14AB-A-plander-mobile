@@ -153,18 +153,8 @@ function AddAssignment({ route, navigation }) {
     }
   }
 
-  //   useEffect(() => {
-  //     if (route.params.id !== -1) {
-  //       // setAssignmentId(route.params.id)
-  //       handleGetAssignment(route.params.id)
-  //     }
-  //   }, [route.params.id])
-
   useEffect(() => {
     if (route.params?.member !== undefined) {
-      //console.log('itt')
-      // setAssignmentId(route.params.id)
-      // handleGetAssignment(route.params.id)
       handleAddMember(route.params.member)
     }
   }, [route.params])
@@ -178,7 +168,6 @@ function AddAssignment({ route, navigation }) {
         button={i18n.t('close')}
         message={errorMessage}
         onClose={() => setErrorShown(false)}
-        //onPress={() => setErrorShown(false)}
       />
       <UpdatedAlertMessage
         visible={successShown}
@@ -190,7 +179,6 @@ function AddAssignment({ route, navigation }) {
           setSuccessShown(false)
           navigation.navigate('Assingments')
         }}
-        //onPress={() => setSuccessShown(false)}
       />
       <View style={styles.container}>
         <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
@@ -204,11 +192,8 @@ function AddAssignment({ route, navigation }) {
             end: add(new Date(), { hours: 3 }),
             assignees: [],
           }}
-          // initialErrors={formErrors}
-          //validationSchema={validationSchema}
           onSubmit={handleSubmit}
           innerRef={formRef}
-          //jkenableReinitialize //ez nagyon fontos!
         >
           {({
             values,
@@ -241,26 +226,12 @@ function AddAssignment({ route, navigation }) {
                 title={i18n.t('assignmentLocation')}
                 placeholder="Opcionális"
               />
-              {/* <MyFormField
-            //   value={values.username}
-              onChangeText={handleChange('username')}
-              autoCapitalize="none"
-              autoCorrect={false}
-              icon="account-outline"
-              name="username"
-              placeholder={i18n.t('username')}
-              themeColor="white"
-            /> */}
               <MyText
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
                 {i18n.t('membersInDuty')}
               </MyText>
-              {/* <MembersAutoComplete
-                data={members}
-                values={values.assignees}
-                /> */}
               {values.assignees.length !== 0 ? (
                 values.assignees.map((item) => (
                   <MemberListItem
@@ -270,18 +241,6 @@ function AddAssignment({ route, navigation }) {
                   />
                 ))
               ) : (
-                // <FlatList
-                //   style={{ flexGrow: 0 }}
-                //   data={values.assignees}
-                //   renderItem={({ item }) => (
-                //     <MemberListItem
-                //       name={item.name}
-                //       _id={item._id}
-                //       onPress={(_id) => handleDeleteMember(_id)}
-                //     />
-                //   )}
-                //   //key={item._id}
-                // />
                 <MyText textColor="black" style={{ fontWeight: 'bold' }}>
                   A szolgálathoz nincsenek beosztva tagok!
                 </MyText>
@@ -337,14 +296,6 @@ function AddAssignment({ route, navigation }) {
                   setIsStartDate(false)
                 }}
               />
-
-              {/* {values.assignees.length === 0 &&
-              (
-                <MyText textColor='black' style={{fontWeight: 'bold'}}>
-                  A szolgálathoz nincsenek beosztva tagok!
-                </MyText>
-              )} */}
-              {/* <MemberListItem name="Miklós" /> */}
               {datePickerShown && (
                 <DateTimePicker
                   mode="date"
@@ -360,17 +311,6 @@ function AddAssignment({ route, navigation }) {
                 />
               )}
 
-              {/* <MembersAutoComplete data={members} /> */}
-              {/* <MyButton onPress={() => console.log(assignment)}></MyButton> */}
-
-              {/* <MyText textColor="black">{assignmentId}</MyText> */}
-              <MyText textColor="black">{JSON.stringify(values)}</MyText>
-              {/* <MyText textColor="black">
-                {JSON.stringify(assignment)}
-              </MyText> */}
-              {/* <MyText textColor="black">{JSON.stringify(assignment)}</MyText> */}
-              {/* <MyText textColor="black">{JSON.stringify(values)}</MyText> */}
-
               <View
                 style={{
                   flexDirection: 'row',
@@ -383,17 +323,6 @@ function AddAssignment({ route, navigation }) {
                   style={{ width: 100, backgroundColor: 'green' }}
                   onPress={handleAddAssignment}
                 />
-
-                {/* {JSON.stringify(values) != JSON.stringify(assignment) &&
-                  user.roles.includes('president') && (
-                    <View>
-                      <MyButton
-                        title={i18n.t('save')}
-                        style={{backgroundColor: 'green', width: 100, marginLeft: 20}}
-                        onPress={handleSubmit}
-                      />
-                    </View>
-                  )} */}
               </View>
             </View>
           )}

@@ -95,8 +95,6 @@ function EditAssignment({ route, navigation }) {
     }
   }
 
-  // const [assignmentId, setAssignmentId] = useState()
-
   useEffect(() => {
     if (route.params.id !== -1) {
       // setAssignmentId(route.params.id)
@@ -106,9 +104,6 @@ function EditAssignment({ route, navigation }) {
 
   useEffect(() => {
     if (route.params.member !== undefined) {
-      //console.log('itt')
-      // setAssignmentId(route.params.id)
-      // handleGetAssignment(route.params.id)
       handleAddMember(route.params.member)
     }
   }, [route.params.member])
@@ -143,9 +138,9 @@ function EditAssignment({ route, navigation }) {
       return console.log(result)
     }
     console.log(result.data)
-    // setSuccessMessage('A szolgálat sikeresen törölve!')
-    // setSuccessShown(true)
-    return navigation.navigate('Assingments', { delete: true })
+    setSuccessMessage('A szolgálat sikeresen törölve!')
+    return setSuccessShown(true)
+    //return navigation.navigate('Assingments', { delete: true })
   }
 
   const handleDeleteMember = (item) => {
@@ -166,7 +161,6 @@ function EditAssignment({ route, navigation }) {
         button={i18n.t('close')}
         message={errorMessage}
         onClose={() => setErrorShown(false)}
-        //onPress={() => setErrorShown(false)}
       />
       <UpdatedAlertMessage
         visible={successShown}
@@ -178,7 +172,6 @@ function EditAssignment({ route, navigation }) {
           setSuccessShown(false)
           navigation.navigate('Assingments')
         }}
-        //onPress={() => setSuccessShown(false)}
       />
       <View style={styles.container}>
         <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
@@ -190,33 +183,17 @@ function EditAssignment({ route, navigation }) {
             title: assignment?.title == null ? '' : assignment.title,
             location: assignment?.location == null ? '' : assignment.location,
             start:
-              assignment?.start == undefined
-                ? ''
-                : new Date(assignment.start),
-            end:
-              assignment?.end == undefined
-                ? ''
-                : new Date(assignment.end),
+              assignment?.start == undefined ? '' : new Date(assignment.start),
+            end: assignment?.end == undefined ? '' : new Date(assignment.end),
             assignees:
               assignment?.assignees == undefined ? [] : assignment.assignees,
             report: assignment?.report,
           }}
-          // initialErrors={formErrors}
-          //validationSchema={validationSchema}
           onSubmit={handleSubmit}
           innerRef={formRef}
-          enableReinitialize //ez nagyon fontos!
+          //enableReinitialize //ez nagyon fontos!
         >
-          {({
-            values,
-            errors,
-            handleChange,
-            handleSubmit,
-            setFieldValue,
-            validateForm,
-            setTouched,
-            touched,
-          }) => (
+          {({ values, handleChange, handleSubmit }) => (
             <View style={styles.form}>
               <EditProfileFields
                 themeColor="black"
@@ -236,44 +213,30 @@ function EditAssignment({ route, navigation }) {
                 name="location"
                 title={i18n.t('assignmentLocation')}
               />
-
-              {/* <MyText textColor='black'>{JSON.stringify(values.assignees)}</MyText> */}
               <MyText
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
                 {i18n.t('membersInDuty')}
               </MyText>
-              {/* <MembersAutoComplete
-                data={members}
-                values={values.assignees}
-                /> */}
-              {values.assignees.length !== 0 ? 
-              // (
-              //   <FlatList
-              //     style={{ flexGrow: 0 }}
-              //     data={values.assignees}
-              //     renderItem={({ item }) => (
-              //       <MemberListItem
-              //         name={item.name}
-              //         _id={item._id}
-              //         onPress={(_id) => handleDeleteMember(_id)}
-              //       />
-              //     )}
-              //     //key={item._id}
-              //   />
-              // ) 
-              (
-                  values.assignees.map(item => <MemberListItem item={item} onPress={(item) => handleDeleteMember(item)} key={item._id} />)
-              )
-              : (
+              {values.assignees.length !== 0 ? (
+                values.assignees.map((item) => (
+                  <MemberListItem
+                    item={item}
+                    onPress={(item) => handleDeleteMember(item)}
+                    key={item._id}
+                  />
+                ))
+              ) : (
                 <MyText textColor="black" style={{ fontWeight: 'bold' }}>
                   A szolgálathoz nincsenek beosztva tagok!
                 </MyText>
               )}
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <MyButton
-                  onPress={() => navigation.navigate('Members', {path: 'edit'})}
+                  onPress={() =>
+                    navigation.navigate('Members', { path: 'edit' })
+                  }
                   title="Új tag beosztása"
                   style={{ marginTop: 10, width: 'auto' }}
                 />
@@ -321,13 +284,6 @@ function EditAssignment({ route, navigation }) {
                 }}
               />
 
-              {/* {values.assignees.length === 0 &&
-              (
-                <MyText textColor='black' style={{fontWeight: 'bold'}}>
-                  A szolgálathoz nincsenek beosztva tagok!
-                </MyText>
-              )} */}
-              {/* <MemberListItem name="Miklós" /> */}
               {datePickerShown && (
                 <DateTimePicker
                   mode="date"
@@ -342,19 +298,6 @@ function EditAssignment({ route, navigation }) {
                   onChange={onChangeTime}
                 />
               )}
-
-              {/* <MembersAutoComplete data={members} /> */}
-              {/* <MyButton onPress={() => console.log(assignment)}></MyButton> */}
-
-              {/* <MyText textColor="black">{assignmentId}</MyText> */}
-              {/* <MyText textColor="black">
-                {JSON.stringify(values)}
-              </MyText>
-              <MyText textColor="black">
-                {JSON.stringify(assignment)}
-              </MyText> */}
-              {/* <MyText textColor="black">{JSON.stringify(assignment)}</MyText> */}
-              {/* <MyText textColor="black">{JSON.stringify(values)}</MyText> */}
 
               <View
                 style={{
