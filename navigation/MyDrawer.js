@@ -37,20 +37,25 @@ function MyDrawer(props) {
           drawerActiveBackgroundColor: colorsByTheme.medium_blue_dark_blue,
         }}
       >
-        <Drawer.Screen name={routes.MAIN} component={MainScreen} />
+        <Drawer.Screen
+          name={routes.MAIN}
+          component={MainScreen}
+          options={{ title: i18n.t('navMain') }}
+        />
         <Drawer.Screen
           name={routes.SETTINGS}
           component={SettingsScreen}
+          options={{ title: i18n.t('navSettings') }}
         />
         <Drawer.Screen
           name={routes.ASSIGNMENT_STACK}
           component={AssingmentStack}
-          options={{ headerTitle: i18n.t('assignments')}}
+          options={{ title: i18n.t('assignments'), headerTitle: i18n.t('assignments')  }}
         />
         <Drawer.Screen
           name={routes.PROFILE}
           component={ProfileScreen}
-          options={{ headerTitle: i18n.t('editProfile')}}
+          options={{ title: i18n.t('navProfile'), headerTitle: i18n.t('editProfile') }}
         />
       </Drawer.Navigator>
     </FormProvider>
