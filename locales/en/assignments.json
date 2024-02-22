@@ -1,7 +1,7 @@
 {
   "editAssignment": "Edit assignment",
-  "assignmentName": "Name of the assignment",
-  "assignmentLocation": "Location of the assignment",
+  "assignmentName": "Name",
+  "assignmentLocation": "Location",
   "optional": "Optional",
   "memberName": "Member's name",
   "noMemberFound": "No member found!",
