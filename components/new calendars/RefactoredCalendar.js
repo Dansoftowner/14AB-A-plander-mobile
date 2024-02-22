@@ -20,48 +20,9 @@ import assignments from '../../api/assignments'
 import MyButton from '../MyButton'
 import MyText from '../MyText'
 import AuthContext from '../../auth/authContext'
-
-LocaleConfig.locales['hu'] = {
-  monthNames: [
-    'január',
-    'február',
-    'március',
-    'április',
-    'május',
-    'június',
-    'július',
-    'augusztus',
-    'szeptember',
-    'október',
-    'november',
-    'december',
-  ],
-  monthNamesShort: [
-    'jan',
-    'feb',
-    'márc',
-    'ápr',
-    'máj',
-    'jún',
-    'júl',
-    'aug',
-    'szept',
-    'okt',
-    'nov',
-    'dec',
-  ],
-  dayNames: [
-    'vasárnap',
-    'hétfő',
-    'kedd',
-    'szerda',
-    'csütörtök',
-    'péntek',
-    'szombat',
-  ],
-  dayNamesShort: ['V', 'H', 'K', 'Sz', 'Cs', 'P', 'Sz'],
-  today: 'Ma',
-}
+import dateTranslation from '../../locales/hu/date'
+import i18n from '../../locales/i18n'
+LocaleConfig.locales['hu'] = dateTranslation
 
 export default function RefactoredCalendar({ navigation, route }) {
   const leftArrowIcon = require('../../assets/arrows/previous.png')
@@ -297,7 +258,6 @@ export default function RefactoredCalendar({ navigation, route }) {
       <AgendaItem
         item={item}
         dotColor={item.color}
-        onPress={() => console.log('szerkesztés')}
         onItemPress={() =>
           navigation.navigate('EditAssignment', { id: item._id })
         }
@@ -358,7 +318,7 @@ export default function RefactoredCalendar({ navigation, route }) {
           <View style={{ alignItems: 'center' }}>
             <MyButton
               style={{ width: 200, marginTop: 20 }}
-              title="Beosztás felvétele"
+              title={i18n.t('addAssignment')}
               onPress={() => navigation.navigate('AddAssignment')}
             />
           </View>
