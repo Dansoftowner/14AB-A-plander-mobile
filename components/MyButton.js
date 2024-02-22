@@ -4,7 +4,7 @@ import { useTheme } from '@react-navigation/native';
 
 //import colors from "../config/colors";
 
-function MyButton({ title, onPress, style, color = "medium_blue" }) {
+function MyButton({ title, onPress, style, color = "medium_blue", textStyle }) {
   const { colors: colorsByTheme } = useTheme();
 
   return (
@@ -12,7 +12,7 @@ function MyButton({ title, onPress, style, color = "medium_blue" }) {
       style={[styles.button, { backgroundColor: colorsByTheme.Login_buttonBg }, style]}
       onPress={onPress}
     >
-      <Text style={[styles.text, {color: colorsByTheme.Login_buttonColor}]}>{title}</Text>
+      <Text style={[styles.text, {color: colorsByTheme.Login_buttonColor}, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 }
