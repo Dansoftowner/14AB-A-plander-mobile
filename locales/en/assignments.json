@@ -5,11 +5,15 @@
   "optional": "Optional",
   "memberName": "Member's name",
   "noMemberFound": "No member found!",
-  "add": "Add",
+  "add": "Add new member",
   "membersInDuty": "Members in duty",
   "dateOfAssignment": "Date of the assignment",
   "addAssignment": "Add assignment",
   "removedAssignment": "The assignment is successfully removed.",
   "modifiedAssignment": "The assignment is successfully modified.",
-  "addedAssignment": "The assignment is successfully added."
+  "addedAssignment": "The assignment is successfully added.",
+  "errorStartEndDate": "The start date should be before the end date!",
+  "noMembers": "No members assigned to this assignment!",
+  "assignmentStart": "Start date",
+  "assignmentEnd": "End date"
 }

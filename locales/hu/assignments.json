@@ -5,11 +5,15 @@
   "optional": "Opcionális",
   "memberName": "Tag neve",
   "noMemberFound": "Nincs ilyen tag!",
-  "add": "Felvétel",
+  "add": "Új tag beosztása",
   "membersInDuty": "Beosztott tagok",
   "dateOfAssignment": "Szolgálat ideje",
   "addAssignment": "Beosztás felvétele",
-  "removedAssignment": "A szolgálat törölve lett.",
-  "modifiedAssignment": "A szolgálat módosítva lett.",
-  "addedAssignment": "A szolgálat sikeresen rögzítve lett."
+  "removedAssignment": "A szolgálat sikeresen törölve lett.",
+  "modifiedAssignment": "A szolgálat sikeresen módosítva lett.",
+  "addedAssignment": "A szolgálat sikeresen rögzítve lett.",
+  "errorStartEndDate": "A szolgálat kezdetének dátuma nem lehet az szolgálat vége után!",
+  "noMembers": "A szolgálathoz nincsenek beosztva tagok!",
+  "assignmentStart": "Szolgálat kezdete",
+  "assignmentEnd": "Szolgálat vége"
 }
