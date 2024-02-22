@@ -28,7 +28,7 @@ import { FormProvider } from '../components/FormContext'
 import { useFormDispatch, useFormState } from '../components/FormContext'
 import storage, { storeToken } from '../auth/storage'
 import useAuth from '../auth/useAuth'
-import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
+import MyAlert from '../components/MyAlert'
 import routes from '../navigation/routes'
 
 export default function LoginScreen({ navigation }) {
@@ -68,7 +68,11 @@ export default function LoginScreen({ navigation }) {
   const handleSubmit = async (fastlogin, data) => {
     const values = form.current.values
     if (!fastlogin) {
-      form.current.setTouched({username: true, password: true, association: true});
+      form.current.setTouched({
+        username: true,
+        password: true,
+        association: true,
+      })
       form.current.validateForm()
       console.log(form.current.errors)
       if (Object.keys(form.current.errors).length !== 0) {
@@ -115,7 +119,7 @@ export default function LoginScreen({ navigation }) {
         { backgroundColor: colorsByTheme.Login_background },
       ]}
     >
-      <UpdatedAlertMessage
+      <MyAlert
         visible={loginFailed}
         type="error"
         size="small"
@@ -158,7 +162,7 @@ export default function LoginScreen({ navigation }) {
         innerRef={form}
         initialValues={formValues}
         initialErrors={formErrors}
-        initialTouched={{username: false}}
+        initialTouched={{ username: false }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
         enableReinitialize
@@ -214,7 +218,7 @@ export default function LoginScreen({ navigation }) {
                 // console.log(errors)
                 //setTouched({username: true})
                 //console.log('itt');
-                handleSubmit();
+                handleSubmit()
               }}
             />
             <MyButton

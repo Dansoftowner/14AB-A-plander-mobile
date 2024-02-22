@@ -15,8 +15,7 @@ import EditProfileFields from '../components/EditProfileFields'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
 import members from '../api/members'
-import FancyAlert from '../components/MyAlert'
-import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
+import MyAlert from '../components/MyAlert'
 import storage from '../auth/storage'
 import AuthContext from '../auth/authContext'
 
@@ -76,7 +75,6 @@ function ProfileScreen() {
   useEffect(() => {
     formRef.current.setFieldValue('password', defaultPwd)
     formRef.current.setFieldValue('repeatedPassword', defaultPwd)
-
   }, [])
 
   const handleSubmit = async (currentPassword = undefined) => {
@@ -161,7 +159,7 @@ function ProfileScreen() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <UpdatedAlertMessage
+        <MyAlert
           visible={alertShown}
           type="confirmation"
           size="large"
@@ -173,7 +171,7 @@ function ProfileScreen() {
           onClose={() => setAlertShown(false)}
           onPress={(text) => handleSubmit(text)}
         />
-        <UpdatedAlertMessage
+        <MyAlert
           visible={errorShown}
           type="error"
           size="small"
@@ -182,7 +180,7 @@ function ProfileScreen() {
           onClose={() => setErrorShown(false)}
           //onPress={() => setErrorShown(false)}
         />
-        <UpdatedAlertMessage
+        <MyAlert
           visible={logoutShown}
           type="success"
           size="small"
@@ -194,7 +192,7 @@ function ProfileScreen() {
           }}
           //onPress={() => setSuccessShown(false)}
         />
-        <UpdatedAlertMessage
+        <MyAlert
           visible={successShown}
           type="success"
           size="small"
@@ -378,7 +376,12 @@ function ProfileScreen() {
                   color={colorsByTheme.black_white}
                 />
               </View>
-              {JSON.stringify(values) != JSON.stringify({...user, password: defaultPwd, repeatedPassword: defaultPwd}) && (
+              {JSON.stringify(values) !=
+                JSON.stringify({
+                  ...user,
+                  password: defaultPwd,
+                  repeatedPassword: defaultPwd,
+                }) && (
                 <View>
                   <MyButton
                     title={i18n.t('save')}

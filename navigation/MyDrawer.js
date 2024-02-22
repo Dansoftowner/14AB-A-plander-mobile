@@ -39,7 +39,7 @@ function MyDrawer(props) {
       >
         <Drawer.Screen name={routes.MAIN} component={MainScreen} />
         <Drawer.Screen
-          name={i18n.t('navSettings')}
+          name={routes.SETTINGS}
           component={SettingsScreen}
         />
         <Drawer.Screen

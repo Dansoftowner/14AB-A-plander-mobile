@@ -15,8 +15,7 @@ import EditProfileFields from '../components/EditProfileFields'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
 import membersApi from '../api/members'
-import FancyAlert from '../components/MyAlert'
-import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
+import MyAlert from '../components/MyAlert'
 import storage from '../auth/storage'
 import AuthContext from '../auth/authContext'
 import AssociationsAutoComplete from '../components/AssociationsAutoComplete'
@@ -153,7 +152,7 @@ function EditAssignment({ route, navigation }) {
 
   return (
     <ScrollView style={{ backgroundColor: colorsByTheme.white_black }}>
-      <UpdatedAlertMessage
+      <MyAlert
         visible={errorShown}
         type="error"
         size="small"
@@ -161,7 +160,7 @@ function EditAssignment({ route, navigation }) {
         message={errorMessage}
         onClose={() => setErrorShown(false)}
       />
-      <UpdatedAlertMessage
+      <MyAlert
         visible={successShown}
         type="success"
         size="small"
