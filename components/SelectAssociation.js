@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik'
 import MyErrorMessage from './MyErrorMessage'
 import MyText from './MyText'
 
-function SelectAssociation({ onPress, title, name, subtitle }) {
+function SelectAssociation({ onPress, title, name, subtitle, isButton }) {
   const {
     setFieldTouched,
     setTouched,
@@ -25,7 +25,6 @@ function SelectAssociation({ onPress, title, name, subtitle }) {
           title={title}
           icon="police-badge-outline"
           isButton={true}
-          subtitle={subtitle}
         />
       </TouchableWithoutFeedback>
       <MyErrorMessage error={errors[name]} visible={touched[name]} />

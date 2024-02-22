@@ -24,6 +24,7 @@ import dateTranslationHU from '../locales/hu/date'
 import dateTranslationEN from '../locales/hu/date'
 import i18n from '../locales/i18n'
 import languageContext from '../locales/LanguageContext'
+import routes from '../navigation/routes'
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
 
@@ -227,7 +228,7 @@ export default function AssignmentScreen({ navigation, route }) {
         item={item}
         dotColor={item.color}
         onItemPress={() =>
-          navigation.navigate('EditAssignment', { id: item._id })
+          navigation.navigate(routes.EDIT_ASSIGMENT, { id: item._id })
         }
         key={item._id}
       />
@@ -289,7 +290,7 @@ export default function AssignmentScreen({ navigation, route }) {
             <MyButton
               style={{ width: 200, marginTop: 20 }}
               title={i18n.t('addAssignment')}
-              onPress={() => navigation.navigate('AddAssignment')}
+              onPress={() => navigation.navigate(routes.ADD_ASSIGMENT)}
             />
           </View>
         )}

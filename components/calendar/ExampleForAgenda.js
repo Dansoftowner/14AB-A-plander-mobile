@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Alert, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Agenda, DateData, AgendaEntry, AgendaSchedule} from 'react-native-calendars';
-import MyText from '../components/MyText';
+import MyText from '../MyText';
 
 export default class AgendaScreen extends Component {
   state = {

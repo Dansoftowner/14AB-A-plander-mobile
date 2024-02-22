@@ -29,7 +29,8 @@ import DateTimeFormInput from '../components/DateTimeFormInput'
 const { add } = require('date-fns')
 
 import DateTimePicker from '@react-native-community/datetimepicker'
-import MemberListItem from './MemberListItem'
+import MemberListItem from '../components/MemberListItem'
+import routes from '../navigation/routes'
 
 function AddAssignment({ route, navigation }) {
   const { user, setUser } = useContext(AuthContext)
@@ -176,7 +177,7 @@ function AddAssignment({ route, navigation }) {
         message={successMessage}
         onClose={() => {
           setSuccessShown(false)
-          navigation.navigate('Assingments')
+          navigation.navigate(routes.ASSIGNMENTS)
         }}
       />
       <View style={styles.container}>
@@ -252,7 +253,7 @@ function AddAssignment({ route, navigation }) {
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <MyButton
                   onPress={() =>
-                    navigation.navigate('Members', { path: 'add' })
+                    navigation.navigate(routes.MEMBERS, { path: 'add' })
                   }
                   title={i18n.t('add')}
                   style={{ marginTop: 10, width: 'auto' }}

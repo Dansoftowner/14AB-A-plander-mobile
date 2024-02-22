@@ -5,16 +5,16 @@ import LoginScreen from '../screens/LoginScreen'
 import AssociationsScreen from '../screens/AssociationsScreen'
 import { useTheme } from '@react-navigation/native'
 import { FormProvider } from '../components/FormContext'
-
+import routes from './routes'
 const Stack = createStackNavigator()
 function MyStack(props) {
   const { colors: colorsByTheme } = useTheme()
   return (
     <FormProvider>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name={routes.LOGIN} component={LoginScreen} />
         <Stack.Screen
-          name="Associations"
+          name={routes.ASSOCIATIONS}
           component={AssociationsScreen}
           options={{
             headerShown: true,

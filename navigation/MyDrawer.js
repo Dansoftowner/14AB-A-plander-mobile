@@ -13,6 +13,7 @@ import i18n from '../locales/i18n'
 import ExpandableCalendarScreen from '../components/calendar/AgendaList'
 import AssignmentScreen from '../screens/AssignmentScreen'
 import AssingmentStack from './AssignmentStack'
+import routes from './routes'
 const Drawer = createDrawerNavigator()
 
 function MyDrawer(props) {
@@ -22,7 +23,7 @@ function MyDrawer(props) {
   return (
     <FormProvider>
       <Drawer.Navigator
-        initialRouteName={i18n.t('assignments')}
+        initialRouteName={routes.ASSIGNMENTS}
         screenOptions={{
           headerShown: true,
           headerTitle: user ? user.name : 'Plander',
@@ -36,20 +37,20 @@ function MyDrawer(props) {
           drawerActiveBackgroundColor: colorsByTheme.medium_blue_dark_blue,
         }}
       >
-        <Drawer.Screen name={i18n.t('navMain')} component={MainScreen} />
+        <Drawer.Screen name={routes.MAIN} component={MainScreen} />
         <Drawer.Screen
           name={i18n.t('navSettings')}
           component={SettingsScreen}
         />
         <Drawer.Screen
-          name={i18n.t('assignments')}
+          name={routes.ASSIGNMENT_STACK}
           component={AssingmentStack}
-          options={{ headerTitle: i18n.t('assignments') }}
+          options={{ headerTitle: i18n.t('assignments')}}
         />
         <Drawer.Screen
-          name={i18n.t('navProfile')}
+          name={routes.PROFILE}
           component={ProfileScreen}
-          options={{ headerTitle: i18n.t('editProfile') }}
+          options={{ headerTitle: i18n.t('editProfile')}}
         />
       </Drawer.Navigator>
     </FormProvider>

@@ -29,6 +29,7 @@ import { useFormDispatch, useFormState } from '../components/FormContext'
 import storage, { storeToken } from '../auth/storage'
 import useAuth from '../auth/useAuth'
 import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
+import routes from '../navigation/routes'
 
 export default function LoginScreen({ navigation }) {
   const form = React.useRef()
@@ -104,7 +105,7 @@ export default function LoginScreen({ navigation }) {
   })
 
   const handleNavigateAssociation = () => {
-    navigation.navigate('Associations')
+    navigation.navigate(routes.ASSOCIATIONS)
   }
 
   return (

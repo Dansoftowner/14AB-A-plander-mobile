@@ -28,8 +28,9 @@ import { enGB } from 'date-fns/locale'
 import DateTimeFormInput from '../components/DateTimeFormInput'
 
 import DateTimePicker from '@react-native-community/datetimepicker'
-import MemberListItem from './MemberListItem'
+import MemberListItem from '../components/MemberListItem'
 import languageContext from '../locales/LanguageContext'
+import routes from '../navigation/routes'
 
 function EditAssignment({ route, navigation }) {
   const { user, setUser } = useContext(AuthContext)
@@ -139,7 +140,6 @@ function EditAssignment({ route, navigation }) {
     console.log(result.data)
     setSuccessMessage(i18n.t('removedAssignment'))
     return setSuccessShown(true)
-    //return navigation.navigate('Assingments', { delete: true })
   }
 
   const handleDeleteMember = (item) => {
@@ -169,7 +169,7 @@ function EditAssignment({ route, navigation }) {
         message={successMessage}
         onClose={() => {
           setSuccessShown(false)
-          navigation.navigate('Assingments')
+          navigation.navigate(routes.ASSIGNMENTS)
         }}
       />
       <View style={styles.container}>
@@ -234,7 +234,7 @@ function EditAssignment({ route, navigation }) {
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <MyButton
                   onPress={() =>
-                    navigation.navigate('Members', { path: 'edit' })
+                    navigation.navigate(routes.MEMBERS, { path: 'edit' })
                   }
                   title={i18n.t('add')}
                   style={{ marginTop: 10, width: 'auto' }}

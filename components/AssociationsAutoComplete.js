@@ -15,6 +15,7 @@ import MyTextInput from './MyTextInput'
 import { useTheme } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import colors from '../config/colors'
+import routes from '../navigation/routes'
 
 function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
   const { colors: colorsByTheme } = useTheme()
@@ -47,7 +48,7 @@ function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
             <TouchableOpacity
               onPress={() => {
                 setFieldValue('association', item)
-                navigation.navigate('Login')
+                navigation.navigate(routes.LOGIN)
               }}
             >
               <MyText style={[styles.text, { color: colors.medium_dark }]}>

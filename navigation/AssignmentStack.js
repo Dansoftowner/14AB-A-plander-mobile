@@ -8,6 +8,7 @@ import MembersScreen from '../screens/MembersScreen'
 import colors from '../config/colors'
 import AddAssignment from '../screens/AddAssignment'
 import i18n from '../locales/i18n'
+import routes from './routes'
 // import { FormProvider } from '../components/FormContext'
 
 const Stack = createStackNavigator()
@@ -16,10 +17,10 @@ function AssingmentStack(props) {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="Assingments"
+      initialRouteName={routes.ASSIGNMENTS}
     >
       <Stack.Screen
-        name="EditAssignment"
+        name={routes.EDIT_ASSIGMENT}
         component={EditAssignment}
         options={{
           headerShown: true,
@@ -30,7 +31,7 @@ function AssingmentStack(props) {
         }}
       />
       <Stack.Screen
-        name="AddAssignment"
+        name={routes.ADD_ASSIGMENT}
         component={AddAssignment}
         options={{
           headerShown: true,
@@ -40,9 +41,9 @@ function AssingmentStack(props) {
           },
         }}
       />
-      <Stack.Screen name="Assingments" component={AssignmentScreen} />
+      <Stack.Screen name={routes.ASSIGNMENTS} component={AssignmentScreen} />
       <Stack.Screen
-        name="Members"
+        name= {routes.MEMBERS}
         component={MembersScreen}
         options={{
           headerShown: true,

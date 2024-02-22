@@ -15,10 +15,10 @@ import MyTextInput from './MyTextInput'
 import { useTheme } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import colors from '../config/colors'
-import MemberListItem from '../screens/MemberListItem'
+import MemberListItem from './MemberListItem'
 import EditField from './EditField'
-import { useRoute } from '@react-navigation/native';
-
+import { useRoute } from '@react-navigation/native'
+import routes from '../navigation/routes'
 
 function MembersAutoComplete({
   data,
@@ -44,35 +44,28 @@ function MembersAutoComplete({
           contentContainerStyle={{
             alignItems: 'center',
           }}
-          style={[
-            styles.list,
-            { backgroundColor: 'white', borderRadius: 15},
-          ]}
+          style={[styles.list, { backgroundColor: 'white', borderRadius: 15 }]}
           data={data}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
                 //onSelectMember(item._id)
-                
+
                 if (route.params.path === 'add') {
-                  console.log('Vissza a felvétel screenre')
-                navigation.navigate('AddAssignment', { id: -1, member: item })
+                  navigation.navigate(routes.ADD_ASSIGMENT, { id: -1, member: item })
                 }
                 if (route.params.path === 'edit') {
-                  console.log('Vissza a szerkesztő screenre')
-                navigation.navigate('EditAssignment', { id: -1, member: item })
+                  navigation.navigate(routes.EDIT_ASSIGMENT, {
+                    id: -1,
+                    member: item,
+                  })
                 }
-                // else{
-                //   navigation.navigate('EditAssignment', { id: -1, member: item })
-                // }
-                // setFieldValue('association', item)
               }}
             >
-              {item?.name && 
-              (
-              <MyText style={[styles.text, { color: colors.medium_dark }]}>
-                {item.name}
-              </MyText>
+              {item?.name && (
+                <MyText style={[styles.text, { color: colors.medium_dark }]}>
+                  {item.name}
+                </MyText>
               )}
             </TouchableOpacity>
           )}
