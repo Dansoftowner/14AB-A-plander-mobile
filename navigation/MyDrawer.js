@@ -8,11 +8,10 @@ import { useTheme } from '@react-navigation/native'
 import ProfileScreen from '../screens/ProfileScreen'
 import { FormProvider } from '../components/FormContext'
 import i18n from '../locales/i18n'
-import AssingmentsScreen from '../screens/AssingmentsScreen'
 // import ExampleForCalendar from '../screens/ExampleForCalendar'
 //import ExampleForAgenda from '../screens/ExampleForAgenda'
 import ExpandableCalendarScreen from '../components/calendar/AgendaList'
-import RefactoredCalendar from '../components/new calendars/RefactoredCalendar'
+import AssignmentScreen from '../screens/AssignmentScreen'
 import AssingmentStack from './AssignmentStack'
 const Drawer = createDrawerNavigator()
 
@@ -28,7 +27,10 @@ function MyDrawer(props) {
           headerShown: true,
           headerTitle: user ? user.name : 'Plander',
           headerTintColor: colorsByTheme.white_white,
-          headerStyle: { backgroundColor: colorsByTheme.medium_blue_dark_blue, shadowColor: colorsByTheme.medium_blue_dark_blue },
+          headerStyle: {
+            backgroundColor: colorsByTheme.medium_blue_dark_blue,
+            shadowColor: colorsByTheme.medium_blue_dark_blue,
+          },
           headerTitleStyle: { fontWeight: 'bold' },
           drawerActiveTintColor: colorsByTheme.white_white,
           drawerActiveBackgroundColor: colorsByTheme.medium_blue_dark_blue,

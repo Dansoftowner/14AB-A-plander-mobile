@@ -16,11 +16,7 @@ import { useTheme } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import colors from '../config/colors'
 
-function AutoComplete({
-  data,
-  selectAssociation,
-  setFieldValue,
-}) {
+function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
   const { colors: colorsByTheme } = useTheme()
   const navigation = useNavigation()
 
@@ -32,7 +28,11 @@ function AutoComplete({
             selectAssociation(text)
           }}
           icon="magnify"
-          style={{ marginVertical: 2, borderRadius: 15, color: colorsByTheme.white_black }}
+          style={{
+            marginVertical: 2,
+            borderRadius: 15,
+            color: colorsByTheme.white_black,
+          }}
         />
         <FlatList
           contentContainerStyle={{
@@ -40,7 +40,7 @@ function AutoComplete({
           }}
           style={[
             styles.list,
-            { backgroundColor: "white", borderRadius: 15, flexGrow: 0 },
+            { backgroundColor: 'white', borderRadius: 15, flexGrow: 0 },
           ]}
           data={data}
           renderItem={({ item }) => (
@@ -50,9 +50,7 @@ function AutoComplete({
                 navigation.navigate('Login')
               }}
             >
-              <MyText
-                style={[styles.text, { color: colors.medium_dark}]}
-              >
+              <MyText style={[styles.text, { color: colors.medium_dark }]}>
                 {item.name ?? ''}
               </MyText>
             </TouchableOpacity>
@@ -74,4 +72,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default AutoComplete
+export default AssociationsAutoComplete

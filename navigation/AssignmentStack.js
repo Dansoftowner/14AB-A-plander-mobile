@@ -2,9 +2,8 @@ import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { useTheme } from '@react-navigation/native'
-import AssingmentsScreen from '../screens/AssingmentsScreen'
 import EditAssignment from '../screens/EditAssignment'
-import RefactoredCalendar from '../components/new calendars/RefactoredCalendar'
+import AssignmentScreen from '../screens/AssignmentScreen'
 import MembersScreen from '../screens/MembersScreen'
 import colors from '../config/colors'
 import AddAssignment from '../screens/AddAssignment'
@@ -41,7 +40,7 @@ function AssingmentStack(props) {
           },
         }}
       />
-      <Stack.Screen name="Assingments" component={RefactoredCalendar} />
+      <Stack.Screen name="Assingments" component={AssignmentScreen} />
       <Stack.Screen
         name="Members"
         component={MembersScreen}

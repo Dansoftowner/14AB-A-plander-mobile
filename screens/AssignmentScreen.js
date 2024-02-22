@@ -12,30 +12,30 @@ import {
   LocaleConfig,
   Calendar,
 } from 'react-native-calendars'
-import AgendaItem from '../../components/calendar/AgendaItem'
-import { themeColor, lightThemeColor } from '../../components/calendar/theme'
+import AgendaItem from '../components/calendar/AgendaItem'
+import { themeColor, lightThemeColor } from '../components/calendar/theme'
 import { useTheme } from '@react-navigation/native'
-import colors from '../../config/colors'
-import assignments from '../../api/assignments'
-import MyButton from '../MyButton'
-import MyText from '../MyText'
-import AuthContext from '../../auth/authContext'
-import dateTranslationHU from '../../locales/hu/date'
-import dateTranslationEN from '../../locales/hu/date'
-import i18n from '../../locales/i18n'
-import languageContext from '../../locales/LanguageContext'
+import colors from '../config/colors'
+import assignments from '../api/assignments'
+import MyButton from '../components/MyButton'
+import MyText from '../components/MyText'
+import AuthContext from '../auth/authContext'
+import dateTranslationHU from '../locales/hu/date'
+import dateTranslationEN from '../locales/hu/date'
+import i18n from '../locales/i18n'
+import languageContext from '../locales/LanguageContext'
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
 
-export default function RefactoredCalendar({ navigation, route }) {
-  const leftArrowIcon = require('../../assets/arrows/previous.png')
-  const rightArrowIcon = require('../../assets/arrows/next.png')
+export default function AssignmentScreen({ navigation, route }) {
+  const leftArrowIcon = require('../assets/arrows/previous.png')
+  const rightArrowIcon = require('../assets/arrows/next.png')
   const [markedDays, setMarkedDays] = useState(null)
   const [agendaItems, setAgendaItems] = useState(null)
   const { colors: colorsByTheme } = useTheme()
   const periodColor = colors.light_green
   const dotColor = colors.black
-  const {language} = useContext(languageContext)
+  const { language } = useContext(languageContext)
   const { user, setUser } = useContext(AuthContext)
 
   const calendarTheme = {
@@ -51,15 +51,6 @@ export default function RefactoredCalendar({ navigation, route }) {
     textDisabledColor: colors.light,
     arrowColor: colorsByTheme.medium_blue_yellow,
   }
-
-  // const didBlurSubscription = navigation.addListener(
-  //   'focus',
-  //   payload => {
-  //     console.debug('', payload);
-  //   }
-  // );
-
-  // Remove the listener when you are done
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -191,7 +182,6 @@ export default function RefactoredCalendar({ navigation, route }) {
         },
       }
       return eventObject
-      
     }
   }
 
@@ -308,7 +298,13 @@ export default function RefactoredCalendar({ navigation, route }) {
           sections={agendaItems ?? []}
           renderItem={renderItem}
           // scrollToNextEvent
-          sectionStyle={[styles.section, { backgroundColor: colorsByTheme.white_dark_blue, color: colors.medium }]}
+          sectionStyle={[
+            styles.section,
+            {
+              backgroundColor: colorsByTheme.white_dark_blue,
+              color: colors.medium,
+            },
+          ]}
           dayFormat={'MMMM d'}
         />
       </CalendarProvider>

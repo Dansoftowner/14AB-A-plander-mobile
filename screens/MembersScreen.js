@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import Screen from './Screen'
 import { useTheme } from '@react-navigation/native'
-import AutoComplete from '../components/AssociationsAutoComplete'
+import AssociationsAutoComplete from '../components/AssociationsAutoComplete'
 import associationsHook from '../api/associations'
 import { useFormDispatch, useFormState } from '../components/FormContext'
 import { Formik } from 'formik'
@@ -25,7 +25,6 @@ function MembersScreen({ navigation }) {
     handleGetMembers()
   }, [])
 
-
   const form = React.useRef()
 
   return (
@@ -37,17 +36,14 @@ function MembersScreen({ navigation }) {
     >
       {({ values, handleChange, setFieldValue }) => (
         <Screen
-          style={[
-            styles.container,
-            { backgroundColor: colors.medium_blue },
-          ]}
+          style={[styles.container, { backgroundColor: colors.medium_blue }]}
         >
-              <MembersAutoComplete
-                data={members}
-                onSelectMember={(text) => handleGetMembers(text)}
-                // onChangeText={() => console.log('change')}
-                //values={values.assignees}
-                />
+          <MembersAutoComplete
+            data={members}
+            onSelectMember={(text) => handleGetMembers(text)}
+            // onChangeText={() => console.log('change')}
+            //values={values.assignees}
+          />
         </Screen>
       )}
     </Formik>

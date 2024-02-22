@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import Screen from './Screen'
 import { useTheme } from '@react-navigation/native'
-import AutoComplete from '../components/AssociationsAutoComplete'
+import AssociationsAutoComplete from '../components/AssociationsAutoComplete'
 import associationsHook from '../api/associations'
 import { useFormDispatch, useFormState } from '../components/FormContext'
 import { Formik } from 'formik'
@@ -58,7 +58,7 @@ function AssociationsScreen({ navigation }) {
             { backgroundColor: colorsByTheme.Login_background },
           ]}
         >
-          <AutoComplete
+          <AssociationsAutoComplete
             data={associations}
             values={values.association}
             handleChange={handleChange}

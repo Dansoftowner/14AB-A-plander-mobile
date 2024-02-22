@@ -15,7 +15,6 @@ import MyDrawer from './navigation/MyDrawer'
 import MyStack from './navigation/MyStack'
 import LoginScreen from './screens/LoginScreen'
 import LanguageContext from './locales/LanguageContext'
-import AssociationsScreen from './screens/AssociationsScreen'
 
 export default function App() {
   const colorScheme = useColorScheme()
@@ -35,7 +34,6 @@ export default function App() {
             {/* <LoginScreen/> */}
             {/* <MainScreen /> */}
             {user ? <MyDrawer /> : <MyStack />}
-            {/* <AssociationsScreen/> */}
           </NavigationContainer>
         </LanguageContext.Provider>
       </AuthContext.Provider>
