@@ -7,37 +7,51 @@ import EditAssignment from '../screens/EditAssignment'
 import RefactoredCalendar from '../components/new calendars/RefactoredCalendar'
 import MembersScreen from '../screens/MembersScreen'
 import colors from '../config/colors'
+import AddAssignment from '../screens/AddAssignment'
 // import { FormProvider } from '../components/FormContext'
 
 const Stack = createStackNavigator()
 function AssingmentStack(props) {
   const { colors: colorsByTheme } = useTheme()
   return (
-      <Stack.Navigator screenOptions={{ headerShown: false }}
-      initialRouteName='Assingments'>
-          <Stack.Screen
-            name="EditAssignment"
-            component={EditAssignment}
-            options={{
-              headerShown: true,
-              headerTitle: '',
-              // headerTintColor: colorsByTheme.white_dark_blue,
-              // headerStyle: { backgroundColor: colorsByTheme.Login_background },
-            }}
-            // screenOptions={{headerShown: true}}
-          />
-        <Stack.Screen name="Assingments" component={
-            RefactoredCalendar
-        } />
-                <Stack.Screen name="Members" component={
-            MembersScreen
-        }             options={{
+    <Stack.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Assingments"
+    >
+      <Stack.Screen
+        name="EditAssignment"
+        component={EditAssignment}
+        options={{
+          headerShown: true,
+          headerTitle: '',
+          // headerTintColor: colorsByTheme.white_dark_blue,
+          // headerStyle: { backgroundColor: colorsByTheme.Login_background },
+        }}
+        // screenOptions={{headerShown: true}}
+      />
+            <Stack.Screen
+        name="AddAssignment"
+        component={AddAssignment}
+        options={{
+          headerShown: true,
+          headerTitle: '',
+        }}
+      />
+      <Stack.Screen name="Assingments" component={RefactoredCalendar} />
+      <Stack.Screen
+        name="Members"
+        component={MembersScreen}
+        options={{
           headerShown: true,
           headerTitle: '',
           headerTintColor: colorsByTheme.white_dark_blue,
-          headerStyle: { backgroundColor: colors.medium_blue, shadowColor: colors.medium_blue },
-        }}/>
-      </Stack.Navigator>
+          headerStyle: {
+            backgroundColor: colors.medium_blue,
+            shadowColor: colors.medium_blue,
+          },
+        }}
+      />
+    </Stack.Navigator>
   )
 }
 
