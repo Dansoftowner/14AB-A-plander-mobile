@@ -74,27 +74,17 @@ function EditAssignment({ route, navigation }) {
     }
   }
 
-  const onChangeDate = ({ type }, selectedDate) => {
-    if (type == 'set') {
+  const onChangeDate = (selectedDate) => {
       const currentDate = selectedDate
+      setDatePickerShown(false)
       formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
-      setDatePickerShown(!datePickerShown)
       setTimePickerShown(true)
-      //console.log('beállítani a dátumot', currentDate)
-    } else {
-      setDatePickerShown(!datePickerShown)
-    }
   }
 
-  const onChangeTime = ({ type }, selectedDate) => {
-    if (type == 'set') {
+  const onChangeTime = ( selectedDate) => {
       const currentDate = selectedDate
-      console.log('beállítani a dátumot', currentDate)
+      setTimePickerShown(false)
       formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
-      setTimePickerShown(!timePickerShown)
-    } else {
-      setTimePickerShown(!timePickerShown)
-    }
   }
 
   useEffect(() => {
@@ -291,6 +281,7 @@ function EditAssignment({ route, navigation }) {
                   mode="date"
                   value={new Date(isStartDate ? values.start : values.end)}
                   onChange={onChangeDate}
+                  is24Hour
                 />
               )}
               {timePickerShown && (
@@ -298,6 +289,7 @@ function EditAssignment({ route, navigation }) {
                   mode="time"
                   value={new Date(isStartDate ? values.start : values.end)}
                   onChange={onChangeTime}
+                  is24Hour
                 />
               )}
 
