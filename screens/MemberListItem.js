@@ -8,13 +8,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import EditField from '../components/EditField';
 
 function MemberListItem({onPress, item}) {
-    const { colors: colorsByTheme } = useTheme()  
-
   return (
     <View style={{padding: 5, width: 350, borderRadius: 5}}>
         <MyText textColor='black'>
             {item.name}
-            {/* {item._id} */}
         </MyText>
         <EditField type='delete' onPress={() => onPress(item)} style={{position: 'absolute', right: 0, margin: 5}} />
     </View>
