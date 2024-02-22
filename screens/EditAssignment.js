@@ -49,7 +49,7 @@ function EditAssignment({ route, navigation }) {
   const handleSubmit = async () => {
     const values = formRef.current.values
     if (values.start > values.end) {
-      setErrorMessage('A kezdet nem lehet később, mint a vég')
+      setErrorMessage(i18n.t('errorStartEndDate'))
       return setErrorShown(true)
     } else {
       const assignees = values.assignees.map((assignee) => assignee._id)
@@ -67,7 +67,7 @@ function EditAssignment({ route, navigation }) {
         return setErrorShown(true)
       }
       setAssignment({ ...values })
-      setSuccessMessage('A szolgálat sikeresen frissítve')
+      setSuccessMessage(i18n.t('modifiedAssignment'))
       return setSuccessShown(true)
     }
   }
@@ -125,10 +125,7 @@ function EditAssignment({ route, navigation }) {
     if (!result.ok) {
       return console.log(result) //TODO Hibakezelés
     }
-    console.log(result.data)
     setAssignment(result.data)
-    console.log(assignment)
-    console.log('lefutott')
   }
 
   const handleDeleteAssignment = async () => {
@@ -138,7 +135,7 @@ function EditAssignment({ route, navigation }) {
       return console.log(result)
     }
     console.log(result.data)
-    setSuccessMessage('A szolgálat sikeresen törölve!')
+    setSuccessMessage(i18n.t('removedAssignment'))
     return setSuccessShown(true)
     //return navigation.navigate('Assingments', { delete: true })
   }
@@ -229,7 +226,7 @@ function EditAssignment({ route, navigation }) {
                 ))
               ) : (
                 <MyText textColor="black" style={{ fontWeight: 'bold' }}>
-                  A szolgálathoz nincsenek beosztva tagok!
+                  {i18n.t('noMembers')}
                 </MyText>
               )}
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -237,7 +234,7 @@ function EditAssignment({ route, navigation }) {
                   onPress={() =>
                     navigation.navigate('Members', { path: 'edit' })
                   }
-                  title="Új tag beosztása"
+                  title={i18n.t('add')}
                   style={{ marginTop: 10, width: 'auto' }}
                 />
               </View>
@@ -245,7 +242,7 @@ function EditAssignment({ route, navigation }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat kezdete
+                {i18n.t('assignmentStart')}
               </MyText>
               <DateTimeFormInput
                 themeColor="black"
@@ -266,7 +263,7 @@ function EditAssignment({ route, navigation }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat vége
+                {i18n.t('assignmentEnd')}
               </MyText>
               <DateTimeFormInput
                 themeColor="black"
@@ -307,7 +304,7 @@ function EditAssignment({ route, navigation }) {
                 }}
               >
                 <MyButton
-                  title="Törlés"
+                  title={i18n.t('delete')}
                   style={{ width: 100, backgroundColor: 'red' }}
                   onPress={handleDeleteAssignment}
                 />
@@ -362,19 +359,6 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     marginTop: 5,
-    // backgroundColor: 'white',
-    // paddingHorizontal: 20,
-    // paddingVertical: 10,
-    // borderTopLeftRadius: 10,
-    // borderTopRightRadius: 10,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 5,
   },
 })
 

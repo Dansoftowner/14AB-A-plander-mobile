@@ -51,7 +51,7 @@ function AddAssignment({ route, navigation }) {
   const handleSubmit = async () => {
     const values = formRef.current.values
     if (values.start > values.end) {
-      setErrorMessage('A kezdet nem lehet később, mint a vég')
+      setErrorMessage(i18n.t('errorStartEndDate'))
       return setErrorShown(true)
     } else {
       const assignees = values.assignees.map((assignee) => assignee._id)
@@ -69,7 +69,7 @@ function AddAssignment({ route, navigation }) {
         return setErrorShown(true)
       }
       setAssignment({ ...values })
-      setSuccessMessage('A szolgálat sikeresen frissítve')
+      setSuccessMessage(i18n.t('modifiedAssignment'))
       return setSuccessShown(true)
     }
   }
@@ -89,7 +89,6 @@ function AddAssignment({ route, navigation }) {
   const onChangeTime = ({ type }, selectedDate) => {
     if (type == 'set') {
       const currentDate = selectedDate
-      console.log('beállítani a dátumot', currentDate)
       formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
       setTimePickerShown(!timePickerShown)
     } else {
@@ -125,7 +124,7 @@ function AddAssignment({ route, navigation }) {
   const handleAddAssignment = async () => {
     const values = formRef.current.values
     if (values.start > values.end) {
-      setErrorMessage('A kezdet nem lehet később, mint a vég')
+      setErrorMessage(i18n.t('errorStartEndDate'))
       return setErrorShown(true)
     } else {
       if (values.title == '') {
@@ -147,7 +146,7 @@ function AddAssignment({ route, navigation }) {
         setErrorMessage(result.data.message)
         return setErrorShown(true)
       } else {
-        setSuccessMessage('A szolgálat sikeresen létrehozva')
+        setSuccessMessage(i18n.t('addedAssignment'))
         return setSuccessShown(true)
       }
     }
@@ -214,7 +213,7 @@ function AddAssignment({ route, navigation }) {
                 icon="format-letter-case"
                 name="title"
                 title={i18n.t('assignmentName')}
-                placeholder="Opcionális"
+                placeholder={i18n.t('optional')}
               />
               <EditProfileFields
                 themeColor="black"
@@ -224,7 +223,7 @@ function AddAssignment({ route, navigation }) {
                 icon="map-marker-outline"
                 name="location"
                 title={i18n.t('assignmentLocation')}
-                placeholder="Opcionális"
+                placeholder={i18n.t('optional')}
               />
               <MyText
                 textColor="black"
@@ -242,7 +241,7 @@ function AddAssignment({ route, navigation }) {
                 ))
               ) : (
                 <MyText textColor="black" style={{ fontWeight: 'bold' }}>
-                  A szolgálathoz nincsenek beosztva tagok!
+                  {i18n.t('noMembers')}
                 </MyText>
               )}
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -250,7 +249,7 @@ function AddAssignment({ route, navigation }) {
                   onPress={() =>
                     navigation.navigate('Members', { path: 'add' })
                   }
-                  title="Új tag beosztása"
+                  title={i18n.t('add')}
                   style={{ marginTop: 10, width: 'auto' }}
                 />
               </View>
@@ -258,7 +257,7 @@ function AddAssignment({ route, navigation }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat kezdete
+                {i18n.t('assignmentStart')}
               </MyText>
               <DateTimeFormInput
                 themeColor="black"
@@ -279,7 +278,7 @@ function AddAssignment({ route, navigation }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat vége
+                {i18n.t('assignmentEnd')}
               </MyText>
               <DateTimeFormInput
                 themeColor="black"
@@ -319,7 +318,7 @@ function AddAssignment({ route, navigation }) {
                 }}
               >
                 <MyButton
-                  title="Mentés"
+                  title={i18n.t('save')}
                   style={{ width: 100, backgroundColor: 'green' }}
                   onPress={handleAddAssignment}
                 />
