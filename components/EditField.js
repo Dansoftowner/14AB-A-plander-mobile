@@ -10,21 +10,24 @@ function EditField({onPress, style, type, themeColor}) {
       delete: {
         color: colorsByTheme.medium_red_light_red,
         icon: 'trash-can',
+        iconColor: 'white'
       },
       edit: {
         color: colorsByTheme.medium_blue_yellow,
         icon: 'pencil',
+        iconColor: colorsByTheme.white_dark_blue
       },
       add: {
         color: colorsByTheme.medium_green_light_green,
-        icon: 'plus'
+        icon: 'plus',
+        iconColor: 'white'
       }
     }
 
     return (
     <View style={[styles.container, {backgroundColor: typeProps[type].color}, style]}>
       <TouchableWithoutFeedback onPress={onPress} >
-        <MaterialCommunityIcons name={typeProps[type].icon} size={15} color={colorsByTheme.white_dark_blue} />
+        <MaterialCommunityIcons name={typeProps[type].icon} size={15} color={typeProps[type].iconColor} />
       </TouchableWithoutFeedback>
     </View>
   );
