@@ -19,7 +19,8 @@ function EditProfileFields({
   isPasswordField = false,
   maxLength,
   setPasswordEditable,
-  keyboardType
+  keyboardType,
+  ...otherProps
 }) {
   const [isEditable, setIsEditable] = useState(false)
   return (
@@ -32,6 +33,7 @@ function EditProfileFields({
       <View style={styles.field}>
         <MyFormField
           themeColor={themeColor}
+          //title={title}
           value={values[name]}
           onChangeText={onChangeText}
           autoCapitalize="none"
@@ -44,6 +46,8 @@ function EditProfileFields({
           secureTextEntry={isPasswordField}
           isEditable={enabled ? true : isEditable}
           maxLength={maxLength}
+          {...otherProps}
+          //placeholder={placeholder}
           // textContentType="password"
           keyboardType={keyboardType}
           showEye={showEye}
