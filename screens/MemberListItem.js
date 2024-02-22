@@ -7,15 +7,16 @@ import {useTheme} from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import EditField from '../components/EditField';
 
-function MemberListItem({name, onPress}) {
+function MemberListItem({onPress, item}) {
     const { colors: colorsByTheme } = useTheme()  
 
   return (
-    <View style={{padding: 5, width: 350, borderRadius: 5, borderColor: 'black', borderWidth: 1}}>
+    <View style={{padding: 5, width: 350, borderRadius: 5}}>
         <MyText textColor='black'>
-            {name}
+            {item.name}
+            {/* {item._id} */}
         </MyText>
-        <EditField type='delete' onPress={onPress} style={{position: 'absolute', right: 0, margin: 5}} />
+        <EditField type='delete' onPress={() => onPress(item)} style={{position: 'absolute', right: 0, margin: 5}} />
     </View>
   );
 }
