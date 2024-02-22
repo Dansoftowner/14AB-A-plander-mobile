@@ -148,11 +148,11 @@ function EditAssignment({ route, navigation }) {
     return navigation.navigate('Assingments', { delete: true })
   }
 
-  const handleDeleteMember = (_id) => {
-    console.log(_id)
+  const handleDeleteMember = (item) => {
+    //console.log(item._id)
     formRef.current.setFieldValue(
       'assignees',
-      formRef.current.values.assignees.filter((x) => x._id !== _id),
+      formRef.current.values.assignees.filter((x) => x._id !== item._id),
     )
     console.log(formRef.current.values.assignees)
   }
@@ -248,20 +248,25 @@ function EditAssignment({ route, navigation }) {
                 data={members}
                 values={values.assignees}
                 /> */}
-              {values.assignees.length !== 0 ? (
-                <FlatList
-                  style={{ flexGrow: 0 }}
-                  data={values.assignees}
-                  renderItem={({ item }) => (
-                    <MemberListItem
-                      name={item.name}
-                      _id={item._id}
-                      onPress={(_id) => handleDeleteMember(_id)}
-                    />
-                  )}
-                  //key={item._id}
-                />
-              ) : (
+              {values.assignees.length !== 0 ? 
+              // (
+              //   <FlatList
+              //     style={{ flexGrow: 0 }}
+              //     data={values.assignees}
+              //     renderItem={({ item }) => (
+              //       <MemberListItem
+              //         name={item.name}
+              //         _id={item._id}
+              //         onPress={(_id) => handleDeleteMember(_id)}
+              //       />
+              //     )}
+              //     //key={item._id}
+              //   />
+              // ) 
+              (
+                  values.assignees.map(item => <MemberListItem item={item} onPress={(item) => handleDeleteMember(item)} key={item._id} />)
+              )
+              : (
                 <MyText textColor="black" style={{ fontWeight: 'bold' }}>
                   A szolgálathoz nincsenek beosztva tagok!
                 </MyText>

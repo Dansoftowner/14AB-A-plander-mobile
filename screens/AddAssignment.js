@@ -26,7 +26,7 @@ import { format, set } from 'date-fns'
 import { hu } from 'date-fns/locale'
 import DateTimeFormInput from '../components/DateTimeFormInput'
 
-const { add } = require("date-fns");
+const { add } = require('date-fns')
 
 import DateTimePicker from '@react-native-community/datetimepicker'
 import MemberListItem from './MemberListItem'
@@ -68,7 +68,7 @@ function AddAssignment({ route, navigation }) {
         setErrorMessage(result.data.message)
         return setErrorShown(true)
       }
-      setAssignment({...values})
+      setAssignment({ ...values })
       setSuccessMessage('A szolgálat sikeresen frissítve')
       return setSuccessShown(true)
     }
@@ -113,49 +113,52 @@ function AddAssignment({ route, navigation }) {
     console.log(formRef.current.values.assignees)
   }
 
-
-  const handleDeleteMember = (_id) => {
-      console.log(formRef.current.values.assignees)
-    console.log(_id)
+  const handleDeleteMember = (item) => {
+    //console.log(item._id)
     formRef.current.setFieldValue(
       'assignees',
-      formRef.current.values.assignees.filter((x) => x._id !== _id),
+      formRef.current.values.assignees.filter((x) => x._id !== item._id),
     )
+    console.log(formRef.current.values.assignees)
   }
 
   const handleAddAssignment = async () => {
     const values = formRef.current.values
     if (values.start > values.end) {
-        setErrorMessage('A kezdet nem lehet később, mint a vég')
+      setErrorMessage('A kezdet nem lehet később, mint a vég')
+      return setErrorShown(true)
+    } else {
+      if (values.title == '') {
+        values.title = 'Általános szolgálat'
+      }
+      if (values.location == '') {
+        values.location = 'Nem megadott'
+      }
+      values.assignees = values.assignees.map((assignee) => assignee._id)
+      const result = await assignments.postAssignment(
+        values.title,
+        values.location,
+        values.start,
+        values.end,
+        values.assignees,
+      )
+      if (!result.ok) {
+        console.log(result)
+        setErrorMessage(result.data.message)
         return setErrorShown(true)
-    }
-    else{
-        if (values.title == '') {
-            values.title = 'Általános szolgálat'
-        }
-        if (values.location == '') {
-            values.location = 'Nem megadott'
-        }
-        values.assignees = values.assignees.map(assignee => assignee._id)
-        const result = await assignments.postAssignment(values.title, values.location, values.start, values.end, values.assignees)
-        if (!result.ok) {
-            console.log(result)
-            setErrorMessage(result.data.message)
-            return setErrorShown(true)
-        }
-        else{
-            setSuccessMessage('A szolgálat sikeresen létrehozva')
-            return setSuccessShown(true)
-        }
+      } else {
+        setSuccessMessage('A szolgálat sikeresen létrehozva')
+        return setSuccessShown(true)
+      }
     }
   }
 
-//   useEffect(() => {
-//     if (route.params.id !== -1) {
-//       // setAssignmentId(route.params.id)
-//       handleGetAssignment(route.params.id)
-//     }
-//   }, [route.params.id])
+  //   useEffect(() => {
+  //     if (route.params.id !== -1) {
+  //       // setAssignmentId(route.params.id)
+  //       handleGetAssignment(route.params.id)
+  //     }
+  //   }, [route.params.id])
 
   useEffect(() => {
     if (route.params?.member !== undefined) {
@@ -196,11 +199,10 @@ function AddAssignment({ route, navigation }) {
         <Formik
           initialValues={{
             title: '',
-            location:'',
-            start:
-              new Date(),
-            end: add(new Date(), {hours: 3}),
-            assignees: []
+            location: '',
+            start: new Date(),
+            end: add(new Date(), { hours: 3 }),
+            assignees: [],
           }}
           // initialErrors={formErrors}
           //validationSchema={validationSchema}
@@ -227,7 +229,7 @@ function AddAssignment({ route, navigation }) {
                 icon="format-letter-case"
                 name="title"
                 title={i18n.t('assignmentName')}
-                placeholder='Opcionális'
+                placeholder="Opcionális"
               />
               <EditProfileFields
                 themeColor="black"
@@ -237,9 +239,9 @@ function AddAssignment({ route, navigation }) {
                 icon="map-marker-outline"
                 name="location"
                 title={i18n.t('assignmentLocation')}
-                placeholder='Opcionális'
+                placeholder="Opcionális"
               />
-            {/* <MyFormField
+              {/* <MyFormField
             //   value={values.username}
               onChangeText={handleChange('username')}
               autoCapitalize="none"
@@ -260,26 +262,35 @@ function AddAssignment({ route, navigation }) {
                 values={values.assignees}
                 /> */}
               {values.assignees.length !== 0 ? (
-                <FlatList
-                  style={{ flexGrow: 0 }}
-                  data={values.assignees}
-                  renderItem={({ item }) => (
-                    <MemberListItem
-                      name={item.name}
-                      _id={item._id}
-                      onPress={(_id) => handleDeleteMember(_id)}
-                    />
-                  )}
-                  //key={item._id}
-                />
+                values.assignees.map((item) => (
+                  <MemberListItem
+                    item={item}
+                    onPress={(item) => handleDeleteMember(item)}
+                    key={item._id}
+                  />
+                ))
               ) : (
+                // <FlatList
+                //   style={{ flexGrow: 0 }}
+                //   data={values.assignees}
+                //   renderItem={({ item }) => (
+                //     <MemberListItem
+                //       name={item.name}
+                //       _id={item._id}
+                //       onPress={(_id) => handleDeleteMember(_id)}
+                //     />
+                //   )}
+                //   //key={item._id}
+                // />
                 <MyText textColor="black" style={{ fontWeight: 'bold' }}>
                   A szolgálathoz nincsenek beosztva tagok!
                 </MyText>
               )}
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <MyButton
-                  onPress={() => navigation.navigate('Members', {path: 'add'})}
+                  onPress={() =>
+                    navigation.navigate('Members', { path: 'add' })
+                  }
                   title="Új tag beosztása"
                   style={{ marginTop: 10, width: 'auto' }}
                 />
@@ -353,16 +364,20 @@ function AddAssignment({ route, navigation }) {
               {/* <MyButton onPress={() => console.log(assignment)}></MyButton> */}
 
               {/* <MyText textColor="black">{assignmentId}</MyText> */}
-              <MyText textColor="black">
-                {JSON.stringify(values)}
-              </MyText>
+              <MyText textColor="black">{JSON.stringify(values)}</MyText>
               {/* <MyText textColor="black">
                 {JSON.stringify(assignment)}
               </MyText> */}
               {/* <MyText textColor="black">{JSON.stringify(assignment)}</MyText> */}
               {/* <MyText textColor="black">{JSON.stringify(values)}</MyText> */}
 
-              <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginTop: 30,
+                }}
+              >
                 <MyButton
                   title="Mentés"
                   style={{ width: 100, backgroundColor: 'green' }}
@@ -392,7 +407,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   field: {
     flexDirection: 'row',
