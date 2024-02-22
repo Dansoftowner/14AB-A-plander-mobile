@@ -93,15 +93,14 @@ export default function RefactoredCalendar({ navigation, route }) {
   //     console.debug('', payload);
   //   }
   // );
-  
+
   // Remove the listener when you are done
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getAgendaItems()
-    });
-    return unsubscribe;
-
+    })
+    return unsubscribe
   }, [navigation])
 
   useEffect(() => {
@@ -309,7 +308,7 @@ export default function RefactoredCalendar({ navigation, route }) {
   LocaleConfig.defaultLocale = 'hu'
   return (
     <>
-      <CalendarProvider>
+      <CalendarProvider date={new Date().toDateString()}>
         <Calendar
           //current={Date.now()}
           onDayPress={(day) => {
