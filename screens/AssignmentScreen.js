@@ -206,6 +206,19 @@ export default function AssignmentScreen({ navigation, route }) {
     return eventObject
   }
 
+  const convertVector = (vector) => {
+    const array = []
+    vector.forEach(item => {
+      const existingItemIndex = array.findIndex(obj => obj.title === item.title);
+      if (existingItemIndex !== -1) {
+        array[existingItemIndex].data = array[existingItemIndex].data.concat(item.data);
+      } else {
+        array.push(item);
+      }
+    });
+    return array
+  }
+
   const getAgendaItems = async () => {
     const result = await assignments.getAssignments()
     if (!result?.ok) {
@@ -216,7 +229,9 @@ export default function AssignmentScreen({ navigation, route }) {
         eventsVector.push(i)
       })
       console.log(eventsVector)
-      setAgendaItems(eventsVector)
+      const newArray = convertVector(eventsVector)
+      console.log(newArray)
+      setAgendaItems(newArray)
     }
   }
 
