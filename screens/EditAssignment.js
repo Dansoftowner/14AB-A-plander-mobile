@@ -66,7 +66,7 @@ function EditAssignment({ route, navigation }) {
         setErrorMessage(result.data.message)
         return setErrorShown(true)
       }
-      setAssignment({...values})
+      setAssignment({ ...values })
       setSuccessMessage('A szolgálat sikeresen frissítve')
       return setSuccessShown(true)
     }
@@ -114,7 +114,6 @@ function EditAssignment({ route, navigation }) {
   }, [route.params.member])
 
   const handleAddMember = (member) => {
-    // console.log(_id)
     const isMemberAlreadyAdded =
       formRef.current.values.assignees.filter((x) => x._id === member._id)
         .length > 0
@@ -124,7 +123,6 @@ function EditAssignment({ route, navigation }) {
         { _id: member._id, name: member.name },
       ])
     }
-    console.log(formRef.current.values.assignees)
   }
 
   const handleGetAssignment = async (assingmentId) => {
@@ -147,7 +145,7 @@ function EditAssignment({ route, navigation }) {
     console.log(result.data)
     // setSuccessMessage('A szolgálat sikeresen törölve!')
     // setSuccessShown(true)
-    return navigation.navigate('Assingments', {delete: true})
+    return navigation.navigate('Assingments', { delete: true })
   }
 
   const handleDeleteMember = (_id) => {
@@ -160,7 +158,7 @@ function EditAssignment({ route, navigation }) {
   }
 
   return (
-    <ScrollView style={{backgroundColor: 'white'}}>
+    <ScrollView style={{ backgroundColor: 'white' }}>
       <UpdatedAlertMessage
         visible={errorShown}
         type="error"
@@ -178,6 +176,7 @@ function EditAssignment({ route, navigation }) {
         message={successMessage}
         onClose={() => {
           setSuccessShown(false)
+          navigation.navigate('Assingments')
         }}
         //onPress={() => setSuccessShown(false)}
       />
@@ -191,8 +190,13 @@ function EditAssignment({ route, navigation }) {
             title: assignment?.title == null ? '' : assignment.title,
             location: assignment?.location == null ? '' : assignment.location,
             start:
-              assignment?.start == undefined ? '' : new Date(assignment.start.slice(0, -1)),
-            end: assignment?.end == undefined ? '' : new Date(assignment.end.slice(0, -1)),
+              assignment?.start == undefined
+                ? ''
+                : new Date(assignment.start),
+            end:
+              assignment?.end == undefined
+                ? ''
+                : new Date(assignment.end),
             assignees:
               assignment?.assignees == undefined ? [] : assignment.assignees,
             report: assignment?.report,
@@ -233,6 +237,7 @@ function EditAssignment({ route, navigation }) {
                 title={i18n.t('assignmentLocation')}
               />
 
+              {/* <MyText textColor='black'>{JSON.stringify(values.assignees)}</MyText> */}
               <MyText
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
@@ -263,7 +268,7 @@ function EditAssignment({ route, navigation }) {
               )}
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <MyButton
-                  onPress={() => navigation.navigate('Members')}
+                  onPress={() => navigation.navigate('Members', {path: 'edit'})}
                   title="Új tag beosztása"
                   style={{ marginTop: 10, width: 'auto' }}
                 />
@@ -346,7 +351,13 @@ function EditAssignment({ route, navigation }) {
               {/* <MyText textColor="black">{JSON.stringify(assignment)}</MyText> */}
               {/* <MyText textColor="black">{JSON.stringify(values)}</MyText> */}
 
-              <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginTop: 30,
+                }}
+              >
                 <MyButton
                   title="Törlés"
                   style={{ width: 100, backgroundColor: 'red' }}
@@ -358,7 +369,11 @@ function EditAssignment({ route, navigation }) {
                     <View>
                       <MyButton
                         title={i18n.t('save')}
-                        style={{backgroundColor: 'green', width: 100, marginLeft: 20}}
+                        style={{
+                          backgroundColor: 'green',
+                          width: 100,
+                          marginLeft: 20,
+                        }}
                         onPress={handleSubmit}
                       />
                     </View>
