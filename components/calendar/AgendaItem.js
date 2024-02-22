@@ -14,6 +14,8 @@ import { useTheme } from '@react-navigation/native'
 import { format, set } from 'date-fns'
 import { hu } from 'date-fns/locale'
 import MyText from '../MyText'
+import i18n from '../../locales/i18n'
+import colors from '../../config/colors'
 
 export default function AgendaItem({
   item,
@@ -21,13 +23,6 @@ export default function AgendaItem({
   onItemPress,
   dotColor = 'blue',
 }) {
-  // const buttonPressed = useCallback(() => {
-  //   Alert.alert('Show me more');
-  // }, []);
-
-  // const itemPressed = useCallback(() => {
-  //   Alert.alert(item.title);
-  // }, []);
 
   const { colors: colorsByTheme } = useTheme()
 
@@ -40,7 +35,7 @@ export default function AgendaItem({
   }
 
   return (
-    <TouchableOpacity onPress={onItemPress} style={styles.item}>
+    <TouchableOpacity onPress={onItemPress} style={[styles.item, {backgroundColor: colorsByTheme.white_dark_blue}]}>
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <View
           style={{
@@ -59,12 +54,12 @@ export default function AgendaItem({
         }}
       >
         <View>
-          <Text style={styles.itemTitleText}>{item.title}</Text>
+          <Text style={[styles.itemTitleText, {color: colorsByTheme.black_white}]}>{item.title}</Text>
           <MyText
             textColor="black"
             style={{ fontSize: 14, paddingHorizontal: 10 }}
           >
-            Kezdés: {format(item.start, 'HH:mm', { locale: hu })}
+            {i18n.t('assignmentStart')}: {format(item.start, 'HH:mm', { locale: hu })}
           </MyText>
         </View>
       </View>
@@ -86,13 +81,11 @@ export default function AgendaItem({
 const styles = StyleSheet.create({
   item: {
     padding: 10,
-    backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',
     flexDirection: 'row',
   },
   itemTitleText: {
-    color: 'black',
     paddingHorizontal: 10,
     fontWeight: 'bold',
     fontSize: 16,

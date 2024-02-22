@@ -8,10 +8,9 @@ import { useFormDispatch, useFormState } from '../components/FormContext'
 import { Formik } from 'formik'
 import MembersAutoComplete from '../components/MembersAutoComplete'
 import membersApi from '../api/members'
+import colors from '../config/colors'
 
 function MembersScreen({ navigation }) {
-  const { colors: colorsByTheme } = useTheme()
-  // const [associations, setAssociations] = useState()
   const [members, setMembers] = useState([])
 
   const handleGetMembers = async (q) => {
@@ -26,38 +25,8 @@ function MembersScreen({ navigation }) {
     handleGetMembers()
   }, [])
 
-  // const handleGetAssociations = async (q) => {
-  //   const result = await associationsHook.getAssociations(q)
-  //   if (!result.ok) {
-  //     return console.log(result) //TODO Hibakezelés
-  //   }
-  //   setAssociations([...result.data.items])
-  // }
 
   const form = React.useRef()
-  // const dispatch = useFormDispatch()
-  // const { values: formValues, errors: formErrors } = useFormState('user')
-
-  // React.useEffect(() => {
-  //   const unsubscribe = navigation.addListener('blur', () => {
-  //     if (form.current) {
-  //       const { values, errors } = form.current
-  //       dispatch({
-  //         type: 'UPDATE_FORM',
-  //         payload: {
-  //           id: 'user',
-  //           data: { values, errors },
-  //         },
-  //       })
-  //     }
-  //   })
-
-  //   return unsubscribe
-  // }, [navigation])
-
-  // useEffect(() => {
-  //   handleGetMembers()
-  // }, [])
 
   return (
     <Formik
@@ -70,7 +39,7 @@ function MembersScreen({ navigation }) {
         <Screen
           style={[
             styles.container,
-            { backgroundColor: colorsByTheme.Login_background },
+            { backgroundColor: colors.medium_blue },
           ]}
         >
               <MembersAutoComplete

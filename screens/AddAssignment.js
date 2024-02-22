@@ -159,7 +159,7 @@ function AddAssignment({ route, navigation }) {
   }, [route.params])
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: colorsByTheme.white_black }}>
       <UpdatedAlertMessage
         visible={errorShown}
         type="error"
@@ -180,9 +180,9 @@ function AddAssignment({ route, navigation }) {
         }}
       />
       <View style={styles.container}>
-        <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
+        {/* <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
           {i18n.t('addAssignment')}
-        </MyText>
+        </MyText> */}
         <Formik
           initialValues={{
             title: '',
@@ -240,9 +240,14 @@ function AddAssignment({ route, navigation }) {
                   />
                 ))
               ) : (
-                <MyText textColor="black" style={{ fontWeight: 'bold' }}>
-                  {i18n.t('noMembers')}
-                </MyText>
+                <View style={{ alignItems: 'center' }}>
+                  <MyText
+                    textColor="black"
+                    style={{ fontWeight: 'bold', fontSize: 14, padding: 10 }}
+                  >
+                    {i18n.t('noMembers')}
+                  </MyText>
+                </View>
               )}
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <MyButton
@@ -318,6 +323,7 @@ function AddAssignment({ route, navigation }) {
                 }}
               >
                 <MyButton
+                  textStyle={{ color: 'white' }}
                   title={i18n.t('save')}
                   style={{ width: 100, backgroundColor: 'green' }}
                   onPress={handleAddAssignment}
@@ -335,7 +341,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white',
   },
   field: {
     flexDirection: 'row',

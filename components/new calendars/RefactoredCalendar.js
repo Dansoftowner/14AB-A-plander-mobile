@@ -20,9 +20,12 @@ import assignments from '../../api/assignments'
 import MyButton from '../MyButton'
 import MyText from '../MyText'
 import AuthContext from '../../auth/authContext'
-import dateTranslation from '../../locales/hu/date'
+import dateTranslationHU from '../../locales/hu/date'
+import dateTranslationEN from '../../locales/hu/date'
 import i18n from '../../locales/i18n'
-LocaleConfig.locales['hu'] = dateTranslation
+import languageContext from '../../locales/LanguageContext'
+LocaleConfig.locales['hu'] = dateTranslationHU
+LocaleConfig.locales['en'] = dateTranslationEN
 
 export default function RefactoredCalendar({ navigation, route }) {
   const leftArrowIcon = require('../../assets/arrows/previous.png')
@@ -32,18 +35,19 @@ export default function RefactoredCalendar({ navigation, route }) {
   const { colors: colorsByTheme } = useTheme()
   const periodColor = colors.light_green
   const dotColor = colors.black
-
+  const {language} = useContext(languageContext)
   const { user, setUser } = useContext(AuthContext)
 
   const calendarTheme = {
-    backgroundColor: colorsByTheme.white_black,
-    calendarBackground: colorsByTheme.white_black,
-    textSectionTitleColor: '#b6c1cd',
+    backgroundColor: colorsByTheme.white_darker_blue,
+    calendarBackground: colorsByTheme.white_darker_blue,
+    textSectionTitleColor: colorsByTheme.medium_white,
     selectedDayBackgroundColor: colors.soft_blue,
     selectedDayTextColor: '#ffffff',
+    monthTextColor: colorsByTheme.medium_white,
     //todayBackgroundColor: colorsByTheme.light_blue_dark_blue,
-    //todayTextColor: colorsByTheme.white_black,
-    dayTextColor: 'black',
+    // todayTextColor: 'red',
+    dayTextColor: colorsByTheme.black_white,
     textDisabledColor: colors.light,
     arrowColor: colorsByTheme.medium_blue_yellow,
   }
@@ -67,7 +71,6 @@ export default function RefactoredCalendar({ navigation, route }) {
   useEffect(() => {
     getMarkedDays()
     getAgendaItems()
-    console.log('lefut a getAgendaItems függvény')
   }, [route.params?.delete])
 
   const formatDate = (date) => {
@@ -188,32 +191,7 @@ export default function RefactoredCalendar({ navigation, route }) {
         },
       }
       return eventObject
-      // } else {
-      //   const eventObject = {
-      //     type: 'period',
-      //     dateStart: startFormattedString,
-      //     dateEnd: endFormattedString,
-      //     markingStart: {
-      //       startingDay: true,
-      //       color: periodColor,
-      //     },
-      //     markingEnd: {
-      //       endingDay: true,
-      //       color: periodColor,
-      //     },
-      //     betweenDays: [],
-      //   }
-      //   const daysBetweenStartEnd = getDaysDifference(startDate, endDate)
-      //   for (let i = 1; i < daysBetweenStartEnd; i++) {
-      //     const betweenDay = {
-      //       date: formatDate(addDays(startDate, i)),
-      //       marking: {
-      //         color: periodColor,
-      //       },
-      //     }
-      //     eventObject.betweenDays.push(betweenDay)
-      //   }
-      //   return eventObject
+      
     }
   }
 
@@ -261,11 +239,13 @@ export default function RefactoredCalendar({ navigation, route }) {
         onItemPress={() =>
           navigation.navigate('EditAssignment', { id: item._id })
         }
+        key={item._id}
       />
     )
   }, [])
 
-  LocaleConfig.defaultLocale = 'hu'
+  LocaleConfig.defaultLocale = language
+
   return (
     <>
       <CalendarProvider date={new Date().toDateString()}>
@@ -323,11 +303,12 @@ export default function RefactoredCalendar({ navigation, route }) {
             />
           </View>
         )}
+
         <AgendaList
           sections={agendaItems ?? []}
           renderItem={renderItem}
           // scrollToNextEvent
-          sectionStyle={styles.section}
+          sectionStyle={[styles.section, { backgroundColor: colorsByTheme.white_dark_blue, color: colors.medium }]}
           dayFormat={'MMMM d'}
         />
       </CalendarProvider>
@@ -348,8 +329,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey',
   },
   section: {
-    backgroundColor: lightThemeColor,
-    color: 'grey',
     textTransform: 'capitalize',
   },
 })

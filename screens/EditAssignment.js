@@ -24,10 +24,12 @@ import MembersAutoComplete from '../components/MembersAutoComplete'
 import assignments from '../api/assignments'
 import { format, set } from 'date-fns'
 import { hu } from 'date-fns/locale'
+import { enGB } from 'date-fns/locale'
 import DateTimeFormInput from '../components/DateTimeFormInput'
 
 import DateTimePicker from '@react-native-community/datetimepicker'
 import MemberListItem from './MemberListItem'
+import languageContext from '../locales/LanguageContext'
 
 function EditAssignment({ route, navigation }) {
   const { user, setUser } = useContext(AuthContext)
@@ -43,7 +45,7 @@ function EditAssignment({ route, navigation }) {
   const { colors: colorsByTheme } = useTheme()
   const [isStartDate, setIsStartDate] = useState(true)
   const formRef = useRef()
-
+  const { language } = useContext(languageContext)
   const isShown = useRef()
 
   const handleSubmit = async () => {
@@ -150,7 +152,7 @@ function EditAssignment({ route, navigation }) {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <ScrollView style={{ backgroundColor: colorsByTheme.white_black }}>
       <UpdatedAlertMessage
         visible={errorShown}
         type="error"
@@ -171,9 +173,9 @@ function EditAssignment({ route, navigation }) {
         }}
       />
       <View style={styles.container}>
-        <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
+        {/* <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
           {i18n.t('editAssignment')}
-        </MyText>
+        </MyText> */}
         <Formik
           initialValues={{
             _id: assignment?._id,
@@ -188,7 +190,7 @@ function EditAssignment({ route, navigation }) {
           }}
           onSubmit={handleSubmit}
           innerRef={formRef}
-          //enableReinitialize //ez nagyon fontos!
+          enableReinitialize //ez nagyon fontos!
         >
           {({ values, handleChange, handleSubmit }) => (
             <View style={styles.form}>
@@ -251,8 +253,10 @@ function EditAssignment({ route, navigation }) {
                 name="start"
                 subtitle={format(
                   values?.start == '' ? new Date() : values.start,
-                  'yyyy. MMMM. dd. HH:mm',
-                  { locale: hu },
+                  language == 'hu'
+                    ? 'yyyy. MMMM dd. HH:mm'
+                    : 'dd-MM-yyyy HH:mm',
+                  { locale: language == 'hu' ? hu : enGB },
                 )}
                 onPress={() => {
                   setDatePickerShown(!datePickerShown)
@@ -272,7 +276,9 @@ function EditAssignment({ route, navigation }) {
                 name="end"
                 subtitle={format(
                   values?.end == '' ? new Date() : values.end,
-                  'yyyy. MMMM. dd. HH:mm',
+                  language == 'hu'
+                    ? 'yyyy. MMMM dd. HH:mm'
+                    : 'dd-MM-yyyy HH:mm',
                   { locale: hu },
                 )}
                 onPress={() => {
@@ -304,6 +310,7 @@ function EditAssignment({ route, navigation }) {
                 }}
               >
                 <MyButton
+                  textStyle={{ color: 'white' }}
                   title={i18n.t('delete')}
                   style={{ width: 100, backgroundColor: 'red' }}
                   onPress={handleDeleteAssignment}
@@ -313,6 +320,7 @@ function EditAssignment({ route, navigation }) {
                   user.roles.includes('president') && (
                     <View>
                       <MyButton
+                        textStyle={{ color: 'white' }}
                         title={i18n.t('save')}
                         style={{
                           backgroundColor: 'green',
