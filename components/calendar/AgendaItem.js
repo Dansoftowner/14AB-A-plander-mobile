@@ -68,7 +68,7 @@ export default function AgendaItem({
           </MyText>
         </View>
       </View>
-      <View
+      {/* <View
         style={{ justifyContent: 'center', alignItems: 'flex-end', flex: 1 }}
       >
         <TouchableWithoutFeedback onPress={onPress}>
@@ -78,7 +78,7 @@ export default function AgendaItem({
             color={colorsByTheme.black_white}
           />
         </TouchableWithoutFeedback>
-      </View>
+      </View> */}
     </TouchableOpacity>
   )
 }
