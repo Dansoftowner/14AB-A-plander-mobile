@@ -17,6 +17,8 @@ import { useNavigation } from '@react-navigation/native'
 import colors from '../config/colors'
 import MemberListItem from '../screens/MemberListItem'
 import EditField from './EditField'
+import { useRoute } from '@react-navigation/native';
+
 
 function MembersAutoComplete({
   data,
@@ -26,6 +28,7 @@ function MembersAutoComplete({
 }) {
   const { colors: colorsByTheme } = useTheme()
   const navigation = useNavigation()
+  const route = useRoute()
 
   return (
     <TouchableWithoutFeedback>
@@ -43,14 +46,25 @@ function MembersAutoComplete({
           }}
           style={[
             styles.list,
-            { backgroundColor: 'white', borderRadius: 15, flexGrow: 0 },
+            { backgroundColor: 'white', borderRadius: 15},
           ]}
           data={data}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
                 //onSelectMember(item._id)
+                
+                if (route.params.path === 'add') {
+                  console.log('Vissza a felvétel screenre')
+                navigation.navigate('AddAssignment', { id: -1, member: item })
+                }
+                if (route.params.path === 'edit') {
+                  console.log('Vissza a szerkesztő screenre')
                 navigation.navigate('EditAssignment', { id: -1, member: item })
+                }
+                // else{
+                //   navigation.navigate('EditAssignment', { id: -1, member: item })
+                // }
                 // setFieldValue('association', item)
               }}
             >
