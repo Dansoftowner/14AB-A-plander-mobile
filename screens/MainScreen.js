@@ -7,7 +7,7 @@ import colors from '../config/colors'
 import useAuth from '../auth/useAuth'
 import ThemeSwitch from '../components/ThemeSwitch'
 import LanguageSelector from '../components/LanguageSelector'
-import Logout from '../components/LogOut'
+import Logout from '../components/Logout'
 
 function MainScreen(props) {
   return (
