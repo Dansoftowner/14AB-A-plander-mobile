@@ -1,8 +1,8 @@
 import i18n from '../locales/i18n'
 import apiClient from './client'
 
-const getAssignments = () =>
-  apiClient.get('/assignments', { projection: 'full' })
+const getAssignments = (end) =>
+  apiClient.get('/assignments', { projection: 'full', end })
 
 const getAssignmentById = (assignmentId) =>
   apiClient.get(`/assignments/${assignmentId}`, { projection: 'full' })
