@@ -34,8 +34,8 @@ export default function AssignmentScreen({ navigation, route }) {
   const [markedDays, setMarkedDays] = useState(null)
   const [agendaItems, setAgendaItems] = useState(null)
   const { colors: colorsByTheme } = useTheme()
-  const periodColor = colors.light_green
-  const dotColor = colors.black
+  const periodColor = colors.medium_green
+  const dotColor = colors.dark_blue
   const { language } = useContext(languageContext)
   const { user, setUser } = useContext(AuthContext)
 
