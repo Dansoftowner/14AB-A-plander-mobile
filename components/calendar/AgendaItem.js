@@ -21,6 +21,7 @@ export default function AgendaItem({
   item,
   onPress,
   onItemPress,
+  isReport = false,
   dotColor = 'blue',
 }) {
 
@@ -53,6 +54,7 @@ export default function AgendaItem({
           alignItems: 'center',
         }}
       >
+        {!isReport ? (
         <View>
           <Text style={[styles.itemTitleText, {color: colorsByTheme.black_white}]}>{item.title}</Text>
           <MyText
@@ -61,7 +63,19 @@ export default function AgendaItem({
           >
             {i18n.t('assignmentStart')}: {format(item.start, 'HH:mm', { locale: hu })}
           </MyText>
+        </View>)
+        : (
+          <View>
+          <Text style={[styles.itemTitleText, {color: colorsByTheme.black_white}]}>{item.title}</Text>
+          <MyText
+            textColor="black"
+            style={{ fontSize: 14, paddingHorizontal: 10 }}
+          >
+            {item.report ? "Jelentés megtekintés" : "Jelentés készítése"}
+          </MyText>
         </View>
+        )
+}
       </View>
       {/* <View
         style={{ justifyContent: 'center', alignItems: 'flex-end', flex: 1 }}
