@@ -34,7 +34,7 @@ function EditProfileFields({
         <MyFormField
           themeColor={themeColor}
           //title={title}
-          value={values[name]}
+          value={typeof(values[name]) === 'number' ? values[name].toString() : values[name]}
           onChangeText={onChangeText}
           autoCapitalize="none"
           autoCorrect={false}
