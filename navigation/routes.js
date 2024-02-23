@@ -5,6 +5,7 @@ export default {
     ASSIGNMENTS: "AssignmentsScreen",
     ASSIGNMENT_STACK: "AssignmentStack",
     EDIT_ASSIGMENT: "EditAssignment",
+    EDIT_REPORT: "EditReport",
     LOGIN: "LoginScreen",
     MAIN: "MainSceen",
     MEMBERS: "MembersScreen",

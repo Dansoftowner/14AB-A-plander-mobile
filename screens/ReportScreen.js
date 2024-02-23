@@ -258,7 +258,7 @@ export default function ReportScreen({ navigation, route }) {
     if (!isAssigned) {
         return setInfoShown(true)
     }
-    return navigation.navigate(routes.ADD_REPORT)
+    return navigation.navigate(routes.EDIT_REPORT, {id: assignment._id})
   }
 
   const [selected, setSelected] = useState('')

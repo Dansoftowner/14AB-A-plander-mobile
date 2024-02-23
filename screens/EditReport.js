@@ -11,7 +11,15 @@ import DropDownList from '../components/DropDownList'
 import MyTextInput from '../components/MyTextInput'
 import MyButton from '../components/MyButton'
 import AuthContext from '../auth/authContext'
-function AddReport({ navigation, route }) {
+import routes from '../navigation/routes'
+import MyAlert from '../components/MyAlert'
+function EditReport({ navigation, route }) {
+  const [errorShown, setErrorShown] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successShown, setSuccessShown] = useState(false)
+  const [assignmentId, setAssignmentId] = useState('')
+
   const handleGetReport = async (reportID) => {
     const result = await reports.getReport(reportID)
     if (!result?.ok) {
@@ -35,7 +43,7 @@ function AddReport({ navigation, route }) {
 
   useEffect(() => {
     if (route.params.id !== -1) {
-      // setAssignmentId(route.params.id)
+      setAssignmentId(route.params.id)
       handleGetReport(route.params.id)
     }
   }, [route.params.id])
@@ -59,11 +67,37 @@ function AddReport({ navigation, route }) {
   }
 
   const handleDeleteReport = async () => {
-    console.log('delete')
+    const result = await reports.deleteReport(assignmentId)
+    if (!result?.ok) {
+      console.log(result.data)
+      setErrorMessage(result.data.message)
+      return setErrorShown(true)
+    }
+    setSuccessMessage('A jelentés sikeresen törölve.')
+    return setSuccessShown(true)
   }
 
   const handleSubmit = async () => {
-
+    const values = formRef.current.values
+    console.log(values._id)
+    const result = await reports.patchReport(
+      assignmentId,
+      values.method,
+      values.purpose,
+      values.licensePlateNumber,
+      values.startKm,
+      values.endKm,
+      values.externalOrganization,
+      values.externalRepresentative,
+      values.description,
+    )
+    if (!result?.ok) {
+      console.log(result.data)
+      setErrorMessage(result.data.message)
+      return setErrorShown(true)
+    }
+    setSuccessMessage('A jelentés sikeresen módosítva.')
+    return setSuccessShown(true)
   }
 
   const [selectedMode, setSelectedMode] = useState('')
@@ -127,7 +161,26 @@ function AddReport({ navigation, route }) {
   ])
   selectedRadioButtonStyle()
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: 'white' }}>
+      <MyAlert
+        visible={errorShown}
+        type="error"
+        size="small"
+        button={i18n.t('close')}
+        message={errorMessage}
+        onClose={() => setErrorShown(false)}
+      />
+      <MyAlert
+        visible={successShown}
+        type="success"
+        size="small"
+        button={i18n.t('close')}
+        message={successMessage}
+        onClose={() => {
+          setSuccessShown(false)
+          navigation.navigate(routes.REPORTS)
+        }}
+      />
       <View style={styles.container}>
         <Formik
           initialValues={{
@@ -153,16 +206,7 @@ function AddReport({ navigation, route }) {
           innerRef={formRef}
           enableReinitialize //ez nagyon fontos!
         >
-          {({
-            values,
-            errors,
-            handleChange,
-            handleSubmit,
-            setFieldValue,
-            validateForm,
-            setTouched,
-            touched,
-          }) => (
+          {({ values, handleChange, handleSubmit, setFieldValue }) => (
             <View style={styles.form}>
               <MyText
                 textColor="black"
@@ -291,7 +335,9 @@ function AddReport({ navigation, route }) {
               <DropDownList
                 value={values.purpose}
                 data={options}
-                onChange={(item) => setFieldValue('purpose', item)}
+                onChange={(item) => {
+                  setFieldValue('purpose', item.value), console.log(item)
+                }}
               />
 
               <EditProfileFields
@@ -300,27 +346,36 @@ function AddReport({ navigation, route }) {
                 values={values}
                 onChangeText={handleChange('description')}
                 name="description"
-                title="Külső szervezet képviselője"
+                title="Leírás"
                 multiline={true}
                 placeholder="Ha történt rendkívüli esemény..."
                 numberOfLines={5}
                 style={{ textAlignVertical: 'top', fontWeight: '400' }}
               />
 
-                    <View style={{ flexDirection: 'column' }}>
-                        <MyText textColor='black'>
-                            {JSON.stringify({alma: 'alma', korte: 'korte'})}
-                        </MyText>
-                        <MyText textColor='black'>
-                            {JSON.stringify({korte: 'korte', alma: 'alma'})}
-                        </MyText>
-                        <MyText textColor='black'>
-                        {JSON.stringify({alma: 'alma', korte: 'korte'}) == JSON.stringify({korte: 'korte', alma: 'alma'}) ? "true" : "false"}
-
-                        </MyText>
-    <MyText textColor="black">{JSON.stringify({ _id: report?._id,  author: report?.author, ...values,  submittedAt: report?.submittedAt})}</MyText>
-                      <MyText textColor="black">{JSON.stringify(report)}</MyText>
-                    </View>
+              {/* <View style={{ flexDirection: 'column' }}>
+                <MyText textColor="black">
+                  {JSON.stringify({ alma: 'alma', korte: 'korte' })}
+                </MyText>
+                <MyText textColor="black">
+                  {JSON.stringify({ korte: 'korte', alma: 'alma' })}
+                </MyText>
+                <MyText textColor="black">
+                  {JSON.stringify({ alma: 'alma', korte: 'korte' }) ==
+                  JSON.stringify({ korte: 'korte', alma: 'alma' })
+                    ? 'true'
+                    : 'false'}
+                </MyText>
+                <MyText textColor="black">
+                  {JSON.stringify({
+                    _id: report?._id,
+                    author: report?.author,
+                    ...values,
+                    submittedAt: report?.submittedAt,
+                  })}
+                </MyText>
+                <MyText textColor="black">{JSON.stringify(report)}</MyText>
+              </View> */}
               <View
                 style={{
                   flexDirection: 'row',
@@ -335,8 +390,12 @@ function AddReport({ navigation, route }) {
                   onPress={handleDeleteReport}
                 />
 
-
-                {JSON.stringify({ _id: report?._id,  author: report?.author, ...values,  submittedAt: report?.submittedAt}) != JSON.stringify(report) &&
+                {JSON.stringify({
+                  _id: report?._id,
+                  author: report?.author,
+                  ...values,
+                  submittedAt: report?.submittedAt,
+                }) != JSON.stringify(report) &&
                   user.roles.includes('president') && (
                     <View>
                       <MyButton
@@ -371,4 +430,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default AddReport
+export default EditReport
