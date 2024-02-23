@@ -1,5 +1,6 @@
 export default {
-    ADD_ASSIGMENT: "AddAssignment",
+    ADD_ASSIGMENT: "AddAssignmentScreen",
+    ADD_REPORT: "AddReportScreen",
     ASSOCIATIONS: "AssociationsScreen",
     ASSIGNMENTS: "AssignmentsScreen",
     ASSIGNMENT_STACK: "AssignmentStack",
@@ -9,5 +10,6 @@ export default {
     MEMBERS: "MembersScreen",
     PROFILE: "ProfileScreen",
     REPORTS: "ReportsScreen",
+    REPORTS_STACK: "ReportsStack",
     SETTINGS: "SettingsScreen",
 }

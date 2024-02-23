@@ -15,6 +15,7 @@ import AssignmentScreen from '../screens/AssignmentScreen'
 import AssingmentStack from './AssignmentStack'
 import routes from './routes'
 import ReportScreen from '../screens/ReportScreen'
+import ReportStack from './ReportStack'
 const Drawer = createDrawerNavigator()
 
 function MyDrawer(props) {
@@ -65,8 +66,8 @@ function MyDrawer(props) {
           }}
         />
         <Drawer.Screen
-          name={routes.REPORTS}
-          component={ReportScreen}
+          name={routes.REPORTS_STACK}
+          component={ReportStack}
           options={{
             title: i18n.t('reports'),
             headerTitle: i18n.t('reports'),
