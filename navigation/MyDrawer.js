@@ -14,6 +14,7 @@ import ExpandableCalendarScreen from '../components/calendar/AgendaList'
 import AssignmentScreen from '../screens/AssignmentScreen'
 import AssingmentStack from './AssignmentStack'
 import routes from './routes'
+import ReportScreen from '../screens/ReportScreen'
 const Drawer = createDrawerNavigator()
 
 function MyDrawer(props) {
@@ -50,12 +51,26 @@ function MyDrawer(props) {
         <Drawer.Screen
           name={routes.ASSIGNMENT_STACK}
           component={AssingmentStack}
-          options={{ title: i18n.t('assignments'), headerTitle: i18n.t('assignments')  }}
+          options={{
+            title: i18n.t('assignments'),
+            headerTitle: i18n.t('assignments'),
+          }}
         />
         <Drawer.Screen
           name={routes.PROFILE}
           component={ProfileScreen}
-          options={{ title: i18n.t('navProfile'), headerTitle: i18n.t('editProfile') }}
+          options={{
+            title: i18n.t('navProfile'),
+            headerTitle: i18n.t('editProfile'),
+          }}
+        />
+        <Drawer.Screen
+          name={routes.REPORTS}
+          component={ReportScreen}
+          options={{
+            title: i18n.t('reports'),
+            headerTitle: i18n.t('reports'),
+          }}
         />
       </Drawer.Navigator>
     </FormProvider>
