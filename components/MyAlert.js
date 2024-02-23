@@ -40,6 +40,10 @@ function MyAlert({
       color: colorsByTheme.medium_green_light_green,
       icon: 'check',
     },
+    info: {
+      color: colorsByTheme.medium_blue_light_blue,
+      icon: 'information',
+    }
   }
   const sizeProps = {
     small: {
