@@ -208,6 +208,7 @@ export default function ReportScreen({ navigation, route }) {
           start: assignment.start,
           color: hasReport ? periodColor : dotColor,
           assignees: assignment.assignees,
+          hasReport: hasReport
         },
       ],
     }
@@ -242,21 +243,25 @@ export default function ReportScreen({ navigation, route }) {
         const i = convertAgendaItem(element)
         eventsVector.push(i)
       })
-      console.log(eventsVector)
+      //console.log(eventsVector)
       const newArray = convertVector(eventsVector)
-      console.log(newArray)
+      //console.log(newArray)
       setAgendaItems(newArray)
     }
   }
 
   const handleReportTouched = (assignment) => {
-    console.log(user._id)
-    console.log(assignment.assignees)
+    // console.log(user._id)
+    // console.log(assignment.assignees)
     const isAssigned = assignment.assignees
     .map((ass) => ass._id == user._id)
     .includes(true)
     if (!isAssigned) {
         return setInfoShown(true)
+    }
+    console.log(assignment)
+    if (assignment.hasReport == null) {
+      return navigation.navigate(routes.ADD_REPORT, {id: assignment._id})
     }
     return navigation.navigate(routes.EDIT_REPORT, {id: assignment._id})
   }
@@ -269,9 +274,9 @@ export default function ReportScreen({ navigation, route }) {
         isReport={true}
         item={item}
         dotColor={item.color}
-        onItemPress={() =>
+        onItemPress={() => {
           handleReportTouched(item)
-        }
+        }}
         key={item._id}
       />
     )
