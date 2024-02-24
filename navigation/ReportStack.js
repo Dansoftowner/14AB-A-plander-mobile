@@ -11,6 +11,7 @@ import i18n from '../locales/i18n'
 import routes from './routes'
 import ReportScreen from '../screens/ReportScreen'
 import EditReport from '../screens/EditReport'
+import AddReport from '../screens/AddReport'
 // import { FormProvider } from '../components/FormContext'
 
 const Stack = createStackNavigator()
@@ -38,6 +39,17 @@ function ReportStack(props) {
         options={{
           headerShown: true,
           headerTitle: 'Jelentés szerkesztése',
+          headerStyle: {
+            backgroundColor: colorsByTheme.white_black,
+          },
+        }}
+      />
+      <Stack.Screen
+        name={routes.ADD_REPORT}
+        component={AddReport}
+        options={{
+          headerShown: true,
+          headerTitle: 'Jelentés létrehozása',
           headerStyle: {
             backgroundColor: colorsByTheme.white_black,
           },
