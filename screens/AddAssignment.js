@@ -132,6 +132,7 @@ function AddAssignment({ route, navigation }) {
       if (values.location == '') {
         values.location = 'Nem megadott'
       }
+      console.log(values.assignees)
       values.assignees = values.assignees.map((assignee) => assignee._id)
       const result = await assignments.postAssignment(
         values.title,
@@ -208,6 +209,7 @@ function AddAssignment({ route, navigation }) {
                 themeColor="black"
                 textColor="black"
                 values={values}
+                placeholderTextColor={colorsByTheme.Login_placeholders}
                 onChangeText={handleChange('title')}
                 icon="format-letter-case"
                 name="title"
@@ -223,6 +225,8 @@ function AddAssignment({ route, navigation }) {
                 name="location"
                 title={i18n.t('assignmentLocation')}
                 placeholder={i18n.t('optional')}
+                placeholderTextColor={colorsByTheme.Login_placeholders}
+
               />
               <MyText
                 textColor="black"
