@@ -173,6 +173,7 @@ export default function LoginScreen({ navigation }) {
               onPress={handleNavigateAssociation}
               name="association"
               title={values.association?.name ?? i18n.t('associationSelector')}
+              subtitle={i18n.t('associationSelector')}
             />
             <MyFormField
               value={values.username}
@@ -183,6 +184,7 @@ export default function LoginScreen({ navigation }) {
               name="username"
               placeholder={i18n.t('username')}
               themeColor="white"
+              placeholderTextColor={colorsByTheme.Login_placeholders}
             />
             <MyFormField
               autoCapitalize="none"
@@ -199,6 +201,7 @@ export default function LoginScreen({ navigation }) {
               passwordVisible={isPasswordVisible}
               themeColor="white"
               showEye={true}
+              placeholderTextColor={colorsByTheme.Login_placeholders}
             />
             {/* <MyButton onPress={(values) => {
               setTouched({username: true, password: true})

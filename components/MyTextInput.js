@@ -55,7 +55,7 @@ function MyTextInput({
       )}
       {isButton ? (
         <MyText
-          placeholderTextColor={colorsByTheme.Login_placeholders}
+          //placeholderTextColor={colorsByTheme.Login_placeholders}
           style={[styles.text, { color: title !== subtitle ? (themeColor === "white" ? colorsByTheme.white_black : colorsByTheme.black_white) :  colorsByTheme.Login_placeholders}]}
           {...otherProps}
         >
@@ -67,7 +67,7 @@ function MyTextInput({
           maxLength={maxLength}
           placeholder={title}
           onChangeText={(text) => onChangeText(text)}
-          placeholderTextColor={themeColor == 'white' ? colorsByTheme.Login_placeholders : colorsByTheme.black_white}
+          //placeholderTextColor={themeColor == 'white' ? colorsByTheme.Login_placeholders : colorsByTheme.black_white}
           style={[styles.text, { color: colorCalculated() }, style]}
           {...otherProps}
         />
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 10,
     alignItems: 'center',
-    borderWidth: 0.7,
+    borderWidth: 1,
   },
   eye: {
     right: 10,
