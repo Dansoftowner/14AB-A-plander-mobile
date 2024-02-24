@@ -46,7 +46,6 @@ function EditAssignment({ route, navigation }) {
   const [isStartDate, setIsStartDate] = useState(true)
   const formRef = useRef()
   const { language } = useContext(languageContext)
-  const isShown = useRef()
 
   const handleSubmit = async () => {
     const values = formRef.current.values

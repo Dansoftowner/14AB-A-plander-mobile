@@ -182,7 +182,7 @@ function AddReport({ navigation, route }) {
               </MyText>
               <RadioGroup
                 radioButtons={methodRadioButtons}
-                containerStyle={{ paddingVertical: 5 }}
+                containerStyle={{ width: 350, justifyContent: 'center' }}
                 //value={values.method}
                 selectedId={values.method}
                 onPress={(item) => {
@@ -249,7 +249,7 @@ function AddReport({ navigation, route }) {
                 Szolgálat típusa
               </MyText>
               <RadioGroup
-                containerStyle={{ paddingVertical: 5 }}
+                containerStyle={{ width: 350, justifyContent: 'center' }}
                 radioButtons={typeRadioButtons}
                 value={selectedType}
                 selectedId={selectedType}
