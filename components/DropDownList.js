@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
         height: 60,
         borderColor: 'black',
         paddingHorizontal: 15,
-        width: 350,
       },
       icon: {
         marginRight: 5,
@@ -76,10 +75,6 @@ const styles = StyleSheet.create({
       iconStyle: {
         width: 20,
         height: 20,
-      },
-      inputSearchStyle: {
-        height: 40,
-        fontSize: 16,
       },
 });
 
