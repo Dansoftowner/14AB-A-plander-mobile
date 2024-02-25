@@ -6,8 +6,8 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native'
-import { useTheme } from '@react-navigation/native'
-import { useNavigation } from '@react-navigation/native'
+
+import { useTheme, useNavigation } from '@react-navigation/native'
 
 import colors from '../config/colors'
 import routes from '../navigation/routes'
@@ -23,9 +23,7 @@ function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
     <TouchableWithoutFeedback>
       <View>
         <MyTextInput
-          onChangeText={(text) => {
-            selectAssociation(text)
-          }}
+          onChangeText={(text) => selectAssociation(text)}
           icon="magnify"
           style={{
             marginVertical: 2,
@@ -37,10 +35,7 @@ function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
           contentContainerStyle={{
             alignItems: 'center',
           }}
-          style={[
-            styles.list,
-            { backgroundColor: 'white', borderRadius: 15, flexGrow: 0 },
-          ]}
+          style={styles.list}
           data={data}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -62,10 +57,11 @@ function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  // list: {
-  //   height: '80%',
-  // },
+  list: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    flexGrow: 0,
+  },
   text: {
     paddingVertical: 2,
   },
