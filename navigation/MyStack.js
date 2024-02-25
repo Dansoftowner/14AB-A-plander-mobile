@@ -1,13 +1,18 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack'
-import LoginScreen from '../screens/LoginScreen'
-import AssociationsScreen from '../screens/AssociationsScreen'
+import { StyleSheet } from 'react-native'
 import { useTheme } from '@react-navigation/native'
-import { FormProvider } from '../components/FormContext'
+
+import { createStackNavigator } from '@react-navigation/stack'
+
 import routes from './routes'
+
+import AssociationsScreen from '../screens/AssociationsScreen'
+import { FormProvider } from '../components/FormContext'
+import LoginScreen from '../screens/LoginScreen'
+
 const Stack = createStackNavigator()
-function MyStack(props) {
+
+function MyStack() {
   const { colors: colorsByTheme } = useTheme()
   return (
     <FormProvider>
@@ -22,7 +27,6 @@ function MyStack(props) {
             headerTintColor: colorsByTheme.white_dark_blue,
             headerStyle: { backgroundColor: colorsByTheme.Login_background },
           }}
-          // screenOptions={{headerShown: true}}
         />
       </Stack.Navigator>
     </FormProvider>

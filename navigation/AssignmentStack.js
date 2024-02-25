@@ -1,19 +1,22 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack'
+import { StyleSheet } from 'react-native'
+
 import { useTheme } from '@react-navigation/native'
-import EditAssignment from '../screens/EditAssignment'
-import AssignmentScreen from '../screens/AssignmentScreen'
-import MembersScreen from '../screens/MembersScreen'
+import { createStackNavigator } from '@react-navigation/stack'
+
 import colors from '../config/colors'
-import AddAssignment from '../screens/AddAssignment'
 import i18n from '../locales/i18n'
 import routes from './routes'
-// import { FormProvider } from '../components/FormContext'
+
+import AddAssignment from '../screens/AddAssignment'
+import AssignmentScreen from '../screens/AssignmentScreen'
+import EditAssignment from '../screens/EditAssignment'
+import MembersScreen from '../screens/MembersScreen'
 
 const Stack = createStackNavigator()
-function AssingmentStack(props) {
+function AssingmentStack() {
   const { colors: colorsByTheme } = useTheme()
+
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
@@ -43,7 +46,7 @@ function AssingmentStack(props) {
       />
       <Stack.Screen name={routes.ASSIGNMENTS} component={AssignmentScreen} />
       <Stack.Screen
-        name= {routes.MEMBERS}
+        name={routes.MEMBERS}
         component={MembersScreen}
         options={{
           headerShown: true,

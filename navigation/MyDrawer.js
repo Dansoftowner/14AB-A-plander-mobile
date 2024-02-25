@@ -1,24 +1,23 @@
 import React from 'react'
-import { createDrawerNavigator } from '@react-navigation/drawer'
-import { View, StyleSheet } from 'react-native'
-import MainScreen from '../screens/MainScreen'
-import SettingsScreen from '../screens/SettingsScreen'
-import useAuth from '../auth/useAuth'
+import { StyleSheet } from 'react-native'
+
 import { useTheme } from '@react-navigation/native'
-import ProfileScreen from '../screens/ProfileScreen'
-import { FormProvider } from '../components/FormContext'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+
+import useAuth from '../auth/useAuth'
 import i18n from '../locales/i18n'
-// import ExampleForCalendar from '../screens/ExampleForCalendar'
-//import ExampleForAgenda from '../screens/ExampleForAgenda'
-import ExpandableCalendarScreen from '../components/calendar/AgendaList'
-import AssignmentScreen from '../screens/AssignmentScreen'
-import AssingmentStack from './AssignmentStack'
 import routes from './routes'
-import ReportScreen from '../screens/ReportScreen'
+
+import AssingmentStack from './AssignmentStack'
+import { FormProvider } from '../components/FormContext'
+import MainScreen from '../screens/MainScreen'
+import ProfileScreen from '../screens/ProfileScreen'
 import ReportStack from './ReportStack'
+import SettingsScreen from '../screens/SettingsScreen'
+
 const Drawer = createDrawerNavigator()
 
-function MyDrawer(props) {
+function MyDrawer() {
   const { colors: colorsByTheme } = useTheme()
   const { user } = useAuth()
 
