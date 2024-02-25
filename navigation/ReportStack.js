@@ -38,7 +38,7 @@ function ReportStack(props) {
         component={EditReport}
         options={{
           headerShown: true,
-          headerTitle: 'Jelentés szerkesztése',
+          headerTitle: i18n.t('editReport'),
           headerStyle: {
             backgroundColor: colorsByTheme.white_black,
           },
@@ -49,7 +49,7 @@ function ReportStack(props) {
         component={AddReport}
         options={{
           headerShown: true,
-          headerTitle: 'Jelentés létrehozása',
+          headerTitle: i18n.t('addReport'),
           headerStyle: {
             backgroundColor: colorsByTheme.white_black,
           },

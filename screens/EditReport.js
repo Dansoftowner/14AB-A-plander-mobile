@@ -81,7 +81,7 @@ function EditReport({ navigation, route }) {
       setErrorMessage(result.data.message)
       return setErrorShown(true)
     }
-    setSuccessMessage('A jelentés sikeresen törölve.')
+    setSuccessMessage(i18n.t('removedAssignment'))
     return setSuccessShown(true)
   }
 
@@ -118,7 +118,7 @@ function EditReport({ navigation, route }) {
       setErrorMessage(result.data.message)
       return setErrorShown(true)
     }
-    setSuccessMessage('A jelentés sikeresen módosítva.')
+    setSuccessMessage('modifiedAssignment')
     return setSuccessShown(true)
   }
 
@@ -133,13 +133,12 @@ function EditReport({ navigation, route }) {
     () => [
       {
         id: 'vehicle',
-        label: 'Gépkocsi',
+        label: i18n.t('vehicle'),
         value: 'vehicle',
         size: 18,
         labelStyle: {
           fontSize: 18,
-          color: colorsByTheme.black_white
-
+          color: colorsByTheme.black_white,
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
@@ -149,26 +148,24 @@ function EditReport({ navigation, route }) {
       },
       {
         id: 'bicycle',
-        label: 'Kerékpár',
+        label: i18n.t('bicycle'),
         value: 'bicycle',
         size: 18,
         labelStyle: {
           fontSize: 18,
-          color: colorsByTheme.black_white
-
+          color: colorsByTheme.black_white,
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
       },
       {
         id: 'pedestrian',
-        label: 'Gyalogos',
+        label: i18n.t('pedestrian'),
         value: 'pedestrian',
         size: 18,
         labelStyle: {
           fontSize: 18,
-          color: colorsByTheme.black_white
-
+          color: colorsByTheme.black_white,
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
@@ -179,26 +176,24 @@ function EditReport({ navigation, route }) {
   const typeRadioButtons = useMemo(() => [
     {
       id: 'independent',
-      label: 'Önálló',
+      label: i18n.t('independent'),
       value: 'independent',
       size: 18,
       labelStyle: {
         fontSize: 18,
-        color: colorsByTheme.black_white
-
+        color: colorsByTheme.black_white,
       },
       color: colors.medium_blue,
       borderColor: colors.medium_blue,
     },
     {
       id: 'corporate',
-      label: 'Közös',
+      label: i18n.t('corporate'),
       value: 'corporate',
       size: 18,
       labelStyle: {
         fontSize: 18,
-        color: colorsByTheme.black_white
-
+        color: colorsByTheme.black_white,
       },
       color: colors.medium_blue,
       borderColor: colors.medium_blue,
@@ -257,7 +252,7 @@ function EditReport({ navigation, route }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat módja
+                {i18n.t('reportMethod')}
               </MyText>
               <RadioGroup
                 radioButtons={methodRadioButtons}
@@ -283,7 +278,7 @@ function EditReport({ navigation, route }) {
                     onChangeText={handleChange('licensePlateNumber')}
                     icon="car"
                     name="licensePlateNumber"
-                    title="Gépkocsi rendszáma"
+                    title={i18n.t('licenseplate')}
                     placeholder={i18n.t('optional')}
                   />
                   <View
@@ -300,8 +295,8 @@ function EditReport({ navigation, route }) {
                       onChangeText={handleChange('startKm')}
                       icon="speedometer-slow"
                       name="startKm"
-                      title="KM óra állása"
-                      placeholder="Induláskor"
+                      title={i18n.t('km')}
+                      placeholder={i18n.t('startValue')}
                       width={170}
                       maxLength={6}
                       style={{ marginRight: 10, fontWeight: '400' }}
@@ -313,7 +308,7 @@ function EditReport({ navigation, route }) {
                       onChangeText={handleChange('endKm')}
                       icon="speedometer"
                       name="endKm"
-                      placeholder="Érkezéskor"
+                      placeholder={i18n.t('finishValue')}
                       width={170}
                       maxLength={6}
                     />
@@ -325,7 +320,7 @@ function EditReport({ navigation, route }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat típusa
+                {i18n.t('assignmentType')}
               </MyText>
               <RadioGroup
                 containerStyle={{ paddingVertical: 5, justifyContent: 'center'}}
@@ -349,7 +344,7 @@ function EditReport({ navigation, route }) {
                     onChangeText={handleChange('externalOrganization')}
                     icon="crowd"
                     name="externalOrganization"
-                    title="Külső szervezet"
+                    title={i18n.t('externalOrg')}
                   />
                   <EditProfileFields
                     themeColor="black"
@@ -358,7 +353,7 @@ function EditReport({ navigation, route }) {
                     onChangeText={handleChange('externalRepresentative')}
                     icon="account-tie-hat"
                     name="externalRepresentative"
-                    title="Külső szervezet képviselője"
+                    title={i18n.t('externalRep')}
                   />
                 </>
               )}
@@ -376,7 +371,7 @@ function EditReport({ navigation, route }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat fajtája
+                {i18n.t('purpose')}
               </MyText>
               <DropDownList
                 value={values.purpose}
@@ -392,9 +387,9 @@ function EditReport({ navigation, route }) {
                 values={values}
                 onChangeText={handleChange('description')}
                 name="description"
-                title="Leírás"
+                title={i18n.t('description')}
                 multiline={true}
-                placeholder="Ha történt rendkívüli esemény..."
+                placeholder={i18n.t('extraordinaryEvent')}
                 numberOfLines={5}
                 style={{ textAlignVertical: 'top', fontWeight: '400' }}
                 placeholderTextColor={colorsByTheme.Login_placeholders}
@@ -420,8 +415,8 @@ function EditReport({ navigation, route }) {
               >
                 <MyButton
                   textStyle={{ color: 'white' }}
-                  title='Letöltés'
-                  style={{ width: 100, backgroundColor: colorsByTheme.medium_yellow_light_yellow }}
+                  title={i18n.t('download')}
+                  style={{ width: 120, backgroundColor: colorsByTheme.medium_yellow_light_yellow }}
                   onPress={handleDeleteReport}
                 />
                 <MyButton

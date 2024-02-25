@@ -21,7 +21,7 @@ function AddReport({ navigation, route }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
   const [assignmentId, setAssignmentId] = useState('')
-//   const { user, setUser } = useContext(AuthContext)
+  //   const { user, setUser } = useContext(AuthContext)
 
   const options = [
     { value: 'Jelző-figyelő járőrözés', label: 'Jelző-figyelő járőrözés' },
@@ -62,7 +62,7 @@ function AddReport({ navigation, route }) {
       setErrorMessage(result.data.message)
       return setErrorShown(true)
     }
-    setSuccessMessage('A jelentés sikeresen létrehozva!')
+    setSuccessMessage(i18n.t('createdReport'))
     return setSuccessShown(true)
   }
 
@@ -73,12 +73,12 @@ function AddReport({ navigation, route }) {
     () => [
       {
         id: 'vehicle',
-        label: 'Gépkocsi',
+        label: i18n.t('vehicle'),
         value: 'vehicle',
         size: 18,
         labelStyle: {
           fontSize: 18,
-          color: colorsByTheme.black_white
+          color: colorsByTheme.black_white,
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
@@ -88,25 +88,24 @@ function AddReport({ navigation, route }) {
       },
       {
         id: 'bicycle',
-        label: 'Kerékpár',
+        label: i18n.t('bicycle'),
         value: 'bicycle',
         size: 18,
         labelStyle: {
           fontSize: 18,
-          color: colorsByTheme.black_white
-
+          color: colorsByTheme.black_white,
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
       },
       {
         id: 'pedestrian',
-        label: 'Gyalogos',
+        label: i18n.t('pedestrian'),
         value: 'pedestrian',
         size: 18,
         labelStyle: {
           fontSize: 18,
-          color: colorsByTheme.black_white
+          color: colorsByTheme.black_white,
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
@@ -117,26 +116,24 @@ function AddReport({ navigation, route }) {
   const typeRadioButtons = useMemo(() => [
     {
       id: 'independent',
-      label: 'Önálló',
+      label: i18n.t('independent'),
       value: 'independent',
       size: 18,
       labelStyle: {
         fontSize: 18,
-        color: colorsByTheme.black_white
-
+        color: colorsByTheme.black_white,
       },
       color: colors.medium_blue,
       borderColor: colors.medium_blue,
     },
     {
       id: 'corporate',
-      label: 'Közös',
+      label: i18n.t('corporate'),
       value: 'corporate',
       size: 18,
       labelStyle: {
         fontSize: 18,
-        color: colorsByTheme.black_white
-
+        color: colorsByTheme.black_white,
       },
       color: colors.medium_blue,
       borderColor: colors.medium_blue,
@@ -186,7 +183,7 @@ function AddReport({ navigation, route }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat módja
+                {i18n.t('reportMethod')}
               </MyText>
               <RadioGroup
                 radioButtons={methodRadioButtons}
@@ -212,7 +209,7 @@ function AddReport({ navigation, route }) {
                     onChangeText={handleChange('licensePlateNumber')}
                     icon="car"
                     name="licensePlateNumber"
-                    title="Gépkocsi rendszáma"
+                    title={i18n.t('licenseplate')}
                     placeholder={i18n.t('optional')}
                   />
                   <View
@@ -229,8 +226,8 @@ function AddReport({ navigation, route }) {
                       onChangeText={handleChange('startKm')}
                       icon="speedometer-slow"
                       name="startKm"
-                      title="KM óra állása"
-                      placeholder="Induláskor"
+                      title={i18n.t('km')}
+                      placeholder={i18n.t('startValue')}
                       width={170}
                       maxLength={6}
                       style={{ marginRight: 10, fontWeight: '400' }}
@@ -242,7 +239,7 @@ function AddReport({ navigation, route }) {
                       onChangeText={handleChange('endKm')}
                       icon="speedometer"
                       name="endKm"
-                      placeholder="Érkezéskor"
+                      placeholder={i18n.t('finishValue')}
                       width={170}
                       maxLength={6}
                     />
@@ -254,7 +251,7 @@ function AddReport({ navigation, route }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat típusa
+                {i18n.t('assignmentType')}
               </MyText>
               <RadioGroup
                 containerStyle={{ width: 350, justifyContent: 'center' }}
@@ -278,7 +275,7 @@ function AddReport({ navigation, route }) {
                     onChangeText={handleChange('externalOrganization')}
                     icon="crowd"
                     name="externalOrganization"
-                    title="Külső szervezet"
+                    title={i18n.t('externalOrg')}
                   />
                   <EditProfileFields
                     themeColor="black"
@@ -287,7 +284,7 @@ function AddReport({ navigation, route }) {
                     onChangeText={handleChange('externalRepresentative')}
                     icon="account-tie-hat"
                     name="externalRepresentative"
-                    title="Külső szervezet képviselője"
+                    title={i18n.t('externalRep')}
                   />
                 </>
               )}
@@ -305,7 +302,7 @@ function AddReport({ navigation, route }) {
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
               >
-                Szolgálat fajtája
+                {i18n.t('purpose')}
               </MyText>
               <DropDownList
                 value={values.purpose}
@@ -321,9 +318,9 @@ function AddReport({ navigation, route }) {
                 values={values}
                 onChangeText={handleChange('description')}
                 name="description"
-                title="Leírás"
+                title={i18n.t('description')}
                 multiline={true}
-                placeholder="Ha történt rendkívüli esemény..."
+                placeholder={i18n.t('extraordinaryEvent')}
                 numberOfLines={5}
                 style={{ textAlignVertical: 'top', fontWeight: '400' }}
                 placeholderTextColor={colorsByTheme.medium_white}
@@ -336,7 +333,6 @@ function AddReport({ navigation, route }) {
                   marginTop: 30,
                 }}
               >
-
                 <View>
                   <MyButton
                     textStyle={{ color: 'white' }}
