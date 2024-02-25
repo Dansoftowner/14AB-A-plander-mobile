@@ -42,12 +42,7 @@ function MyDrawer(props) {
         <Drawer.Screen
           name={routes.MAIN}
           component={MainScreen}
-          options={{ title: i18n.t('navMain') }}
-        />
-        <Drawer.Screen
-          name={routes.SETTINGS}
-          component={SettingsScreen}
-          options={{ title: i18n.t('navSettings') }}
+          options={{ title: i18n.t('navMain'), headerTitle: 'Plander' }}
         />
         <Drawer.Screen
           name={routes.ASSIGNMENT_STACK}
@@ -55,6 +50,14 @@ function MyDrawer(props) {
           options={{
             title: i18n.t('assignments'),
             headerTitle: i18n.t('assignments'),
+          }}
+        />
+        <Drawer.Screen
+          name={routes.REPORTS_STACK}
+          component={ReportStack}
+          options={{
+            title: i18n.t('reports'),
+            headerTitle: i18n.t('reports'),
           }}
         />
         <Drawer.Screen
@@ -66,11 +69,11 @@ function MyDrawer(props) {
           }}
         />
         <Drawer.Screen
-          name={routes.REPORTS_STACK}
-          component={ReportStack}
+          name={routes.SETTINGS}
+          component={SettingsScreen}
           options={{
-            title: i18n.t('reports'),
-            headerTitle: i18n.t('reports'),
+            title: i18n.t('navSettings'),
+            headerTitle: i18n.t('navSettings'),
           }}
         />
       </Drawer.Navigator>
