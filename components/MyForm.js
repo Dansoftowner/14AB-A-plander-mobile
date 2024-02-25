@@ -1,5 +1,5 @@
-import React from "react";
-import { Formik } from "formik";
+import React from 'react'
+import { Formik } from 'formik'
 
 function MyForm({ initialValues, onSubmit, validationSchema, children }) {
   return (
@@ -10,7 +10,7 @@ function MyForm({ initialValues, onSubmit, validationSchema, children }) {
     >
       {() => <>{children}</>}
     </Formik>
-  );
+  )
 }
 
-export default MyForm;
+export default MyForm
