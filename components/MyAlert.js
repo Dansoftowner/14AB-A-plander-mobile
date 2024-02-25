@@ -1,18 +1,19 @@
+import React, { useRef, useState } from 'react'
 import { Modal, Dimensions } from 'react-native'
-import React, { useCallback, useRef, useState } from 'react'
 import { View, StyleSheet, Button, TouchableOpacity, Text } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '@react-navigation/native'
-import * as Yup from 'yup'
-import { Screen } from 'react-native-screens'
-import MyText from './MyText'
-import MyButton from './MyButton'
+
 import { Formik } from 'formik'
+import * as Yup from 'yup'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+
 import i18n from '../locales/i18n'
+
+import MyText from './MyText'
 import MyFormField from './MyFormField'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
-// const ALERT_WIDTH = SCREEN_WIDTH - SCREEN_WIDTH / 4
+
 function MyAlert({
   visible,
   onClose,
@@ -24,9 +25,9 @@ function MyAlert({
   type,
   size,
 }) {
-  const { colors: colorsByTheme } = useTheme()
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-
+  const formRef = useRef()
+  const { colors: colorsByTheme } = useTheme()
   const typeProps = {
     error: {
       color: colorsByTheme.medium_red_light_red,
@@ -43,7 +44,7 @@ function MyAlert({
     info: {
       color: colorsByTheme.medium_blue_light_blue,
       icon: 'information',
-    }
+    },
   }
   const sizeProps = {
     small: {
@@ -59,6 +60,13 @@ function MyAlert({
       height: 350,
     },
   }
+  const handleOnPress = () => {
+    if (formRef.current !== undefined) {
+      values = formRef.current.values
+      onPress(values.password)
+    }
+    onClose()
+  }
   const validationSchema = Yup.object().shape({
     password: Yup.string()
       .required(i18n.t('fieldRequired'))
@@ -67,7 +75,7 @@ function MyAlert({
       .matches(/[A-Z]/, i18n.t('zodPassword'))
       .matches(/[0-9]/, i18n.t('zodPassword')),
   })
-  const formRef = useRef()
+
   return (
     <Modal
       visible={visible}
@@ -75,29 +83,10 @@ function MyAlert({
       transparent
       onRequestClose={onClose}
     >
-      <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)', //szürke háttér
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <View
-          style={[
-            styles.iconCircle,
-            { top: 32, borderColor: 'white', zIndex: 1 },
-          ]}
-        >
+      <View style={styles.container}>
+        <View style={styles.iconCircle}>
           <View
-            style={[
-              styles.icon,
-              { borderRadius: 32, backgroundColor: typeProps[type].color },
-            ]}
+            style={[styles.icon, { backgroundColor: typeProps[type].color }]}
           >
             <MaterialCommunityIcons
               name={typeProps[type].icon}
@@ -107,28 +96,18 @@ function MyAlert({
           </View>
         </View>
         <View
-          style={{
-            backgroundColor: colorsByTheme.white_darker_blue,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: sizeProps[size].width,
-            minHeight: sizeProps[size].height,
-            borderRadius: 16,
-            padding: sizeProps[size].height / 20,
-          }}
+          style={[
+            styles.window,
+            {
+              backgroundColor: colorsByTheme.white_darker_blue,
+              width: sizeProps[size].width,
+              minHeight: sizeProps[size].height,
+              padding: sizeProps[size].height / 20,
+            },
+          ]}
         >
           {size == 'small' ? (
-            <View
-              style={{
-                marginTop: 28,
-                width: '100%',
-                //backgroundColor: 'pink',
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
+            <View style={styles.smallMessage}>
               <MyText
                 textColor="black"
                 style={[styles[type], { textAlign: 'center' }]}
@@ -138,32 +117,30 @@ function MyAlert({
             </View>
           ) : (
             <View
-              style={{
-                flex: 1,
-                //backgroundColor: 'pink',
-                marginTop: 33 - sizeProps[size].height / 20,
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-              }}
+              style={[
+                styles.mediumMessage,
+                {
+                  marginTop: 33 - sizeProps[size].height / 20,
+                },
+              ]}
             >
               <MyText
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: 20,
-                  color: colorsByTheme.black_white,
-                  padding: 10,
-                }}
+                style={[
+                  styles.title,
+                  {
+                    color: colorsByTheme.black_white,
+                  },
+                ]}
               >
                 {title}
               </MyText>
               <MyText
-                style={{
-                  fontSize: 18,
-                  color: colorsByTheme.black_white,
-                  padding: 10,
-                  textAlign: 'center',
-                }}
+                style={[
+                  styles.message,
+                  {
+                    color: colorsByTheme.black_white,
+                  },
+                ]}
               >
                 {message}
               </MyText>
@@ -171,7 +148,6 @@ function MyAlert({
                 initialValues={{ password: '' }}
                 validationSchema={validationSchema}
                 innerRef={formRef}
-                //onSubmit={handleSubmitI}
               >
                 {({ values, handleChange }) => (
                   <View style={{ width: '90%' }}>
@@ -179,11 +155,9 @@ function MyAlert({
                       autoCapitalize="none"
                       autoCorrect={false}
                       themeColor={colorsByTheme.black_white}
-                      //icon="lock-outline"
                       name="password"
                       value={values.password}
                       onChangeText={handleChange('password')}
-                      //placeholder={i18n.t('password')}
                       secureTextEntry={!isPasswordVisible}
                       textContentType="password"
                       isPasswordField={true}
@@ -192,19 +166,11 @@ function MyAlert({
                       showEye={true}
                     />
                   </View>
-                  // <MyText>{JSON.stringify(values)}</MyText>
                 )}
               </Formik>
             </View>
           )}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              // backgroundColor: 'red',
-              width: '70%',
-            }}
-          >
+          <View style={styles.btnContainer}>
             {close && (
               <TouchableOpacity
                 style={[
@@ -225,18 +191,9 @@ function MyAlert({
             )}
             <TouchableOpacity
               style={[styles.btn, { backgroundColor: typeProps[type].color }]}
-              onPress={() => {
-                console.log(formRef.current)
-                if (formRef.current !== undefined) {
-                  values = formRef.current.values
-                  onPress(values.password)
-                }
-                onClose()
-              }}
+              onPress={() => handleOnPress()}
             >
-              <Text style={{ color: 'white', fontWeight: '500' }}>
-                {button}
-              </Text>
+              <Text style={styles.btnTitle}>{button}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -246,8 +203,36 @@ function MyAlert({
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   content: {},
+  title: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    padding: 10,
+  },
+  message: {
+    fontSize: 18,
+    padding: 10,
+    textAlign: 'center',
+  },
+  btnTitle: {
+    color: 'white',
+    fontWeight: '500',
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '70%',
+  },
   iconCircle: {
     height: 64,
     width: 64,
@@ -255,6 +240,9 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     justifyContent: 'center',
     alignItems: 'center',
+    top: 32,
+    borderColor: 'white',
+    zIndex: 1,
   },
   btn: {
     borderRadius: 8,
@@ -269,9 +257,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+    borderRadius: 32,
   },
   error: {
     fontWeight: 'bold',
+  },
+  mediumMessage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  smallMessage: {
+    marginTop: 28,
+    width: '100%',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  window: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderRadius: 16,
   },
 })
 
