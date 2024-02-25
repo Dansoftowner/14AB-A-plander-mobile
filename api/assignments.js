@@ -1,4 +1,3 @@
-import i18n from '../locales/i18n'
 import apiClient from './client'
 
 const getAssignments = (end) =>
@@ -28,9 +27,9 @@ const deleteAssignment = (assignmentId) => apiClient.delete(`/assignments/${assi
 const postAssignment = (title, location, start, end, assignees) => apiClient.post('/assignments', {title, location, start, end, assignees})
 
 export default {
+  deleteAssignment,
   getAssignments,
   getAssignmentById,
   patchAssignmentById,
-  deleteAssignment,
   postAssignment
 }

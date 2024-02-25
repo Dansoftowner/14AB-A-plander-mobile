@@ -303,7 +303,7 @@ export default function AssignmentScreen({ navigation, route }) {
         {user.roles.includes('president') && (
           <View style={{ alignItems: 'center' }}>
             <MyButton
-              style={{ width: 200, marginTop: 20 }}
+              style={{ width: 200, marginTop: 5, marginBottom: 10 }}
               title={i18n.t('addAssignment')}
               onPress={() => navigation.navigate(routes.ADD_ASSIGMENT)}
             />
@@ -332,6 +332,7 @@ const styles = StyleSheet.create({
   calendar: {
     paddingLeft: 20,
     paddingRight: 20,
+    marginBottom: 10,
     height: 400,
     borderRadius: 10,
     margin: 5,

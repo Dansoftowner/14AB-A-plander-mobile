@@ -1,21 +1,19 @@
-import React, { useContext, useState } from 'react'
+import React from 'react'
 import {
   View,
   StyleSheet,
   TouchableWithoutFeedback,
-  Keyboard,
   FlatList,
   TouchableOpacity,
 } from 'react-native'
-import MyFormField from './MyFormField'
-import i18n from '../locales/i18n'
-import MyButton from './MyButton'
-import MyText from './MyText'
-import MyTextInput from './MyTextInput'
 import { useTheme } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
+
 import colors from '../config/colors'
 import routes from '../navigation/routes'
+
+import MyText from './MyText'
+import MyTextInput from './MyTextInput'
 
 function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
   const { colors: colorsByTheme } = useTheme()

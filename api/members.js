@@ -1,9 +1,6 @@
 import storage from '../auth/storage'
-import i18n from '../locales/i18n'
 import apiClient from './client'
 
-//const associations = await apiClient.get("/associations", { headers: { "x-auth-token": token } });
-const token = storage.getToken()
 const getMe = (memberId) =>
   apiClient.get(`/members/${memberId}`).then((res) => res)
 
@@ -22,7 +19,6 @@ const patchMeCredentials = (email, username, password, currentPassword) =>
       { headers: { 'x-current-pass': currentPassword } },
     )
     .catch((err) => err)
-//console.log(currentPassword)
 
 export default {
   getMe,
