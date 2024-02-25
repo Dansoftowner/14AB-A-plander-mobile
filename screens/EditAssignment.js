@@ -1,40 +1,29 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, ScrollView, Text, FlatList } from 'react-native'
-import Screen from './Screen'
-import MyText from '../components/MyText'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { useFormDispatch, useFormState } from '../components/FormContext'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import i18n from '../locales/i18n'
-import MyFormField from '../components/MyFormField'
-import MyButton from '../components/MyButton'
-import MySubmitButton from '../components/MySubmitButton'
-import SmallButton from '../components/SmallButton'
-import InputField from '../components/InputField'
-import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
-import membersApi from '../api/members'
-import MyAlert from '../components/MyAlert'
-import storage from '../auth/storage'
-import AuthContext from '../auth/authContext'
-import AssociationsAutoComplete from '../components/AssociationsAutoComplete'
-import MembersAutoComplete from '../components/MembersAutoComplete'
-import assignments from '../api/assignments'
-import { format, set } from 'date-fns'
-import { hu } from 'date-fns/locale'
-import { enGB } from 'date-fns/locale'
-import DateTimeFormInput from '../components/DateTimeFormInput'
 
-import DateTimePicker from '@react-native-community/datetimepicker'
-import MyListItem from '../components/MyListItem'
+import { Formik } from 'formik'
+import { format } from 'date-fns'
+import { hu } from 'date-fns/locale'
+
+import i18n from '../locales/i18n'
+import AuthContext from '../auth/authContext'
+import assignments from '../api/assignments'
 import languageContext from '../locales/LanguageContext'
 import routes from '../navigation/routes'
 
+import MyText from '../components/MyText'
+import MyButton from '../components/MyButton'
+import InputField from '../components/InputField'
+import MyAlert from '../components/MyAlert'
+import DateTimeFormInput from '../components/DateTimeFormInput'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import MyListItem from '../components/MyListItem'
+
 function EditAssignment({ route, navigation }) {
   const { user, setUser } = useContext(AuthContext)
-
-  const [alertShown, setAlertShown] = useState(false)
+  const { colors: colorsByTheme } = useTheme()
+  // const [alertShown, setAlertShown] = useState(false)
   const [errorShown, setErrorShown] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
   const [datePickerShown, setDatePickerShown] = useState(false)
@@ -42,7 +31,6 @@ function EditAssignment({ route, navigation }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
   const [assignment, setAssignment] = useState()
-  const { colors: colorsByTheme } = useTheme()
   const [isStartDate, setIsStartDate] = useState(true)
   const formRef = useRef()
   const { language } = useContext(languageContext)
@@ -63,7 +51,7 @@ function EditAssignment({ route, navigation }) {
         assignees,
       )
       if (!result.ok) {
-        console.log(result.data.message)
+        // console.log(result.data.message)
         setErrorMessage(result.data.message)
         return setErrorShown(true)
       }
@@ -74,8 +62,6 @@ function EditAssignment({ route, navigation }) {
   }
 
   const onChangeDate = ({ type }, selectedDate) => {
-    console.log('ezaz', selectedDate)
-
     // if (type == 'set') {
     const currentDate = selectedDate
     setDatePickerShown(false)
@@ -95,19 +81,6 @@ function EditAssignment({ route, navigation }) {
     //   setTimePickerShown(!timePickerShown)
     // }
   }
-
-  useEffect(() => {
-    if (route.params.id !== -1) {
-      // setAssignmentId(route.params.id)
-      handleGetAssignment(route.params.id)
-    }
-  }, [route.params.id])
-
-  useEffect(() => {
-    if (route.params.member !== undefined) {
-      handleAddMember(route.params.member)
-    }
-  }, [route.params.member])
 
   const handleAddMember = (member) => {
     const isMemberAlreadyAdded =
@@ -135,7 +108,7 @@ function EditAssignment({ route, navigation }) {
     if (!result.ok) {
       return console.log(result)
     }
-    console.log(result.data)
+    // console.log(result.data)
     setSuccessMessage(i18n.t('removedAssignment'))
     return setSuccessShown(true)
   }
@@ -148,6 +121,18 @@ function EditAssignment({ route, navigation }) {
     )
     console.log(formRef.current.values.assignees)
   }
+
+  useEffect(() => {
+    if (route.params.id !== -1) {
+      handleGetAssignment(route.params.id)
+    }
+  }, [route.params.id])
+
+  useEffect(() => {
+    if (route.params.member !== undefined) {
+      handleAddMember(route.params.member)
+    }
+  }, [route.params.member])
 
   return (
     <ScrollView style={{ backgroundColor: colorsByTheme.white_black }}>
@@ -171,9 +156,6 @@ function EditAssignment({ route, navigation }) {
         }}
       />
       <View style={styles.container}>
-        {/* <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
-          {i18n.t('editAssignment')}
-        </MyText> */}
         <Formik
           initialValues={{
             _id: assignment?._id,
@@ -310,7 +292,6 @@ function EditAssignment({ route, navigation }) {
                   style={{ width: 100, backgroundColor: 'red' }}
                   onPress={handleDeleteAssignment}
                 />
-
                 {JSON.stringify(values) != JSON.stringify(assignment) &&
                   user.roles.includes('president') && (
                     <View>
