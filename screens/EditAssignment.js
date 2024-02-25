@@ -27,7 +27,7 @@ import { enGB } from 'date-fns/locale'
 import DateTimeFormInput from '../components/DateTimeFormInput'
 
 import DateTimePicker from '@react-native-community/datetimepicker'
-import MemberListItem from '../components/MemberListItem'
+import MyListItem from '../components/MyListItem'
 import languageContext from '../locales/LanguageContext'
 import routes from '../navigation/routes'
 
@@ -218,7 +218,7 @@ function EditAssignment({ route, navigation }) {
               </MyText>
               {values.assignees.length !== 0 ? (
                 values.assignees.map((item) => (
-                  <MemberListItem
+                  <MyListItem
                     item={item}
                     onPress={(item) => handleDeleteMember(item)}
                     key={item._id}

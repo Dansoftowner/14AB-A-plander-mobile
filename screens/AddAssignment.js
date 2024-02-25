@@ -28,7 +28,7 @@ import DateTimeFormInput from '../components/DateTimeFormInput'
 const { add } = require('date-fns')
 
 import DateTimePicker from '@react-native-community/datetimepicker'
-import MemberListItem from '../components/MemberListItem'
+import MyListItem from '../components/MyListItem'
 import routes from '../navigation/routes'
 
 function AddAssignment({ route, navigation }) {
@@ -235,7 +235,7 @@ function AddAssignment({ route, navigation }) {
               </MyText>
               {values.assignees.length !== 0 ? (
                 values.assignees.map((item) => (
-                  <MemberListItem
+                  <MyListItem
                     item={item}
                     onPress={(item) => handleDeleteMember(item)}
                     key={item._id}
