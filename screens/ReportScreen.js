@@ -323,7 +323,7 @@ export default function ReportScreen({ navigation, route }) {
         type="info"
         size="small"
         button={i18n.t('close')}
-        message='Nem készíthet jelentést, mert nincsen beosztva!'
+        message={i18n.t('notAssigned')}
         onClose={() => {
           setInfoShown(false)
         //   navigation.navigate(routes.ASSIGNMENTS)
