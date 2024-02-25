@@ -1,18 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
-import Screen from './Screen'
-import { useTheme } from '@react-navigation/native'
-import AssociationsAutoComplete from '../components/AssociationsAutoComplete'
-import associationsHook from '../api/associations'
-import { useFormDispatch, useFormState } from '../components/FormContext'
-import { Formik } from 'formik'
-import MembersAutoComplete from '../components/MembersAutoComplete'
-import membersApi from '../api/members'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet } from 'react-native'
+
 import colors from '../config/colors'
+import membersApi from '../api/members'
 
-function MembersScreen({ navigation }) {
+import Screen from './Screen'
+import MembersAutoComplete from '../components/MembersAutoComplete'
+
+function MembersScreen() {
   const [members, setMembers] = useState([])
-
   const handleGetMembers = async (q) => {
     const result = await membersApi.getMembers(q)
     if (!result.ok) {
@@ -25,28 +21,13 @@ function MembersScreen({ navigation }) {
     handleGetMembers()
   }, [])
 
-  const form = React.useRef()
-
   return (
-    <Formik
-      innerRef={form}
-      // initialValues={formValues}
-      // initialErrors={formErrors}
-      enableReinitialize
-    >
-      {({ values, handleChange, setFieldValue }) => (
-        <Screen
-          style={[styles.container, { backgroundColor: colors.medium_blue }]}
-        >
-          <MembersAutoComplete
-            data={members}
-            onSelectMember={(text) => handleGetMembers(text)}
-            // onChangeText={() => console.log('change')}
-            //values={values.assignees}
-          />
-        </Screen>
-      )}
-    </Formik>
+    <Screen style={[styles.container, { backgroundColor: colors.medium_blue }]}>
+      <MembersAutoComplete
+        data={members}
+        onSelectMember={(text) => handleGetMembers(text)}
+      />
+    </Screen>
   )
 }
 
