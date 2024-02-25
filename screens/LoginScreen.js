@@ -1,40 +1,34 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import {
-  Button,
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  useColorScheme,
-} from 'react-native'
+import React, { useContext, useState } from 'react'
+import { Image, StyleSheet, View, useColorScheme } from 'react-native'
 import { useTheme } from '@react-navigation/native'
+
+import { Formik } from 'formik'
 import * as Yup from 'yup'
 
 import i18n from '../locales/i18n'
-
 import auth from '../api/auth'
-import associationsHook from '../api/associations'
+import AuthContext from '../auth/authContext'
+import { useFormDispatch, useFormState } from '../components/FormContext'
+import storage from '../auth/storage'
+import routes from '../navigation/routes'
+
 import MyButton from '../components/MyButton'
-import MyForm from '../components/MyForm'
 import MyFormField from '../components/MyFormField'
 import MyText from '../components/MyText'
-import MySubmitButton from '../components/MySubmitButton'
 import Screen from './Screen'
-import AuthContext from '../auth/authContext'
 import SelectAssociation from '../components/SelectAssociation'
-import { Form, Formik, useFormikContext } from 'formik'
-import MyErrorMessage from '../components/MyErrorMessage'
-import { FormProvider } from '../components/FormContext'
-import { useFormDispatch, useFormState } from '../components/FormContext'
-import storage, { storeToken } from '../auth/storage'
-import useAuth from '../auth/useAuth'
 import MyAlert from '../components/MyAlert'
-import routes from '../navigation/routes'
 
 export default function LoginScreen({ navigation }) {
   const form = React.useRef()
   const dispatch = useFormDispatch()
   const { values: formValues, errors: formErrors } = useFormState('user')
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [loginFailed, setLoginFailed] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const { setUser } = useContext(AuthContext)
+  const { colors: colorsByTheme } = useTheme()
+  const colorScheme = useColorScheme()
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
@@ -53,20 +47,12 @@ export default function LoginScreen({ navigation }) {
     return unsubscribe
   }, [navigation])
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [loginFailed, setLoginFailed] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const { user, setUser } = useContext(AuthContext)
-  const { colors: colorsByTheme } = useTheme()
-  const colorScheme = useColorScheme()
-  //const form = useRef()
-
   const handleForgettenPassword = () => {
     console.log('TODO forgotten password')
   }
 
   const handleSubmit = async (fastlogin, data) => {
-    const values = form.current.values
+    // const values = form.current.values
     if (!fastlogin) {
       form.current.setTouched({
         username: true,
@@ -93,6 +79,10 @@ export default function LoginScreen({ navigation }) {
     console.log(storage.getToken())
   }
 
+  const handleNavigateAssociation = () => {
+    navigation.navigate(routes.ASSOCIATIONS)
+  }
+
   const validationSchema = Yup.object().shape({
     username: Yup.string()
       .required(i18n.t('fieldRequired'))
@@ -108,10 +98,6 @@ export default function LoginScreen({ navigation }) {
     association: Yup.object().required(i18n.t('fieldRequired')),
   })
 
-  const handleNavigateAssociation = () => {
-    navigation.navigate(routes.ASSOCIATIONS)
-  }
-
   return (
     <Screen
       style={[
@@ -126,21 +112,8 @@ export default function LoginScreen({ navigation }) {
         button="Close"
         message={errorMessage}
         onClose={() => setLoginFailed(false)}
-        //onPress={() => setErrorShown(false)}
       />
-      {/* <FancyAlert
-        icon="exclamation"
-        message={errorMessage}
-        button="Close"
-        visible={false}
-        handleClose={() => setLoginFailed(false)}
-      /> */}
       <View style={styles.headerContainer}>
-        {/* {colorScheme === 'dark' ? (
-          <LogoDark width={150} height={150} />
-        ) : (
-          <LogoLight width={150} height={150} />
-        )} */}
         {colorScheme === 'dark' ? (
           <Image
             source={require('../assets/logos/dark.png')}
@@ -167,7 +140,7 @@ export default function LoginScreen({ navigation }) {
         onSubmit={handleSubmit}
         enableReinitialize
       >
-        {({ values, errors, handleChange }) => (
+        {({ values, handleChange }) => (
           <View style={styles.form}>
             <SelectAssociation
               onPress={handleNavigateAssociation}
@@ -203,26 +176,10 @@ export default function LoginScreen({ navigation }) {
               showEye={true}
               placeholderTextColor={colorsByTheme.Login_placeholders}
             />
-            {/* <MyButton onPress={(values) => {
-              setTouched({username: true, password: true})
-              handleSubmit(values)
-              //setFieldTouched('username', true)
-              }} /> */}
-            {/* {errors && <MyText>{JSON.stringify(errors, null, 2)}</MyText>} */}
             <MyButton
               title={i18n.t('loginButton')}
               style={styles.loginButton}
-              onPress={() => {
-                // const result = await validateForm()
-                // console.log(result)
-                // if (result == {}) {
-                //   console.log('ready to log in')
-                // }
-                // console.log(errors)
-                //setTouched({username: true})
-                //console.log('itt');
-                handleSubmit()
-              }}
+              onPress={handleSubmit}
             />
             <MyButton
               title={i18n.t('forgotMyPassword')}
@@ -238,10 +195,6 @@ export default function LoginScreen({ navigation }) {
                 })
               }}
             />
-            {/* <MyText>
-              {JSON.stringify(errors)}
-              {JSON.stringify(touched)}
-            </MyText> */}
           </View>
         )}
       </Formik>
