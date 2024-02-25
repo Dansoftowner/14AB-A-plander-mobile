@@ -4,7 +4,7 @@ import MyText from '../components/MyText'
 import RadioGroup from 'react-native-radio-buttons-group'
 import reports from '../api/reports'
 import i18n from '../locales/i18n'
-import EditProfileFields from '../components/EditProfileFields'
+import InputField from '../components/InputField'
 import { Formik, useFormikContext } from 'formik'
 import colors from '../config/colors'
 import DropDownList from '../components/DropDownList'
@@ -102,9 +102,15 @@ function EditReport({ navigation, route }) {
       assignmentId,
       values.method,
       values.purpose,
-      values.licensePlateNumber == '' || values.method != 'vehicle' ? undefined : values.licensePlateNumber,
-      values.startKm == 0 || values.method != 'vehicle' ? undefined : values.startKm,
-      values.endKm == 0 || values.method != 'vehicle' ?  undefined : values.endKm,
+      values.licensePlateNumber == '' || values.method != 'vehicle'
+        ? undefined
+        : values.licensePlateNumber,
+      values.startKm == 0 || values.method != 'vehicle'
+        ? undefined
+        : values.startKm,
+      values.endKm == 0 || values.method != 'vehicle'
+        ? undefined
+        : values.endKm,
       values.externalOrganization == ''
         ? undefined
         : values.externalOrganization,
@@ -271,7 +277,7 @@ function EditReport({ navigation, route }) {
               />
               {values.method === 'vehicle' && (
                 <>
-                  <EditProfileFields
+                  <InputField
                     themeColor="black"
                     textColor="black"
                     values={values}
@@ -288,7 +294,7 @@ function EditReport({ navigation, route }) {
                       // justifyContent: 'space-between',
                     }}
                   >
-                    <EditProfileFields
+                    <InputField
                       themeColor="black"
                       textColor="black"
                       values={values}
@@ -301,7 +307,7 @@ function EditReport({ navigation, route }) {
                       maxLength={6}
                       style={{ marginRight: 10, fontWeight: '400' }}
                     />
-                    <EditProfileFields
+                    <InputField
                       themeColor="black"
                       textColor="black"
                       values={values}
@@ -323,7 +329,10 @@ function EditReport({ navigation, route }) {
                 {i18n.t('assignmentType')}
               </MyText>
               <RadioGroup
-                containerStyle={{ paddingVertical: 5, justifyContent: 'center'}}
+                containerStyle={{
+                  paddingVertical: 5,
+                  justifyContent: 'center',
+                }}
                 radioButtons={typeRadioButtons}
                 value={selectedType}
                 selectedId={selectedType}
@@ -337,7 +346,7 @@ function EditReport({ navigation, route }) {
               />
               {selectedType === 'corporate' && (
                 <>
-                  <EditProfileFields
+                  <InputField
                     themeColor="black"
                     textColor="black"
                     values={values}
@@ -346,7 +355,7 @@ function EditReport({ navigation, route }) {
                     name="externalOrganization"
                     title={i18n.t('externalOrg')}
                   />
-                  <EditProfileFields
+                  <InputField
                     themeColor="black"
                     textColor="black"
                     values={values}
@@ -381,7 +390,7 @@ function EditReport({ navigation, route }) {
                 }}
               />
 
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -416,13 +425,20 @@ function EditReport({ navigation, route }) {
                 <MyButton
                   textStyle={{ color: 'white' }}
                   title={i18n.t('download')}
-                  style={{ width: 120, backgroundColor: colorsByTheme.medium_yellow_light_yellow }}
+                  style={{
+                    width: 120,
+                    backgroundColor: colorsByTheme.medium_yellow_light_yellow,
+                  }}
                   onPress={handleDeleteReport}
                 />
                 <MyButton
                   textStyle={{ color: 'white' }}
                   title={i18n.t('delete')}
-                  style={{ width: 100, marginLeft: 10, backgroundColor: colorsByTheme.medium_red_light_red }}
+                  style={{
+                    width: 100,
+                    marginLeft: 10,
+                    backgroundColor: colorsByTheme.medium_red_light_red,
+                  }}
                   onPress={handleDeleteReport}
                 />
 
@@ -439,7 +455,8 @@ function EditReport({ navigation, route }) {
                         textStyle={{ color: 'white' }}
                         title={i18n.t('save')}
                         style={{
-                          backgroundColor: colorsByTheme.medium_green_light_green,
+                          backgroundColor:
+                            colorsByTheme.medium_green_light_green,
                           width: 100,
                           marginLeft: 10,
                         }}
@@ -460,7 +477,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-
   },
   form: {
     marginHorizontal: 20,

@@ -1,25 +1,26 @@
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
+
 import MyText from './MyText'
 import MyFormField from './MyFormField'
 import SmallButton from './SmallButton'
 
-function EditProfileFields({
+function InputField({
   title,
   value,
   icon,
   themeColor,
-  enabled = true,
   textColor,
   values,
   onChangeText,
   name,
   secure,
-  showEye = false,
-  isPasswordField = false,
   maxLength,
   setPasswordEditable,
   keyboardType,
+  enabled = true,
+  showEye = false,
+  isPasswordField = false,
   ...otherProps
 }) {
   const [isEditable, setIsEditable] = useState(false)
@@ -28,17 +29,10 @@ function EditProfileFields({
       <MyText textColor="black" style={{ fontWeight: 'bold' }}>
         {title}
       </MyText>
-      {/* <MyText textColor="black">{isEditable ? 'true' : 'false'}</MyText>
-      <MyText textColor="black">{enabled ? 'true' : 'false'}</MyText> */}
       <View style={styles.field}>
         <MyFormField
           themeColor={themeColor}
-          //title={title}
-          value={
-            typeof values[name] === 'number'
-              ? values[name].toString()
-              : values[name]
-          }
+          value={values[name].toString()}
           onChangeText={onChangeText}
           autoCapitalize="none"
           autoCorrect={false}
@@ -51,8 +45,6 @@ function EditProfileFields({
           isEditable={enabled ? true : isEditable}
           maxLength={maxLength}
           {...otherProps}
-          //placeholder={placeholder}
-          // textContentType="password"
           keyboardType={keyboardType}
           showEye={showEye}
           enabled={enabled ? true : isEditable}
@@ -73,11 +65,10 @@ function EditProfileFields({
 }
 
 const styles = StyleSheet.create({
-  container: {},
   field: {
     flexDirection: 'row',
     alignItems: 'center',
   },
 })
 
-export default EditProfileFields
+export default InputField

@@ -11,7 +11,7 @@ import MyFormField from '../components/MyFormField'
 import MyButton from '../components/MyButton'
 import MySubmitButton from '../components/MySubmitButton'
 import SmallButton from '../components/SmallButton'
-import EditProfileFields from '../components/EditProfileFields'
+import InputField from '../components/InputField'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
 import membersApi from '../api/members'
@@ -205,7 +205,7 @@ function AddAssignment({ route, navigation }) {
             touched,
           }) => (
             <View style={styles.form}>
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -216,7 +216,7 @@ function AddAssignment({ route, navigation }) {
                 title={i18n.t('assignmentName')}
                 placeholder={i18n.t('optional')}
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}

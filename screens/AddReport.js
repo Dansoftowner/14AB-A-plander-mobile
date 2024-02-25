@@ -4,7 +4,7 @@ import MyText from '../components/MyText'
 import RadioGroup from 'react-native-radio-buttons-group'
 import reports from '../api/reports'
 import i18n from '../locales/i18n'
-import EditProfileFields from '../components/EditProfileFields'
+import InputField from '../components/InputField'
 import { Formik } from 'formik'
 import colors from '../config/colors'
 import DropDownList from '../components/DropDownList'
@@ -202,7 +202,7 @@ function AddReport({ navigation, route }) {
               />
               {values.method === 'vehicle' && (
                 <>
-                  <EditProfileFields
+                  <InputField
                     themeColor="black"
                     textColor="black"
                     values={values}
@@ -219,7 +219,7 @@ function AddReport({ navigation, route }) {
                       // justifyContent: 'space-between',
                     }}
                   >
-                    <EditProfileFields
+                    <InputField
                       themeColor="black"
                       textColor="black"
                       values={values}
@@ -232,7 +232,7 @@ function AddReport({ navigation, route }) {
                       maxLength={6}
                       style={{ marginRight: 10, fontWeight: '400' }}
                     />
-                    <EditProfileFields
+                    <InputField
                       themeColor="black"
                       textColor="black"
                       values={values}
@@ -268,7 +268,7 @@ function AddReport({ navigation, route }) {
               />
               {selectedType === 'corporate' && (
                 <>
-                  <EditProfileFields
+                  <InputField
                     themeColor="black"
                     textColor="black"
                     values={values}
@@ -277,7 +277,7 @@ function AddReport({ navigation, route }) {
                     name="externalOrganization"
                     title={i18n.t('externalOrg')}
                   />
-                  <EditProfileFields
+                  <InputField
                     themeColor="black"
                     textColor="black"
                     values={values}
@@ -312,7 +312,7 @@ function AddReport({ navigation, route }) {
                 }}
               />
 
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}

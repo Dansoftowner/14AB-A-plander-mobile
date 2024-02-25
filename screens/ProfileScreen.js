@@ -11,7 +11,7 @@ import MyFormField from '../components/MyFormField'
 import MyButton from '../components/MyButton'
 import MySubmitButton from '../components/MySubmitButton'
 import SmallButton from '../components/SmallButton'
-import EditProfileFields from '../components/EditProfileFields'
+import InputField from '../components/InputField'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
 import members from '../api/members'
@@ -240,7 +240,7 @@ function ProfileScreen() {
             touched,
           }) => (
             <View style={styles.form}>
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -251,7 +251,7 @@ function ProfileScreen() {
                 enabled={false}
                 keyboardType="email-address"
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -261,7 +261,7 @@ function ProfileScreen() {
                 title={i18n.t('username')}
                 enabled={false}
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 //value={newPwd}
@@ -292,7 +292,7 @@ function ProfileScreen() {
                 }}
               />
               {isPasswordEditable && (
-                <EditProfileFields
+                <InputField
                   visible={false}
                   themeColor="black"
                   textColor="black"
@@ -310,7 +310,7 @@ function ProfileScreen() {
                   showEye={false}
                 />
               )}
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -320,7 +320,7 @@ function ProfileScreen() {
                 title={i18n.t('phone')}
                 keyboardType="phone-pad"
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -330,7 +330,7 @@ function ProfileScreen() {
                 title={i18n.t('address')}
               />
 
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -339,7 +339,7 @@ function ProfileScreen() {
                 name="idNumber"
                 title={i18n.t('idNumber')}
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
