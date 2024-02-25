@@ -1,47 +1,42 @@
-import React, {
-  useRef,
-  useCallback,
-  useState,
-  useEffect,
-  useContext,
-} from 'react'
-import { StyleSheet, View } from 'react-native'
+import React, { useCallback, useState, useEffect, useContext } from 'react'
+import { StyleSheet } from 'react-native'
 import {
   AgendaList,
   CalendarProvider,
   LocaleConfig,
   Calendar,
 } from 'react-native-calendars'
-import AgendaItem from '../components/calendar/AgendaItem'
-import { themeColor, lightThemeColor } from '../components/calendar/theme'
 import { useTheme } from '@react-navigation/native'
+
+import { endOfDay } from 'date-fns'
+
 import colors from '../config/colors'
 import assignments from '../api/assignments'
-import MyButton from '../components/MyButton'
-import MyText from '../components/MyText'
+import i18n from '../locales/i18n'
+import routes from '../navigation/routes'
+import languageContext from '../locales/LanguageContext'
+
+import AgendaItem from '../components/calendar/AgendaItem'
 import AuthContext from '../auth/authContext'
 import dateTranslationHU from '../locales/hu/date'
 import dateTranslationEN from '../locales/hu/date'
-import i18n from '../locales/i18n'
-import languageContext from '../locales/LanguageContext'
-import routes from '../navigation/routes'
-import { endOfDay } from 'date-fns'
 import MyAlert from '../components/MyAlert'
+
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
 
 export default function ReportScreen({ navigation, route }) {
-  const leftArrowIcon = require('../assets/arrows/previous.png')
-  const rightArrowIcon = require('../assets/arrows/next.png')
   const [markedDays, setMarkedDays] = useState(null)
   const [agendaItems, setAgendaItems] = useState(null)
+  const [selected, setSelected] = useState('')
+  const [infoShown, setInfoShown] = useState(false)
   const { colors: colorsByTheme } = useTheme()
+  const leftArrowIcon = require('../assets/arrows/previous.png')
+  const rightArrowIcon = require('../assets/arrows/next.png')
   const periodColor = colors.light_green
   const dotColor = colors.orange
   const { language } = useContext(languageContext)
-  const { user, setUser } = useContext(AuthContext)
-
-  const [infoShown, setInfoShown] = useState(false)
+  const { user } = useContext(AuthContext)
 
   const calendarTheme = {
     backgroundColor: colorsByTheme.white_darker_blue,
@@ -132,7 +127,7 @@ export default function ReportScreen({ navigation, route }) {
     const startDate = new Date(assignment.start)
     const endDate = new Date(assignment.end)
     const assignees = assignment.assignees
-    console.log(assignment.assignees, assignment.start)
+    //console.log(assignment.assignees, assignment.start)
     const isAssigned = assignees
       .map((ass) => ass._id == user._id)
       .includes(true)
@@ -193,8 +188,8 @@ export default function ReportScreen({ navigation, route }) {
   }
 
   const convertAgendaItem = (assignment) => {
-    const startFormattedString = formatDate(new Date(assignment.start))
-    const endFormattedString = formatDate(new Date(assignment.end))
+    // const startFormattedString = formatDate(new Date(assignment.start))
+    // const endFormattedString = formatDate(new Date(assignment.end))
     const titleDate = formatDate(new Date(assignment.start))
     const title = assignment.title
     const hasReport = assignment?.report
@@ -208,7 +203,7 @@ export default function ReportScreen({ navigation, route }) {
           start: assignment.start,
           color: hasReport ? periodColor : dotColor,
           assignees: assignment.assignees,
-          hasReport: hasReport
+          hasReport: hasReport,
         },
       ],
     }
@@ -254,19 +249,17 @@ export default function ReportScreen({ navigation, route }) {
     // console.log(user._id)
     // console.log(assignment.assignees)
     const isAssigned = assignment.assignees
-    .map((ass) => ass._id == user._id)
-    .includes(true)
+      .map((ass) => ass._id == user._id)
+      .includes(true)
     if (!isAssigned) {
-        return setInfoShown(true)
+      return setInfoShown(true)
     }
     console.log(assignment)
     if (assignment.hasReport == null) {
-      return navigation.navigate(routes.ADD_REPORT, {id: assignment._id})
+      return navigation.navigate(routes.ADD_REPORT, { id: assignment._id })
     }
-    return navigation.navigate(routes.EDIT_REPORT, {id: assignment._id})
+    return navigation.navigate(routes.EDIT_REPORT, { id: assignment._id })
   }
-
-  const [selected, setSelected] = useState('')
 
   const renderItem = useCallback(({ item }) => {
     return (
@@ -288,7 +281,6 @@ export default function ReportScreen({ navigation, route }) {
     <>
       <CalendarProvider date={new Date().toDateString()}>
         <Calendar
-          //current={Date.now()}
           onDayPress={(day) => {
             console.log('selected day', day)
             setSelected(day.dateString)
@@ -324,10 +316,7 @@ export default function ReportScreen({ navigation, route }) {
         size="small"
         button={i18n.t('close')}
         message={i18n.t('notAssigned')}
-        onClose={() => {
-          setInfoShown(false)
-        //   navigation.navigate(routes.ASSIGNMENTS)
-        }}
+        onClose={() => setInfoShown(false)}
       />
     </>
   )
