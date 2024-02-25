@@ -1,52 +1,36 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { View, StyleSheet, ScrollView, Text, FlatList } from 'react-native'
-import Screen from './Screen'
-import MyText from '../components/MyText'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { useFormDispatch, useFormState } from '../components/FormContext'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import i18n from '../locales/i18n'
-import MyFormField from '../components/MyFormField'
-import MyButton from '../components/MyButton'
-import MySubmitButton from '../components/MySubmitButton'
-import SmallButton from '../components/SmallButton'
-import InputField from '../components/InputField'
-import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
-import membersApi from '../api/members'
-import MyAlert from '../components/MyAlert'
-import storage from '../auth/storage'
-import AuthContext from '../auth/authContext'
-import AssociationsAutoComplete from '../components/AssociationsAutoComplete'
-import MembersAutoComplete from '../components/MembersAutoComplete'
-import assignments from '../api/assignments'
-import { format, set } from 'date-fns'
+
+import { Formik } from 'formik'
+import { format, add } from 'date-fns'
 import { hu } from 'date-fns/locale'
-import DateTimeFormInput from '../components/DateTimeFormInput'
 
-const { add } = require('date-fns')
-
-import DateTimePicker from '@react-native-community/datetimepicker'
-import MyListItem from '../components/MyListItem'
+import i18n from '../locales/i18n'
 import routes from '../navigation/routes'
+import assignments from '../api/assignments'
+
+import DateTimeFormInput from '../components/DateTimeFormInput'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import InputField from '../components/InputField'
+import MyText from '../components/MyText'
+import MyButton from '../components/MyButton'
+import MyAlert from '../components/MyAlert'
+import MyListItem from '../components/MyListItem'
 
 function AddAssignment({ route, navigation }) {
-  const { user, setUser } = useContext(AuthContext)
-
-  const [alertShown, setAlertShown] = useState(false)
+  const formRef = useRef()
+  const { colors: colorsByTheme } = useTheme()
   const [errorShown, setErrorShown] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
   const [datePickerShown, setDatePickerShown] = useState(false)
   const [timePickerShown, setTimePickerShown] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
-  const [assignment, setAssignment] = useState()
-  const { colors: colorsByTheme } = useTheme()
   const [isStartDate, setIsStartDate] = useState(true)
-  const formRef = useRef()
-
-  const isShown = useRef()
+  //possibly deleteable
+  const [assignment, setAssignment] = useState()
+  const [alertShown, setAlertShown] = useState(false)
 
   const handleSubmit = async () => {
     const values = formRef.current.values
@@ -68,37 +52,26 @@ function AddAssignment({ route, navigation }) {
         setErrorMessage(result.data.message)
         return setErrorShown(true)
       }
-      setAssignment({ ...values })
+      //setAssignment({ ...values })
       setSuccessMessage(i18n.t('modifiedAssignment'))
       return setSuccessShown(true)
     }
   }
 
-  const onChangeDate = ({ type }, selectedDate) => {
-    // if (type == 'set') {
+  const onChangeDate = (selectedDate) => {
     const currentDate = selectedDate
     setDatePickerShown(false)
     formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
     setTimePickerShown(true)
-    // } else {
-    //   setDatePickerShown(!datePickerShown)
-    // }
   }
 
-  const onChangeTime = ({ type }, selectedDate) => {
-    // if (type == 'set') {
+  const onChangeTime = (selectedDate) => {
     const currentDate = selectedDate
     setTimePickerShown(false)
     formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
-    // } else {
-    //   setTimePickerShown(!timePickerShown)
-    // }
   }
 
-  // const [assignmentId, setAssignmentId] = useState()
-
   const handleAddMember = (member) => {
-    console.log(formRef.current.values.assignees)
     const isMemberAlreadyAdded =
       formRef.current.values.assignees.filter((x) => x._id === member._id)
         .length > 0
@@ -108,16 +81,13 @@ function AddAssignment({ route, navigation }) {
         { _id: member._id, name: member.name },
       ])
     }
-    console.log(formRef.current.values.assignees)
   }
 
   const handleDeleteMember = (item) => {
-    //console.log(item._id)
     formRef.current.setFieldValue(
       'assignees',
       formRef.current.values.assignees.filter((x) => x._id !== item._id),
     )
-    console.log(formRef.current.values.assignees)
   }
 
   const handleAddAssignment = async () => {
@@ -180,9 +150,6 @@ function AddAssignment({ route, navigation }) {
         }}
       />
       <View style={styles.container}>
-        {/* <MyText textColor="black" style={{ fontWeight: 'bold', fontSize: 25 }}>
-          {i18n.t('addAssignment')}
-        </MyText> */}
         <Formik
           initialValues={{
             title: '',
@@ -194,16 +161,7 @@ function AddAssignment({ route, navigation }) {
           onSubmit={handleSubmit}
           innerRef={formRef}
         >
-          {({
-            values,
-            errors,
-            handleChange,
-            handleSubmit,
-            setFieldValue,
-            validateForm,
-            setTouched,
-            touched,
-          }) => (
+          {({ values, handleChange }) => (
             <View style={styles.form}>
               <InputField
                 themeColor="black"
@@ -243,10 +201,7 @@ function AddAssignment({ route, navigation }) {
                 ))
               ) : (
                 <View style={{ alignItems: 'center' }}>
-                  <MyText
-                    textColor="black"
-                    style={{ fontWeight: 'bold', fontSize: 14, padding: 10 }}
-                  >
+                  <MyText textColor="black" style={styles.noMembers}>
                     {i18n.t('noMembers')}
                   </MyText>
                 </View>
@@ -319,13 +274,7 @@ function AddAssignment({ route, navigation }) {
                 />
               )}
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  marginTop: 30,
-                }}
-              >
+              <View style={styles.btnContainer}>
                 <MyButton
                   textStyle={{ color: 'white' }}
                   title={i18n.t('save')}
@@ -342,6 +291,11 @@ function AddAssignment({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 30,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -354,33 +308,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     paddingTop: 30,
   },
-  reg: {
-    marginRight: 5,
-  },
-  role: {
+  noMembers: {
     fontWeight: 'bold',
-    fontSize: 22,
-    marginVertical: 10,
-  },
-  regFinished: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    marginTop: 5,
-    // backgroundColor: 'white',
-    // paddingHorizontal: 20,
-    // paddingVertical: 10,
-    // borderTopLeftRadius: 10,
-    // borderTopRightRadius: 10,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 5,
+    fontSize: 14,
+    padding: 10,
   },
 })
 
