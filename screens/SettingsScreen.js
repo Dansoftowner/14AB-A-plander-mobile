@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import MyText from '../components/MyText'
+import { useTheme } from '@react-navigation/native'
+
 import Logout from '../components/Logout'
 import LanguageSelector from '../components/LanguageSelector'
 import ThemeSwitch from '../components/ThemeSwitch'
-import { useTheme } from '@react-navigation/native'
 
-function SettingsScreen(props) {
+function SettingsScreen() {
   const { colors: colorsByTheme } = useTheme()
   return (
     <View
