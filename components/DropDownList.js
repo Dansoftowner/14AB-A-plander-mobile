@@ -1,27 +1,32 @@
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
+
 import { Dropdown } from 'react-native-element-dropdown'
-import MyText from './MyText'
-import colors from '../config/colors'
+
 import { useTheme } from '@react-navigation/native'
 
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import colors from '../config/colors'
+
 function DropDownList({ data, onChange, value }) {
   const [isFocus, setIsFocus] = useState(false)
   const { colors: colorsByTheme } = useTheme()
 
-
   return (
-    <View style={[styles.container, {backgroundColor: colorsByTheme.white_black}]}>
+    <View
+      style={[styles.container, { backgroundColor: colorsByTheme.white_black }]}
+    >
       {/* {renderLabel()} */}
       <Dropdown
         style={[
           styles.dropdown,
           isFocus && { borderColor: colors.dark_blue, borderWidth: 2 },
-          { borderColor: colorsByTheme.black_white},
+          { borderColor: colorsByTheme.black_white },
         ]}
         placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={[styles.selectedTextStyle, {color: colorsByTheme.black_white}]}
+        selectedTextStyle={[
+          styles.selectedTextStyle,
+          { color: colorsByTheme.black_white },
+        ]}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
         data={data}
@@ -60,15 +65,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 5,
-  },
-  label: {
-    position: 'absolute',
-    backgroundColor: 'white',
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
   },
   placeholderStyle: {
     fontSize: 16,

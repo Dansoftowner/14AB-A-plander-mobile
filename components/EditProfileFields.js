@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import MyText from './MyText'
 import MyFormField from './MyFormField'
-import EditField from './EditField'
+import SmallButton from './SmallButton'
 
 function EditProfileFields({
   title,
@@ -25,7 +25,7 @@ function EditProfileFields({
   const [isEditable, setIsEditable] = useState(false)
   return (
     <View>
-      <MyText textColor="black" style={{fontWeight: "bold"}}>
+      <MyText textColor="black" style={{ fontWeight: 'bold' }}>
         {title}
       </MyText>
       {/* <MyText textColor="black">{isEditable ? 'true' : 'false'}</MyText>
@@ -34,7 +34,11 @@ function EditProfileFields({
         <MyFormField
           themeColor={themeColor}
           //title={title}
-          value={typeof(values[name]) === 'number' ? values[name].toString() : values[name]}
+          value={
+            typeof values[name] === 'number'
+              ? values[name].toString()
+              : values[name]
+          }
           onChangeText={onChangeText}
           autoCapitalize="none"
           autoCorrect={false}
@@ -54,9 +58,9 @@ function EditProfileFields({
           enabled={enabled ? true : isEditable}
         />
         {!enabled && (
-          <EditField
+          <SmallButton
             style={{ marginLeft: 8 }}
-            type='edit'
+            type="edit"
             onPress={() => {
               setIsEditable(!isEditable)
               setPasswordEditable && setPasswordEditable()

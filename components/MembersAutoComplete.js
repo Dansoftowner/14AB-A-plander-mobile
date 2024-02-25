@@ -16,7 +16,7 @@ import { useTheme } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import colors from '../config/colors'
 import MemberListItem from './MemberListItem'
-import EditField from './EditField'
+import SmallButton from './SmallButton'
 import { useRoute } from '@react-navigation/native'
 import routes from '../navigation/routes'
 
@@ -52,7 +52,10 @@ function MembersAutoComplete({
                 //onSelectMember(item._id)
 
                 if (route.params.path === 'add') {
-                  navigation.navigate(routes.ADD_ASSIGMENT, { id: -1, member: item })
+                  navigation.navigate(routes.ADD_ASSIGMENT, {
+                    id: -1,
+                    member: item,
+                  })
                 }
                 if (route.params.path === 'edit') {
                   navigation.navigate(routes.EDIT_ASSIGMENT, {

@@ -10,7 +10,7 @@ import i18n from '../locales/i18n'
 import MyFormField from '../components/MyFormField'
 import MyButton from '../components/MyButton'
 import MySubmitButton from '../components/MySubmitButton'
-import EditField from '../components/EditField'
+import SmallButton from '../components/SmallButton'
 import EditProfileFields from '../components/EditProfileFields'
 import useAuth from '../auth/useAuth'
 import { useTheme } from '@react-navigation/native'
@@ -77,10 +77,10 @@ function EditAssignment({ route, navigation }) {
     console.log('ezaz', selectedDate)
 
     // if (type == 'set') {
-      const currentDate = selectedDate
-      setDatePickerShown(false)
-      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
-      setTimePickerShown(true)
+    const currentDate = selectedDate
+    setDatePickerShown(false)
+    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+    setTimePickerShown(true)
     // } else {
     //   setDatePickerShown(!datePickerShown)
     // }
@@ -88,9 +88,9 @@ function EditAssignment({ route, navigation }) {
 
   const onChangeTime = ({ type }, selectedDate) => {
     // if (type == 'set') {
-      const currentDate = selectedDate
-      setTimePickerShown(false)
-      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+    const currentDate = selectedDate
+    setTimePickerShown(false)
+    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
     // } else {
     //   setTimePickerShown(!timePickerShown)
     // }

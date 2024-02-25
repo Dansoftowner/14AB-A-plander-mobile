@@ -1,14 +1,13 @@
 import React from 'react'
 import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import MyTextInput from './MyTextInput'
+
 import { useFormikContext } from 'formik'
-import { format } from 'date-fns'
-import { hu } from 'date-fns/locale'
+
 import MyErrorMessage from './MyErrorMessage'
+import MyTextInput from './MyTextInput'
 
 function DateTimeFormInput({
   name,
-  width = 350,
   onPress,
   onChangeText,
   value,
@@ -18,12 +17,14 @@ function DateTimeFormInput({
   enabled,
   showEye,
   subtitle,
+  width = 350,
   isEditable = true,
   isPasswordField = false,
   passwordVisible = false,
   ...otherProps
 }) {
   const { setFieldTouched, errors, touched } = useFormikContext()
+
   return (
     <View>
       <TouchableWithoutFeedback
@@ -33,7 +34,6 @@ function DateTimeFormInput({
         <MyTextInput
           title={title}
           onBlur={() => setFieldTouched(name)}
-          //onChangeText={(text) => setFieldValue(name, text)}
           onChangeText={onChangeText}
           value={value}
           subtitle={subtitle}

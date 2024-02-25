@@ -4,7 +4,7 @@ import { useFormikContext } from 'formik'
 import MyErrorMessage from './MyErrorMessage'
 import MyTextInput from './MyTextInput'
 import styles from '../config/styles'
-import EditField from './EditField'
+import SmallButton from './SmallButton'
 import { View } from 'react-native'
 import MyText from './MyText'
 function MyFormField({
@@ -23,11 +23,7 @@ function MyFormField({
   passwordVisible = false,
   ...otherProps
 }) {
-  const {
-    setFieldTouched,
-    errors,
-    touched,
-  } = useFormikContext()
+  const { setFieldTouched, errors, touched } = useFormikContext()
 
   return (
     <View>
@@ -49,11 +45,9 @@ function MyFormField({
         style={style}
         showEye={showEye}
       />
-      {
-        errors[name] && (
-          <MyErrorMessage error={errors[name]} visible={touched[name]} />
-        )
-      }
+      {errors[name] && (
+        <MyErrorMessage error={errors[name]} visible={touched[name]} />
+      )}
       {/* <MyErrorMessage error={errors[name]} visible={errors[name]} /> */}
     </View>
   )
