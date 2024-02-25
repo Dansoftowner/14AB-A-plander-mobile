@@ -1,19 +1,21 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { View, StyleSheet, ScrollView } from 'react-native'
-import MyText from '../components/MyText'
-import RadioGroup from 'react-native-radio-buttons-group'
-import reports from '../api/reports'
-import i18n from '../locales/i18n'
-import InputField from '../components/InputField'
-import { Formik, useFormikContext } from 'formik'
-import colors from '../config/colors'
-import DropDownList from '../components/DropDownList'
-import MyTextInput from '../components/MyTextInput'
-import MyButton from '../components/MyButton'
-import AuthContext from '../auth/authContext'
-import routes from '../navigation/routes'
-import MyAlert from '../components/MyAlert'
 import { useTheme } from '@react-navigation/native'
+
+import RadioGroup from 'react-native-radio-buttons-group'
+import { Formik } from 'formik'
+
+import i18n from '../locales/i18n'
+import reports from '../api/reports'
+import colors from '../config/colors'
+import routes from '../navigation/routes'
+import AuthContext from '../auth/authContext'
+
+import DropDownList from '../components/DropDownList'
+import InputField from '../components/InputField'
+import MyAlert from '../components/MyAlert'
+import MyButton from '../components/MyButton'
+import MyText from '../components/MyText'
 
 function EditReport({ navigation, route }) {
   const [errorShown, setErrorShown] = useState(false)
@@ -21,113 +23,9 @@ function EditReport({ navigation, route }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
   const [assignmentId, setAssignmentId] = useState('')
-
-  const handleGetReport = async (reportID) => {
-    const result = await reports.getReport(reportID)
-    if (!result?.ok) {
-      return console.log(result.data)
-    }
-    return setReport(result.data)
-  }
-  const { user, setUser } = useContext(AuthContext)
-
+  const { user } = useContext(AuthContext)
   const [report, setReport] = useState(null)
-
-  const options = [
-    { value: 'Jelző-figyelő járőrözés', label: 'Jelző-figyelő járőrözés' },
-    { value: 'Rendezvénybiztosítás', label: 'Rendezvénybiztosítás' },
-    { value: 'Iskolaszolgálat', label: 'Iskolaszolgálat' },
-    { value: 'Gépjárműfelderítés', label: 'Gépjárműfelderítés' },
-    { value: 'Postáskísérés', label: 'Postáskísérés' },
-  ]
-
-  //const reportChanged = JSON.stringify({ _id: report?._id,  author: report?.author, ...values,  submittedAt: report?.submittedAt}) != JSON.stringify(report)
-
-  useEffect(() => {
-    if (route.params.id !== -1) {
-      setAssignmentId(route.params.id)
-      handleGetReport(route.params.id)
-    }
-  }, [route.params.id])
-
   const formRef = useRef()
-
-  // useEffect(() => {
-  //   if (report?.method !== null) {
-  //     selectedRadioButtonStyle()
-  //   }
-  // }, [report?.method])
-
-  // useEffect(() => {
-  //   selectedRadioButtonStyle()
-  // }, [selectedMode])
-
-  // const selectedRadioButtonStyle = () => {
-  //   methodRadioButtons.forEach((button) => {
-  //     if (button.id === selectedMode) {
-  //       button.color = colors.medium_blue
-  //       button.borderColor = colors.medium_blue
-  //     } else {
-  //       button.color = colors.light
-  //       button.borderColor = colors.light
-  //     }
-  //   })
-  // }
-
-  const handleDeleteReport = async () => {
-    const result = await reports.deleteReport(assignmentId)
-    if (!result?.ok) {
-      console.log(result.data)
-      setErrorMessage(result.data.message)
-      return setErrorShown(true)
-    }
-    setSuccessMessage(i18n.t('removedAssignment'))
-    return setSuccessShown(true)
-  }
-
-  const handleSubmit = async () => {
-    const values = formRef.current.values
-    // if (values.description == '' && report.description === undefined) {
-    //   setErrorMessage('Nincsen elküldhető módosítás!')
-    //   return setErrorShown(true)
-    // }
-    console.log(values._id)
-    // if (values.method != 'vehicle') {
-    //   setFieldValue('licensePlateNumber', undefined)
-    //   formRef.current.setFieldValue('startKm', undefined)
-    //   formRef.current.setFieldValue('endKm', undefined)
-    // }
-    console.log(values.licensePlateNumber)
-    const result = await reports.patchReport(
-      assignmentId,
-      values.method,
-      values.purpose,
-      values.licensePlateNumber == '' || values.method != 'vehicle'
-        ? undefined
-        : values.licensePlateNumber,
-      values.startKm == 0 || values.method != 'vehicle'
-        ? undefined
-        : values.startKm,
-      values.endKm == 0 || values.method != 'vehicle'
-        ? undefined
-        : values.endKm,
-      values.externalOrganization == ''
-        ? undefined
-        : values.externalOrganization,
-      values.externalRepresentative == ''
-        ? undefined
-        : values.externalRepresentative,
-      values.description == '' ? undefined : values.description,
-    )
-    if (!result?.ok) {
-      console.log(result)
-      setErrorMessage(result.data.message)
-      return setErrorShown(true)
-    }
-    setSuccessMessage('modifiedAssignment')
-    return setSuccessShown(true)
-  }
-
   const [selectedMode, setSelectedMode] = useState(
     report?.mode === undefined ? '' : report.mode,
   )
@@ -135,6 +33,13 @@ function EditReport({ navigation, route }) {
     report?.externalOrganization == undefined ? 'independent' : 'corporate',
   )
   const { colors: colorsByTheme } = useTheme()
+  const options = [
+    { value: 'Jelző-figyelő járőrözés', label: 'Jelző-figyelő járőrözés' },
+    { value: 'Rendezvénybiztosítás', label: 'Rendezvénybiztosítás' },
+    { value: 'Iskolaszolgálat', label: 'Iskolaszolgálat' },
+    { value: 'Gépjárműfelderítés', label: 'Gépjárműfelderítés' },
+    { value: 'Postáskísérés', label: 'Postáskísérés' },
+  ]
   const methodRadioButtons = useMemo(
     () => [
       {
@@ -148,9 +53,6 @@ function EditReport({ navigation, route }) {
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
-        // containerStyle: {
-        //     backgroundColor: colors.medium_blue
-        // }
       },
       {
         id: 'bicycle',
@@ -205,7 +107,65 @@ function EditReport({ navigation, route }) {
       borderColor: colors.medium_blue,
     },
   ])
-  //selectedRadioButtonStyle()
+
+  const handleGetReport = async (reportID) => {
+    const result = await reports.getReport(reportID)
+    if (!result?.ok) {
+      return console.log(result.data)
+    }
+    return setReport(result.data)
+  }
+
+  const handleDeleteReport = async () => {
+    const result = await reports.deleteReport(assignmentId)
+    if (!result?.ok) {
+      console.log(result.data)
+      setErrorMessage(result.data.message)
+      return setErrorShown(true)
+    }
+    setSuccessMessage(i18n.t('removedAssignment'))
+    return setSuccessShown(true)
+  }
+
+  const handleSubmit = async () => {
+    const values = formRef.current.values
+    const result = await reports.patchReport(
+      assignmentId,
+      values.method,
+      values.purpose,
+      values.licensePlateNumber == '' || values.method != 'vehicle'
+        ? undefined
+        : values.licensePlateNumber,
+      values.startKm == 0 || values.method != 'vehicle'
+        ? undefined
+        : values.startKm,
+      values.endKm == 0 || values.method != 'vehicle'
+        ? undefined
+        : values.endKm,
+      values.externalOrganization == ''
+        ? undefined
+        : values.externalOrganization,
+      values.externalRepresentative == ''
+        ? undefined
+        : values.externalRepresentative,
+      values.description == '' ? undefined : values.description,
+    )
+    if (!result?.ok) {
+      console.log(result)
+      setErrorMessage(result.data.message)
+      return setErrorShown(true)
+    }
+    setSuccessMessage('modifiedAssignment')
+    return setSuccessShown(true)
+  }
+
+  useEffect(() => {
+    if (route.params.id !== -1) {
+      setAssignmentId(route.params.id)
+      handleGetReport(route.params.id)
+    }
+  }, [route.params.id])
+
   return (
     <ScrollView style={{ backgroundColor: colorsByTheme.white_black }}>
       <MyAlert
@@ -263,17 +223,13 @@ function EditReport({ navigation, route }) {
               <RadioGroup
                 radioButtons={methodRadioButtons}
                 containerStyle={{ width: 350, justifyContent: 'center' }}
-                //value={values.method}
                 selectedId={values.method}
+                layout="row"
                 onPress={(item) => {
                   console.log(item)
                   setSelectedMode(item)
-                  //selectedRadioButtonStyle()
                   setFieldValue('method', item)
                 }}
-                //   onPress={() => setFieldValue('method', values.method)}
-                //   selectedId={values.method}
-                layout="row"
               />
               {values.method === 'vehicle' && (
                 <>
@@ -287,13 +243,7 @@ function EditReport({ navigation, route }) {
                     title={i18n.t('licenseplate')}
                     placeholder={i18n.t('optional')}
                   />
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      // alignItems: 'center',
-                      // justifyContent: 'space-between',
-                    }}
-                  >
+                  <View style={{ flexDirection: 'row' }}>
                     <InputField
                       themeColor="black"
                       textColor="black"
@@ -321,7 +271,6 @@ function EditReport({ navigation, route }) {
                   </View>
                 </>
               )}
-
               <MyText
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
@@ -329,6 +278,7 @@ function EditReport({ navigation, route }) {
                 {i18n.t('assignmentType')}
               </MyText>
               <RadioGroup
+                layout="row"
                 containerStyle={{
                   paddingVertical: 5,
                   justifyContent: 'center',
@@ -336,13 +286,7 @@ function EditReport({ navigation, route }) {
                 radioButtons={typeRadioButtons}
                 value={selectedType}
                 selectedId={selectedType}
-                onPress={(item) => {
-                  console.log(item)
-                  setSelectedType(item)
-                }}
-                //   onPress={() => setFieldValue('method', values.method)}
-                //   selectedId={values.method}
-                layout="row"
+                onPress={(item) => setSelectedType(item)}
               />
               {selectedType === 'corporate' && (
                 <>
@@ -366,7 +310,6 @@ function EditReport({ navigation, route }) {
                   />
                 </>
               )}
-
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 {/* <MyButton
                   onPress={() =>
@@ -389,7 +332,6 @@ function EditReport({ navigation, route }) {
                   setFieldValue('purpose', item.value), console.log(item)
                 }}
               />
-
               <InputField
                 themeColor="black"
                 textColor="black"
@@ -403,25 +345,7 @@ function EditReport({ navigation, route }) {
                 style={{ textAlignVertical: 'top', fontWeight: '400' }}
                 placeholderTextColor={colorsByTheme.Login_placeholders}
               />
-
-              {/* <View style={{ flexDirection: 'column' }}>
-                <MyText textColor="black">
-                  {JSON.stringify({
-                    _id: report?._id,
-                    author: report?.author,
-                    ...values,
-                    submittedAt: report?.submittedAt,
-                  })}
-                </MyText>
-                <MyText textColor="black">{JSON.stringify(report)}</MyText>
-              </View> */}
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  marginTop: 30,
-                }}
-              >
+              <View style={styles.btnContainer}>
                 <MyButton
                   textStyle={{ color: 'white' }}
                   title={i18n.t('download')}
@@ -474,6 +398,11 @@ function EditReport({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 30,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
