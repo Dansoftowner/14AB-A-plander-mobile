@@ -43,5 +43,6 @@
   "inviteMember": "Invite member",
   "notRegistered": "The member is not finished the registration process yet.",
   "searchByName": "Search by name",
-  "wrongFields": "The given data isn't correct!"
+  "wrongFields": "The given data isn't correct!",
+  "notAssigned": "You're not able to make report, because you're not assigned!"
 }
