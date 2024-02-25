@@ -4,6 +4,7 @@ import MyTextInput from './MyTextInput'
 import { useFormikContext } from 'formik'
 import MyErrorMessage from './MyErrorMessage'
 import MyText from './MyText'
+import { useTheme } from '@react-navigation/native'
 
 function SelectAssociation({ onPress, title, name, subtitle, isButton }) {
   const {
@@ -15,6 +16,7 @@ function SelectAssociation({ onPress, title, name, subtitle, isButton }) {
     errors,
     touched,
   } = useFormikContext()
+  const { colors: colorsByTheme } = useTheme()
 
   return (
     <View style={styles.container}>
@@ -23,8 +25,11 @@ function SelectAssociation({ onPress, title, name, subtitle, isButton }) {
       >
         <MyTextInput
           title={title}
+          subtitle={subtitle}
           icon="police-badge-outline"
           isButton={true}
+          placeholder={title}
+          placeholderTextColor='black'
         />
       </TouchableWithoutFeedback>
       <MyErrorMessage error={errors[name]} visible={touched[name]} />
