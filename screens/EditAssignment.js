@@ -73,17 +73,27 @@ function EditAssignment({ route, navigation }) {
     }
   }
 
-  const onChangeDate = (selectedDate) => {
+  const onChangeDate = ({ type }, selectedDate) => {
+    console.log('ezaz', selectedDate)
+
+    // if (type == 'set') {
       const currentDate = selectedDate
       setDatePickerShown(false)
       formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
       setTimePickerShown(true)
+    // } else {
+    //   setDatePickerShown(!datePickerShown)
+    // }
   }
 
-  const onChangeTime = ( selectedDate) => {
+  const onChangeTime = ({ type }, selectedDate) => {
+    // if (type == 'set') {
       const currentDate = selectedDate
       setTimePickerShown(false)
       formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+    // } else {
+    //   setTimePickerShown(!timePickerShown)
+    // }
   }
 
   useEffect(() => {
@@ -241,10 +251,8 @@ function EditAssignment({ route, navigation }) {
                 name="start"
                 subtitle={format(
                   values?.start == '' ? new Date() : values.start,
-                  language == 'hu'
-                    ? 'yyyy. MMMM dd. HH:mm'
-                    : 'dd-MM-yyyy HH:mm',
-                  { locale: language == 'hu' ? hu : enGB },
+                  'yyyy. MMMM. dd. HH:mm',
+                  { locale: hu },
                 )}
                 onPress={() => {
                   setDatePickerShown(!datePickerShown)
@@ -264,9 +272,7 @@ function EditAssignment({ route, navigation }) {
                 name="end"
                 subtitle={format(
                   values?.end == '' ? new Date() : values.end,
-                  language == 'hu'
-                    ? 'yyyy. MMMM dd. HH:mm'
-                    : 'dd-MM-yyyy HH:mm',
+                  'yyyy. MMMM. dd. HH:mm',
                   { locale: hu },
                 )}
                 onPress={() => {
@@ -274,7 +280,6 @@ function EditAssignment({ route, navigation }) {
                   setIsStartDate(false)
                 }}
               />
-
               {datePickerShown && (
                 <DateTimePicker
                   mode="date"
