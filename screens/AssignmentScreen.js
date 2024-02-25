@@ -1,44 +1,39 @@
-import React, {
-  useRef,
-  useCallback,
-  useState,
-  useEffect,
-  useContext,
-} from 'react'
+import React, { useCallback, useState, useEffect, useContext } from 'react'
 import { StyleSheet, View } from 'react-native'
+import { useTheme } from '@react-navigation/native'
 import {
   AgendaList,
   CalendarProvider,
   LocaleConfig,
   Calendar,
 } from 'react-native-calendars'
-import AgendaItem from '../components/calendar/AgendaItem'
-import { themeColor, lightThemeColor } from '../components/calendar/theme'
-import { useTheme } from '@react-navigation/native'
-import colors from '../config/colors'
-import assignments from '../api/assignments'
-import MyButton from '../components/MyButton'
-import MyText from '../components/MyText'
+
 import AuthContext from '../auth/authContext'
-import dateTranslationHU from '../locales/hu/date'
-import dateTranslationEN from '../locales/hu/date'
+import assignments from '../api/assignments'
+import colors from '../config/colors'
 import i18n from '../locales/i18n'
 import languageContext from '../locales/LanguageContext'
 import routes from '../navigation/routes'
+
+import dateTranslationHU from '../locales/hu/date'
+import dateTranslationEN from '../locales/hu/date'
+import AgendaItem from '../components/calendar/AgendaItem'
+import MyButton from '../components/MyButton'
+
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
 
 export default function AssignmentScreen({ navigation, route }) {
-  const leftArrowIcon = require('../assets/arrows/previous.png')
-  const rightArrowIcon = require('../assets/arrows/next.png')
+  const { colors: colorsByTheme } = useTheme()
   const [markedDays, setMarkedDays] = useState(null)
   const [agendaItems, setAgendaItems] = useState(null)
-  const { colors: colorsByTheme } = useTheme()
+  const [selected, setSelected] = useState('')
+  const leftArrowIcon = require('../assets/arrows/previous.png')
+  const rightArrowIcon = require('../assets/arrows/next.png')
+  const { language } = useContext(languageContext)
+  const { user } = useContext(AuthContext)
   const periodColor = colors.medium_green
   const dotColor = colors.dark_blue
-  const { language } = useContext(languageContext)
-  const { user, setUser } = useContext(AuthContext)
-
   const calendarTheme = {
     backgroundColor: colorsByTheme.white_darker_blue,
     calendarBackground: colorsByTheme.white_darker_blue,
@@ -46,11 +41,39 @@ export default function AssignmentScreen({ navigation, route }) {
     selectedDayBackgroundColor: colors.soft_blue,
     selectedDayTextColor: '#ffffff',
     monthTextColor: colorsByTheme.medium_white,
-    //todayBackgroundColor: colorsByTheme.light_blue_dark_blue,
-    // todayTextColor: 'red',
     dayTextColor: colorsByTheme.black_white,
     textDisabledColor: colors.light,
     arrowColor: colorsByTheme.medium_blue_yellow,
+  }
+  const markedDaysDummy = {
+    '2024-02-15': {
+      color: periodColor,
+      startingDay: true,
+      endingDay: true,
+    },
+    '2024-02-18': {
+      color: periodColor,
+      startingDay: true,
+      endingDay: true,
+      dotColor: dotColor,
+      marked: true,
+    },
+    //'2024-02-18': {dotColor: dotColor, marked: true},
+    '2024-02-19': { marked: true, dotColor: dotColor },
+    '2024-02-20': { marked: true, dotColor: dotColor },
+    '2024-02-21': {
+      marked: true,
+      dotColor: dotColor,
+      startingDay: true,
+      color: periodColor,
+    },
+    '2024-02-22': { endingDay: true, color: periodColor },
+    '2024-02-28': { startingDay: true, color: periodColor },
+    '2024-02-29': {
+      endingDay: true,
+      color: periodColor,
+      startingDay: false,
+    },
   }
 
   useEffect(() => {
@@ -84,11 +107,11 @@ export default function AssignmentScreen({ navigation, route }) {
     return Math.abs(Math.round(differenceDays))
   }
 
-  function getHoursDifference(startDate, endDate) {
-    const differenceMs = endDate.getTime() - startDate.getTime()
-    const differenceHours = differenceMs / (1000 * 60 * 60)
-    return Math.abs(Math.round(differenceHours))
-  }
+  // function getHoursDifference(startDate, endDate) {
+  //   const differenceMs = endDate.getTime() - startDate.getTime()
+  //   const differenceHours = differenceMs / (1000 * 60 * 60)
+  //   return Math.abs(Math.round(differenceHours))
+  // }
 
   const getMarkedDays = async () => {
     const markedDays = {}
@@ -126,11 +149,11 @@ export default function AssignmentScreen({ navigation, route }) {
     const startDate = new Date(assignment.start)
     const endDate = new Date(assignment.end)
     const assignees = assignment.assignees
-    console.log(assignment.assignees, assignment.start)
+    // console.log(assignment.assignees, assignment.start)
     const isAssigned = assignees
       .map((ass) => ass._id == user._id)
       .includes(true)
-    console.log(isAssigned)
+    // console.log(isAssigned)
     if (isAssigned) {
       if (endFormattedString === startFormattedString) {
         const eventObject = {
@@ -208,14 +231,18 @@ export default function AssignmentScreen({ navigation, route }) {
 
   const convertVector = (vector) => {
     const array = []
-    vector.forEach(item => {
-      const existingItemIndex = array.findIndex(obj => obj.title === item.title);
+    vector.forEach((item) => {
+      const existingItemIndex = array.findIndex(
+        (obj) => obj.title === item.title,
+      )
       if (existingItemIndex !== -1) {
-        array[existingItemIndex].data = array[existingItemIndex].data.concat(item.data);
+        array[existingItemIndex].data = array[existingItemIndex].data.concat(
+          item.data,
+        )
       } else {
-        array.push(item);
+        array.push(item)
       }
-    });
+    })
     return array
   }
 
@@ -228,24 +255,21 @@ export default function AssignmentScreen({ navigation, route }) {
         const i = convertAgendaItem(element)
         eventsVector.push(i)
       })
-      console.log(eventsVector)
       const newArray = convertVector(eventsVector)
-      console.log(newArray)
+      // console.log(newArray)
       setAgendaItems(newArray)
     }
   }
-
-  const [selected, setSelected] = useState('')
 
   const renderItem = useCallback(({ item }) => {
     return (
       <AgendaItem
         item={item}
         dotColor={item.color}
+        key={item._id}
         onItemPress={() =>
           navigation.navigate(routes.EDIT_ASSIGMENT, { id: item._id })
         }
-        key={item._id}
       />
     )
   }, [])
@@ -256,7 +280,6 @@ export default function AssignmentScreen({ navigation, route }) {
     <>
       <CalendarProvider date={new Date().toDateString()}>
         <Calendar
-          //current={Date.now()}
           onDayPress={(day) => {
             console.log('selected day', day)
             setSelected(day.dateString)
@@ -267,36 +290,7 @@ export default function AssignmentScreen({ navigation, route }) {
           theme={calendarTheme}
           firstDay={1}
           markingType={'period'}
-          markedDates={{
-            '2024-02-15': {
-              color: periodColor,
-              startingDay: true,
-              endingDay: true,
-            },
-            '2024-02-18': {
-              color: periodColor,
-              startingDay: true,
-              endingDay: true,
-              dotColor: dotColor,
-              marked: true,
-            },
-            //'2024-02-18': {dotColor: dotColor, marked: true},
-            '2024-02-19': { marked: true, dotColor: dotColor },
-            '2024-02-20': { marked: true, dotColor: dotColor },
-            '2024-02-21': {
-              marked: true,
-              dotColor: dotColor,
-              startingDay: true,
-              color: periodColor,
-            },
-            '2024-02-22': { endingDay: true, color: periodColor },
-            '2024-02-28': { startingDay: true, color: periodColor },
-            '2024-02-29': {
-              endingDay: true,
-              color: periodColor,
-              startingDay: false,
-            },
-          }}
+          markedDates={markedDaysDummy}
           leftArrowImageSource={leftArrowIcon}
           rightArrowImageSource={rightArrowIcon}
         />
@@ -309,7 +303,6 @@ export default function AssignmentScreen({ navigation, route }) {
             />
           </View>
         )}
-
         <AgendaList
           sections={agendaItems ?? []}
           renderItem={renderItem}
