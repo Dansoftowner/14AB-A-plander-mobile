@@ -1,27 +1,19 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import MyTextInput from './MyTextInput'
-import { useFormikContext } from 'formik'
-import MyErrorMessage from './MyErrorMessage'
-import MyText from './MyText'
-import { useTheme } from '@react-navigation/native'
 
-function SelectAssociation({ onPress, title, name, subtitle, isButton }) {
-  const {
-    setFieldTouched,
-    setTouched,
-    // handleChange,
-    // setFieldValue,
-    // values,
-    errors,
-    touched,
-  } = useFormikContext()
-  const { colors: colorsByTheme } = useTheme()
+import { useFormikContext } from 'formik'
+
+import MyTextInput from './MyTextInput'
+import MyErrorMessage from './MyErrorMessage'
+
+function SelectAssociation({ onPress, title, name, subtitle }) {
+  const { setTouched, errors, touched } = useFormikContext()
 
   return (
     <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={onPress} onBlur={() => setTouched(...touched, {name: true})}
-      //onBlur={() => setFieldTouched(name)}
+      <TouchableWithoutFeedback
+        onPress={onPress}
+        onBlur={() => setTouched(...touched, { name: true })}
       >
         <MyTextInput
           title={title}
@@ -29,16 +21,10 @@ function SelectAssociation({ onPress, title, name, subtitle, isButton }) {
           icon="police-badge-outline"
           isButton={true}
           placeholder={title}
-          placeholderTextColor='black'
+          placeholderTextColor="black"
         />
       </TouchableWithoutFeedback>
       <MyErrorMessage error={errors[name]} visible={touched[name]} />
-      {/* <MyText>
-        {errors[name]}
-      </MyText> */}
-      {/* <MyText> */}
-        {/* {touched[name]}
-      </MyText> */}
     </View>
   )
 }
