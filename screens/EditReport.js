@@ -5,7 +5,7 @@ import RadioGroup from 'react-native-radio-buttons-group'
 import reports from '../api/reports'
 import i18n from '../locales/i18n'
 import EditProfileFields from '../components/EditProfileFields'
-import { Formik } from 'formik'
+import { Formik, useFormikContext } from 'formik'
 import colors from '../config/colors'
 import DropDownList from '../components/DropDownList'
 import MyTextInput from '../components/MyTextInput'
@@ -13,6 +13,8 @@ import MyButton from '../components/MyButton'
 import AuthContext from '../auth/authContext'
 import routes from '../navigation/routes'
 import MyAlert from '../components/MyAlert'
+import { useTheme } from '@react-navigation/native'
+
 function EditReport({ navigation, route }) {
   const [errorShown, setErrorShown] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
@@ -50,21 +52,27 @@ function EditReport({ navigation, route }) {
 
   const formRef = useRef()
 
-  useEffect(() => {
-    selectedRadioButtonStyle()
-  }, selectedMode)
+  // useEffect(() => {
+  //   if (report?.method !== null) {
+  //     selectedRadioButtonStyle()
+  //   }
+  // }, [report?.method])
 
-  const selectedRadioButtonStyle = () => {
-    methodRadioButtons.forEach((button) => {
-      if (button.id === selectedMode) {
-        button.color = colors.medium_blue
-        button.borderColor = colors.medium_blue
-      } else {
-        button.color = colors.light
-        button.borderColor = colors.light
-      }
-    })
-  }
+  // useEffect(() => {
+  //   selectedRadioButtonStyle()
+  // }, [selectedMode])
+
+  // const selectedRadioButtonStyle = () => {
+  //   methodRadioButtons.forEach((button) => {
+  //     if (button.id === selectedMode) {
+  //       button.color = colors.medium_blue
+  //       button.borderColor = colors.medium_blue
+  //     } else {
+  //       button.color = colors.light
+  //       button.borderColor = colors.light
+  //     }
+  //   })
+  // }
 
   const handleDeleteReport = async () => {
     const result = await reports.deleteReport(assignmentId)
@@ -79,20 +87,34 @@ function EditReport({ navigation, route }) {
 
   const handleSubmit = async () => {
     const values = formRef.current.values
+    // if (values.description == '' && report.description === undefined) {
+    //   setErrorMessage('Nincsen elküldhető módosítás!')
+    //   return setErrorShown(true)
+    // }
     console.log(values._id)
+    // if (values.method != 'vehicle') {
+    //   setFieldValue('licensePlateNumber', undefined)
+    //   formRef.current.setFieldValue('startKm', undefined)
+    //   formRef.current.setFieldValue('endKm', undefined)
+    // }
+    console.log(values.licensePlateNumber)
     const result = await reports.patchReport(
       assignmentId,
       values.method,
       values.purpose,
-      values.licensePlateNumber,
-      values.startKm,
-      values.endKm,
-      values.externalOrganization,
-      values.externalRepresentative,
-      values.description,
+      values.licensePlateNumber == '' || values.method != 'vehicle' ? undefined : values.licensePlateNumber,
+      values.startKm == 0 || values.method != 'vehicle' ? undefined : values.startKm,
+      values.endKm == 0 || values.method != 'vehicle' ?  undefined : values.endKm,
+      values.externalOrganization == ''
+        ? undefined
+        : values.externalOrganization,
+      values.externalRepresentative == ''
+        ? undefined
+        : values.externalRepresentative,
+      values.description == '' ? undefined : values.description,
     )
     if (!result?.ok) {
-      console.log(result.data)
+      console.log(result)
       setErrorMessage(result.data.message)
       return setErrorShown(true)
     }
@@ -100,10 +122,13 @@ function EditReport({ navigation, route }) {
     return setSuccessShown(true)
   }
 
-  const [selectedMode, setSelectedMode] = useState('')
-  const [selectedType, setSelectedType] = useState(
-    report?.externalOrganization == '' ? 'independent' : 'corporate',
+  const [selectedMode, setSelectedMode] = useState(
+    report?.mode === undefined ? '' : report.mode,
   )
+  const [selectedType, setSelectedType] = useState(
+    report?.externalOrganization == undefined ? 'independent' : 'corporate',
+  )
+  const { colors: colorsByTheme } = useTheme()
   const methodRadioButtons = useMemo(
     () => [
       {
@@ -113,7 +138,11 @@ function EditReport({ navigation, route }) {
         size: 18,
         labelStyle: {
           fontSize: 18,
+          color: colorsByTheme.black_white
+
         },
+        color: colors.medium_blue,
+        borderColor: colors.medium_blue,
         // containerStyle: {
         //     backgroundColor: colors.medium_blue
         // }
@@ -125,7 +154,11 @@ function EditReport({ navigation, route }) {
         size: 18,
         labelStyle: {
           fontSize: 18,
+          color: colorsByTheme.black_white
+
         },
+        color: colors.medium_blue,
+        borderColor: colors.medium_blue,
       },
       {
         id: 'pedestrian',
@@ -134,7 +167,11 @@ function EditReport({ navigation, route }) {
         size: 18,
         labelStyle: {
           fontSize: 18,
+          color: colorsByTheme.black_white
+
         },
+        color: colors.medium_blue,
+        borderColor: colors.medium_blue,
       },
     ],
     [],
@@ -147,7 +184,11 @@ function EditReport({ navigation, route }) {
       size: 18,
       labelStyle: {
         fontSize: 18,
+        color: colorsByTheme.black_white
+
       },
+      color: colors.medium_blue,
+      borderColor: colors.medium_blue,
     },
     {
       id: 'corporate',
@@ -156,12 +197,16 @@ function EditReport({ navigation, route }) {
       size: 18,
       labelStyle: {
         fontSize: 18,
+        color: colorsByTheme.black_white
+
       },
+      color: colors.medium_blue,
+      borderColor: colors.medium_blue,
     },
   ])
-  selectedRadioButtonStyle()
+  //selectedRadioButtonStyle()
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <ScrollView style={{ backgroundColor: colorsByTheme.white_black }}>
       <MyAlert
         visible={errorShown}
         type="error"
@@ -190,8 +235,8 @@ function EditReport({ navigation, route }) {
               report?.licensePlateNumber == null
                 ? ''
                 : report?.licensePlateNumber,
-            startKm: report?.startKm == null ? -1 : report?.startKm,
-            endKm: report?.endKm == null ? -1 : report?.endKm,
+            startKm: report?.startKm == null ? 0 : report?.startKm,
+            endKm: report?.endKm == null ? 0 : report?.endKm,
             externalOrganization:
               report?.externalOrganization == null
                 ? ''
@@ -216,12 +261,13 @@ function EditReport({ navigation, route }) {
               </MyText>
               <RadioGroup
                 radioButtons={methodRadioButtons}
-                containerStyle={{ paddingVertical: 5 }}
+                containerStyle={{ width: 350, justifyContent: 'center' }}
                 //value={values.method}
                 selectedId={values.method}
                 onPress={(item) => {
                   console.log(item)
                   setSelectedMode(item)
+                  //selectedRadioButtonStyle()
                   setFieldValue('method', item)
                 }}
                 //   onPress={() => setFieldValue('method', values.method)}
@@ -282,7 +328,7 @@ function EditReport({ navigation, route }) {
                 Szolgálat típusa
               </MyText>
               <RadioGroup
-                containerStyle={{ paddingVertical: 5 }}
+                containerStyle={{ paddingVertical: 5, justifyContent: 'center'}}
                 radioButtons={typeRadioButtons}
                 value={selectedType}
                 selectedId={selectedType}
@@ -351,21 +397,10 @@ function EditReport({ navigation, route }) {
                 placeholder="Ha történt rendkívüli esemény..."
                 numberOfLines={5}
                 style={{ textAlignVertical: 'top', fontWeight: '400' }}
+                placeholderTextColor={colorsByTheme.Login_placeholders}
               />
 
               {/* <View style={{ flexDirection: 'column' }}>
-                <MyText textColor="black">
-                  {JSON.stringify({ alma: 'alma', korte: 'korte' })}
-                </MyText>
-                <MyText textColor="black">
-                  {JSON.stringify({ korte: 'korte', alma: 'alma' })}
-                </MyText>
-                <MyText textColor="black">
-                  {JSON.stringify({ alma: 'alma', korte: 'korte' }) ==
-                  JSON.stringify({ korte: 'korte', alma: 'alma' })
-                    ? 'true'
-                    : 'false'}
-                </MyText>
                 <MyText textColor="black">
                   {JSON.stringify({
                     _id: report?._id,
@@ -385,26 +420,33 @@ function EditReport({ navigation, route }) {
               >
                 <MyButton
                   textStyle={{ color: 'white' }}
+                  title='Letöltés'
+                  style={{ width: 100, backgroundColor: colorsByTheme.medium_yellow_light_yellow }}
+                  onPress={handleDeleteReport}
+                />
+                <MyButton
+                  textStyle={{ color: 'white' }}
                   title={i18n.t('delete')}
-                  style={{ width: 100, backgroundColor: 'red' }}
+                  style={{ width: 100, marginLeft: 10, backgroundColor: colorsByTheme.medium_red_light_red }}
                   onPress={handleDeleteReport}
                 />
 
-                {JSON.stringify({
+                {(JSON.stringify({
                   _id: report?._id,
                   author: report?.author,
                   ...values,
                   submittedAt: report?.submittedAt,
-                }) != JSON.stringify(report) &&
+                }) != JSON.stringify(report) ||
+                  report?.description === undefined) &&
                   user.roles.includes('president') && (
                     <View>
                       <MyButton
                         textStyle={{ color: 'white' }}
                         title={i18n.t('save')}
                         style={{
-                          backgroundColor: 'green',
+                          backgroundColor: colorsByTheme.medium_green_light_green,
                           width: 100,
-                          marginLeft: 20,
+                          marginLeft: 10,
                         }}
                         onPress={handleSubmit}
                       />
@@ -423,6 +465,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+
   },
   form: {
     marginHorizontal: 20,

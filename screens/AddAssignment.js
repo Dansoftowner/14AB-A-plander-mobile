@@ -76,10 +76,10 @@ function AddAssignment({ route, navigation }) {
 
   const onChangeDate = ({ type }, selectedDate) => {
     // if (type == 'set') {
-      const currentDate = selectedDate
-      setDatePickerShown(false)
-      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
-      setTimePickerShown(true)
+    const currentDate = selectedDate
+    setDatePickerShown(false)
+    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+    setTimePickerShown(true)
     // } else {
     //   setDatePickerShown(!datePickerShown)
     // }
@@ -87,9 +87,9 @@ function AddAssignment({ route, navigation }) {
 
   const onChangeTime = ({ type }, selectedDate) => {
     // if (type == 'set') {
-      const currentDate = selectedDate
-      setTimePickerShown(false)
-      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+    const currentDate = selectedDate
+    setTimePickerShown(false)
+    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
     // } else {
     //   setTimePickerShown(!timePickerShown)
     // }
@@ -209,7 +209,7 @@ function AddAssignment({ route, navigation }) {
                 themeColor="black"
                 textColor="black"
                 values={values}
-                placeholderTextColor={colorsByTheme.Login_placeholders}
+                placeholderTextColor={colorsByTheme.medium_white}
                 onChangeText={handleChange('title')}
                 icon="format-letter-case"
                 name="title"
@@ -225,8 +225,7 @@ function AddAssignment({ route, navigation }) {
                 name="location"
                 title={i18n.t('assignmentLocation')}
                 placeholder={i18n.t('optional')}
-                placeholderTextColor={colorsByTheme.Login_placeholders}
-
+                placeholderTextColor={colorsByTheme.medium_white}
               />
               <MyText
                 textColor="black"

@@ -78,6 +78,7 @@ function AddReport({ navigation, route }) {
         size: 18,
         labelStyle: {
           fontSize: 18,
+          color: colorsByTheme.black_white
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
@@ -92,6 +93,8 @@ function AddReport({ navigation, route }) {
         size: 18,
         labelStyle: {
           fontSize: 18,
+          color: colorsByTheme.black_white
+
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
@@ -103,6 +106,7 @@ function AddReport({ navigation, route }) {
         size: 18,
         labelStyle: {
           fontSize: 18,
+          color: colorsByTheme.black_white
         },
         color: colors.medium_blue,
         borderColor: colors.medium_blue,
@@ -118,6 +122,8 @@ function AddReport({ navigation, route }) {
       size: 18,
       labelStyle: {
         fontSize: 18,
+        color: colorsByTheme.black_white
+
       },
       color: colors.medium_blue,
       borderColor: colors.medium_blue,
@@ -129,6 +135,8 @@ function AddReport({ navigation, route }) {
       size: 18,
       labelStyle: {
         fontSize: 18,
+        color: colorsByTheme.black_white
+
       },
       color: colors.medium_blue,
       borderColor: colors.medium_blue,
@@ -136,7 +144,7 @@ function AddReport({ navigation, route }) {
   ])
   //selectedRadioButtonStyle()
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <ScrollView style={{ backgroundColor: colorsByTheme.white_black }}>
       <MyAlert
         visible={errorShown}
         type="error"
@@ -318,7 +326,7 @@ function AddReport({ navigation, route }) {
                 placeholder="Ha történt rendkívüli esemény..."
                 numberOfLines={5}
                 style={{ textAlignVertical: 'top', fontWeight: '400' }}
-                placeholderTextColor={colorsByTheme.Login_placeholders}
+                placeholderTextColor={colorsByTheme.medium_white}
               />
 
               <View
@@ -334,7 +342,7 @@ function AddReport({ navigation, route }) {
                     textStyle={{ color: 'white' }}
                     title={i18n.t('save')}
                     style={{
-                      backgroundColor: 'green',
+                      backgroundColor: colorsByTheme.medium_green_light_green,
                       width: 100,
                       marginLeft: 20,
                     }}
