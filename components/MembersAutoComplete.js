@@ -18,7 +18,8 @@ import MyTextInput from './MyTextInput'
 function MembersAutoComplete({ data, onSelectMember }) {
   const navigation = useNavigation()
   const route = useRoute()
-  const handleSelectedMember = () => {
+  const handleSelectedMember = (item) => {
+    console.log(item)
     if (route.params.path === 'add') {
       navigation.navigate(routes.ADD_ASSIGMENT, {
         id: -1,
@@ -50,7 +51,7 @@ function MembersAutoComplete({ data, onSelectMember }) {
           style={styles.list}
           data={data}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={handleSelectedMember}>
+            <TouchableOpacity onPress={() => handleSelectedMember(item)}>
               {item?.name && (
                 <MyText style={[styles.text, { color: colors.medium_dark }]}>
                   {item.name}
