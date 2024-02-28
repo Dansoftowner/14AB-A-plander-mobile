@@ -58,17 +58,25 @@ function AddAssignment({ route, navigation }) {
     }
   }
 
-  const onChangeDate = (selectedDate) => {
-    const currentDate = selectedDate
-    setDatePickerShown(false)
-    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
-    setTimePickerShown(true)
+  const onChangeDate = ({ type }, selectedDate) => {
+    if (type == 'set') {
+      const currentDate = selectedDate
+      setDatePickerShown(false)
+      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+      setTimePickerShown(true)
+    } else {
+      setDatePickerShown(!datePickerShown)
+    }
   }
 
-  const onChangeTime = (selectedDate) => {
-    const currentDate = selectedDate
-    setTimePickerShown(false)
-    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+  const onChangeTime = ({ type }, selectedDate) => {
+    if (type == 'set') {
+      const currentDate = selectedDate
+      setTimePickerShown(false)
+      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+    } else {
+      setTimePickerShown(!timePickerShown)
+    }
   }
 
   const handleAddMember = (member) => {
