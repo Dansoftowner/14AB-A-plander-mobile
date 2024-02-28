@@ -155,7 +155,7 @@ function EditReport({ navigation, route }) {
       setErrorMessage(result.data.message)
       return setErrorShown(true)
     }
-    setSuccessMessage('modifiedAssignment')
+    setSuccessMessage(i18n.t('modifiedAssignment'))
     return setSuccessShown(true)
   }
 
@@ -343,7 +343,7 @@ function EditReport({ navigation, route }) {
                 placeholder={i18n.t('extraordinaryEvent')}
                 numberOfLines={5}
                 style={{ textAlignVertical: 'top', fontWeight: '400' }}
-                placeholderTextColor={colorsByTheme.Login_placeholders}
+                placeholderTextColor={colorsByTheme.medium_white}
               />
               <View style={styles.btnContainer}>
                 <MyButton
