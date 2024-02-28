@@ -306,6 +306,7 @@ export default function AssignmentScreen({ navigation, route }) {
         <AgendaList
           sections={agendaItems ?? []}
           renderItem={renderItem}
+          keyExtractor={item => item._id}
           // scrollToNextEvent
           sectionStyle={[
             styles.section,
