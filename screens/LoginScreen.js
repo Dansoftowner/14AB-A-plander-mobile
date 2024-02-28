@@ -52,7 +52,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   const handleSubmit = async (fastlogin, data) => {
-    // const values = form.current.values
+    //const values = form.current.values
     if (!fastlogin) {
       form.current.setTouched({
         username: true,
@@ -76,7 +76,7 @@ export default function LoginScreen({ navigation }) {
     setLoginFailed(false)
     setUser(result.data)
     storage.storeToken(result.headers['x-plander-auth'])
-    console.log(storage.getToken())
+    //console.log(storage.getToken())
   }
 
   const handleNavigateAssociation = () => {
