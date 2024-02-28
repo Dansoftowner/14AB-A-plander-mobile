@@ -9,6 +9,7 @@ import routes from './routes'
 import AssociationsScreen from '../screens/AssociationsScreen'
 import { FormProvider } from '../components/FormContext'
 import LoginScreen from '../screens/LoginScreen'
+import i18n from '../locales/i18n'
 
 const Stack = createStackNavigator()
 
@@ -23,7 +24,7 @@ function MyStack() {
           component={AssociationsScreen}
           options={{
             headerShown: true,
-            headerTitle: '',
+            headerTitle: i18n.t('associationSelector'),
             headerTintColor: colorsByTheme.white_dark_blue,
             headerStyle: { backgroundColor: colorsByTheme.Login_background },
           }}
