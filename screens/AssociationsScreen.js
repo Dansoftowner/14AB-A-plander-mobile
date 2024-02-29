@@ -1,24 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
-import Screen from './Screen'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet } from 'react-native'
 import { useTheme } from '@react-navigation/native'
-import AutoComplete from '../components/AutoComplete'
+
+import { Formik } from 'formik'
+
 import associationsHook from '../api/associations'
 import { useFormDispatch, useFormState } from '../components/FormContext'
-import { Formik } from 'formik'
+
+import Screen from './Screen'
+import AssociationsAutoComplete from '../components/AssociationsAutoComplete'
 
 function AssociationsScreen({ navigation }) {
   const { colors: colorsByTheme } = useTheme()
   const [associations, setAssociations] = useState()
-
-  const handleGetAssociations = async (q) => {
-    const result = await associationsHook.getAssociations(q)
-    if (!result.ok) {
-      return console.log(result) //TODO Hibakezelés
-    }
-    setAssociations([...result.data.items])
-  }
-
   const form = React.useRef()
   const dispatch = useFormDispatch()
   const { values: formValues, errors: formErrors } = useFormState('user')
@@ -44,6 +38,14 @@ function AssociationsScreen({ navigation }) {
     handleGetAssociations('')
   }, [])
 
+  const handleGetAssociations = async (q) => {
+    const result = await associationsHook.getAssociations(q)
+    if (!result.ok) {
+      return console.log(result) //TODO Hibakezelés
+    }
+    setAssociations([...result.data.items])
+  }
+
   return (
     <Formik
       innerRef={form}
@@ -51,21 +53,21 @@ function AssociationsScreen({ navigation }) {
       initialErrors={formErrors}
       enableReinitialize
     >
-      {({values, handleChange, setFieldValue}) => (
-      <Screen
-        style={[
-          styles.container,
-          { backgroundColor: colorsByTheme.Login_background },
-        ]}
-      >
-        <AutoComplete
-          data={associations}
-          values={values.association}
-          handleChange={handleChange}
-          setFieldValue={setFieldValue}
-          selectAssociation={(text) => handleGetAssociations(text)}
-        />
-      </Screen>
+      {({ values, handleChange, setFieldValue }) => (
+        <Screen
+          style={[
+            styles.container,
+            { backgroundColor: colorsByTheme.Login_background },
+          ]}
+        >
+          <AssociationsAutoComplete
+            data={associations}
+            values={values.association}
+            handleChange={handleChange}
+            setFieldValue={setFieldValue}
+            selectAssociation={(text) => handleGetAssociations(text)}
+          />
+        </Screen>
       )}
     </Formik>
   )

@@ -1,27 +1,35 @@
-import React, { useContext } from 'react'
+import React from 'react'
+
 import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import MyText from './MyText'
 import { useTheme } from '@react-navigation/native'
+
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import i18n from '../locales/i18n'
 import useAuth from '../auth/useAuth'
-import AuthContext from '../auth/authContext'
+
+import MyText from './MyText'
 
 function Logout() {
   const { colors: colorsByTheme } = useTheme()
-  const {logOut} = useAuth()
-    const handleOnPress = () => {
-        logOut()
-    }
+  const { logOut } = useAuth()
+  const handleOnPress = () => {
+    logOut()
+  }
+  
   return (
-    <View style={[styles.container, {backgroundColor: colorsByTheme.medium_blue_dark_blue}]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: colorsByTheme.medium_blue_dark_blue },
+      ]}
+    >
       <TouchableWithoutFeedback onPress={handleOnPress}>
-      <MaterialCommunityIcons
-        name="power-standby"
-        size={30}
-        color={colorsByTheme.white_white}
-      />
+        <MaterialCommunityIcons
+          name="power-standby"
+          size={30}
+          color={colorsByTheme.white_white}
+        />
       </TouchableWithoutFeedback>
       <MyText style={[styles.text, { color: colorsByTheme.white_white }]}>
         {i18n.t('logout')}
@@ -35,7 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 1
+    paddingVertical: 10,
   },
   text: {
     fontWeight: '700',

@@ -1,28 +1,33 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack'
-import LoginScreen from '../screens/LoginScreen'
-import AssociationsScreen from '../screens/AssociationsScreen'
+import { StyleSheet } from 'react-native'
 import { useTheme } from '@react-navigation/native'
+
+import { createStackNavigator } from '@react-navigation/stack'
+
+import routes from './routes'
+
+import AssociationsScreen from '../screens/AssociationsScreen'
 import { FormProvider } from '../components/FormContext'
+import LoginScreen from '../screens/LoginScreen'
+import i18n from '../locales/i18n'
 
 const Stack = createStackNavigator()
-function MyStack(props) {
+
+function MyStack() {
   const { colors: colorsByTheme } = useTheme()
   return (
     <FormProvider>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name={routes.LOGIN} component={LoginScreen} />
         <Stack.Screen
-          name="Associations"
+          name={routes.ASSOCIATIONS}
           component={AssociationsScreen}
           options={{
             headerShown: true,
-            headerTitle: '',
+            headerTitle: i18n.t('associationSelector'),
             headerTintColor: colorsByTheme.white_dark_blue,
             headerStyle: { backgroundColor: colorsByTheme.Login_background },
           }}
-          // screenOptions={{headerShown: true}}
         />
       </Stack.Navigator>
     </FormProvider>

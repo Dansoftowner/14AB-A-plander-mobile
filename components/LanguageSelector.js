@@ -1,24 +1,22 @@
 import React, { useContext } from 'react'
-import { View, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import MyText from './MyText'
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+
 import { useTheme } from '@react-navigation/native'
 
 import i18n from '../locales/i18n'
-import AuthContext from '../auth/authContext'
+
+import LanguageContext from '../locales/LanguageContext'
 import FlagHU from '../assets/flags/hu.svg'
 import FlagEN from '../assets/flags/gb.svg'
-import {getLocales} from 'expo-localization'
-import LanguageContext from '../locales/LanguageContext'
+import MyText from './MyText'
 
-function LanguageSelector(props) {
-  
+function LanguageSelector() {
   const { colors: colorsByTheme } = useTheme()
-  const {language, setLanguage} = useContext(LanguageContext)
-
+  const { language, setLanguage } = useContext(LanguageContext)
   const handleOnPress = () => {
-    setLanguage(language == "en" ? "hu" : "en")
+    setLanguage(language == 'en' ? 'hu' : 'en')
   }
+
   return (
     <View
       style={[
@@ -27,7 +25,11 @@ function LanguageSelector(props) {
       ]}
     >
       <TouchableWithoutFeedback onPress={handleOnPress}>
-        {language == "en" ? <FlagEN width={30} height={30} /> : <FlagHU width={30} height={30} />}
+        {language == 'en' ? (
+          <FlagEN width={30} height={30} />
+        ) : (
+          <FlagHU width={30} height={30} />
+        )}
       </TouchableWithoutFeedback>
       <MyText style={[styles.text, { color: colorsByTheme.white_white }]}>
         {i18n.t('langSelectorAlt')}
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 1
+    paddingVertical: 10,
   },
   text: {
     fontWeight: '700',

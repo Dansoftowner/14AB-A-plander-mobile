@@ -45,5 +45,6 @@
   "inviteMember": "Új tag meghívása",
   "notRegistered": "A tag még nem fejezte be a regisztrációt!",
   "searchByName": "Keresés név alapján",
-  "wrongFields": "A megadott adatok nem megfelelőek!"
+  "wrongFields": "A megadott adatok nem megfelelőek!",
+  "notAssigned": "Nem készíthet jelentést, mert nincsen beosztva!"
 }

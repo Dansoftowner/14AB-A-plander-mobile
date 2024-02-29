@@ -21,5 +21,8 @@ export default {
     light_yellow: "#f5e571",
     medium_yellow: "#fce953",
     dark_yellow: "#ffe524",
+    orange: '#ED7014',
+    light_orange: '#ed9a5c',
+    dark_orange: '#bd5000',
   };
   

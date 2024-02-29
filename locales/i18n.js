@@ -15,20 +15,25 @@ import translationTransEN from './en/translation.json'
 import navigationHU from './hu/navigation.json'
 import navigationEN from './en/navigation.json'
 
+import assignmentHU from './hu/assignments.json'
+import assignmentEN from './en/assignments.json'
+
 const translations = {
     en: {
         ...loginTransEN, 
         ...registerTransEN,
         ...memberTransEN,
         ...translationTransEN,
-        ...navigationEN
+        ...navigationEN,
+        ...assignmentEN
     },
     hu: {
         ...loginTransHU, 
         ...registerTransHU,
         ...memberTransHU,
         ...translationTransHU,
-        ...navigationHU
+        ...navigationHU,
+        ...assignmentHU
     }
 }
 

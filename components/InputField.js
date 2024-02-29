@@ -1,38 +1,38 @@
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
+
 import MyText from './MyText'
 import MyFormField from './MyFormField'
-import EditField from './EditField'
+import SmallButton from './SmallButton'
 
-function EditProfileFields({
+function InputField({
   title,
   value,
   icon,
   themeColor,
-  enabled = true,
   textColor,
   values,
   onChangeText,
   name,
   secure,
-  showEye = false,
-  isPasswordField = false,
   maxLength,
   setPasswordEditable,
-  keyboardType
+  keyboardType,
+  enabled = true,
+  showEye = false,
+  isPasswordField = false,
+  ...otherProps
 }) {
   const [isEditable, setIsEditable] = useState(false)
   return (
     <View>
-      <MyText textColor="black" style={{fontWeight: "bold"}}>
+      <MyText textColor="black" style={{ fontWeight: 'bold' }}>
         {title}
       </MyText>
-      {/* <MyText textColor="black">{isEditable ? 'true' : 'false'}</MyText>
-      <MyText textColor="black">{enabled ? 'true' : 'false'}</MyText> */}
       <View style={styles.field}>
         <MyFormField
           themeColor={themeColor}
-          value={values[name]}
+          value={values[name].toString()}
           onChangeText={onChangeText}
           autoCapitalize="none"
           autoCorrect={false}
@@ -44,14 +44,15 @@ function EditProfileFields({
           secureTextEntry={isPasswordField}
           isEditable={enabled ? true : isEditable}
           maxLength={maxLength}
-          // textContentType="password"
+          {...otherProps}
           keyboardType={keyboardType}
           showEye={showEye}
           enabled={enabled ? true : isEditable}
         />
         {!enabled && (
-          <EditField
+          <SmallButton
             style={{ marginLeft: 8 }}
+            type="edit"
             onPress={() => {
               setIsEditable(!isEditable)
               setPasswordEditable && setPasswordEditable()
@@ -64,11 +65,10 @@ function EditProfileFields({
 }
 
 const styles = StyleSheet.create({
-  container: {},
   field: {
     flexDirection: 'row',
     alignItems: 'center',
   },
 })
 
-export default EditProfileFields
+export default InputField

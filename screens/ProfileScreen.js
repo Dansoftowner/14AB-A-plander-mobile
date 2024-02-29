@@ -1,48 +1,37 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, ScrollView, Text } from 'react-native'
-import Screen from './Screen'
-import MyText from '../components/MyText'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { useFormDispatch, useFormState } from '../components/FormContext'
+import { View, StyleSheet, ScrollView } from 'react-native'
+import { useTheme } from '@react-navigation/native'
+
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import i18n from '../locales/i18n'
-import MyFormField from '../components/MyFormField'
-import MyButton from '../components/MyButton'
-import MySubmitButton from '../components/MySubmitButton'
-import EditField from '../components/EditField'
-import EditProfileFields from '../components/EditProfileFields'
-import useAuth from '../auth/useAuth'
-import { useTheme } from '@react-navigation/native'
-import members from '../api/members'
-import FancyAlert from '../components/MyAlert'
-import UpdatedAlertMessage from '../components/UpdatedAlertMessage'
-import storage from '../auth/storage'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+
 import AuthContext from '../auth/authContext'
+import i18n from '../locales/i18n'
+import members from '../api/members'
+import useAuth from '../auth/useAuth'
+
+import InputField from '../components/InputField'
+import MyText from '../components/MyText'
+import MyButton from '../components/MyButton'
+import MyAlert from '../components/MyAlert'
 
 function ProfileScreen() {
+  const formRef = useRef()
+  const { colors: colorsByTheme } = useTheme()
+  const { logOut } = useAuth()
   const { user, setUser } = useContext(AuthContext)
-
-  const defaultPwd = '00000000AA'
-  // const [newPwd, setNewPwd] = useState(defaultPwd)
-  // const [newPwdRepeat, setNewPwdRepeat] = useState(defaultPwd)
-  const [isPasswordEditable, setisPasswordEditable] = useState(false)
+  const [isPasswordEditable, setIsPasswordEditable] = useState(false)
   const [alertShown, setAlertShown] = useState(false)
   const [errorShown, setErrorShown] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
   const [logoutShown, setLogoutShown] = useState(false)
-  // const [userwPass, setUserWpass] = useState({
-  //   ...user,
-  //   password: newPwd,
-  //   repeatedPassword: newPwdRepeat,
-  // })
+  const defaultPwd = '00000000AA'
   const [prevoiusGuardNumber, setPreviousGuardNumber] = useState(
     user.guardNumber,
   )
-  const { colors: colorsByTheme } = useTheme()
-  const { logOut } = useAuth()
-  const formRef = useRef()
+
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email(i18n.t('zodEmail'))
@@ -76,22 +65,20 @@ function ProfileScreen() {
   useEffect(() => {
     formRef.current.setFieldValue('password', defaultPwd)
     formRef.current.setFieldValue('repeatedPassword', defaultPwd)
-
   }, [])
 
   const handleSubmit = async (currentPassword = undefined) => {
     const values = formRef.current.values
-
     if (
       user.email !== values.email ||
       user.username !== values.username ||
       defaultPwd != values.password
     ) {
       const { email, username, password } = values
-      console.log(currentPassword)
-      console.log(password)
+      // console.log(currentPassword)
+      // console.log(password)
       if (password === currentPassword) {
-        console.log('itt van az error')
+        // console.log('itt van az error')
         // setisPasswordEditable(false)
         setErrorMessage(i18n.t('passwordChangeError'))
         setErrorShown(true)
@@ -107,10 +94,9 @@ function ProfileScreen() {
             : password,
           currentPassword,
         )
-        console.log(result)
+        // console.log(result)
         if (!result.ok) {
           console.log(result.headers)
-
           setErrorShown(true)
           setErrorMessage(result.data.message)
         } else {
@@ -130,10 +116,9 @@ function ProfileScreen() {
           } else {
             setLogoutShown(true)
           }
-          console.log(result)
+          // console.log(result)
         }
       }
-      //console.log(newPwd)
     } else {
       const { name, address, idNumber, phoneNumber, guardNumber } = values
       console.log('basic')
@@ -154,14 +139,14 @@ function ProfileScreen() {
         setUser({ ...values })
         //setAlertShown()
       }
-      console.log(result)
+      // console.log(result)
     }
   }
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <UpdatedAlertMessage
+        <MyAlert
           visible={alertShown}
           type="confirmation"
           size="large"
@@ -173,16 +158,15 @@ function ProfileScreen() {
           onClose={() => setAlertShown(false)}
           onPress={(text) => handleSubmit(text)}
         />
-        <UpdatedAlertMessage
+        <MyAlert
           visible={errorShown}
           type="error"
           size="small"
           button={i18n.t('close')}
           message={errorMessage}
           onClose={() => setErrorShown(false)}
-          //onPress={() => setErrorShown(false)}
         />
-        <UpdatedAlertMessage
+        <MyAlert
           visible={logoutShown}
           type="success"
           size="small"
@@ -192,9 +176,8 @@ function ProfileScreen() {
             setLogoutShown(false)
             logOut()
           }}
-          //onPress={() => setSuccessShown(false)}
         />
-        <UpdatedAlertMessage
+        <MyAlert
           visible={successShown}
           type="success"
           size="small"
@@ -219,13 +202,11 @@ function ProfileScreen() {
           </MyText>
         )}
         <Formik
-          // innerRef={form}
           initialValues={{
             ...user,
             password: defaultPwd,
             repeatedPassword: defaultPwd,
           }}
-          // initialErrors={formErrors}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
           innerRef={formRef}
@@ -239,10 +220,9 @@ function ProfileScreen() {
             setFieldValue,
             validateForm,
             setTouched,
-            touched,
           }) => (
             <View style={styles.form}>
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -253,7 +233,7 @@ function ProfileScreen() {
                 enabled={false}
                 keyboardType="email-address"
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -263,15 +243,11 @@ function ProfileScreen() {
                 title={i18n.t('username')}
                 enabled={false}
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
-                //value={newPwd}
                 values={values}
-                onChangeText={(text) => {
-                  setFieldValue('password', text)
-                  //setNewPwd(text)
-                }}
+                onChangeText={(text) => setFieldValue('password', text)}
                 icon="lock-outline"
                 name="password"
                 title={i18n.t('password')}
@@ -279,31 +255,23 @@ function ProfileScreen() {
                 isPasswordField={true}
                 showEye={false}
                 setPasswordEditable={() => {
-                  setisPasswordEditable(!isPasswordEditable)
+                  setIsPasswordEditable(!isPasswordEditable)
                   if (values.password === defaultPwd) {
                     setFieldValue('password', '')
                     setFieldValue('repeatedPassword', '')
-                    // setNewPwd('')
-                    // setNewPwdRepeat('')
                   } else {
-                    // setNewPwd(defaultPwd)
-                    // setNewPwdRepeat(defaultPwd)
                     setFieldValue('password', defaultPwd)
                     setFieldValue('repeatedPassword', defaultPwd)
                   }
                 }}
               />
               {isPasswordEditable && (
-                <EditProfileFields
+                <InputField
                   visible={false}
                   themeColor="black"
                   textColor="black"
-                  //value={newPwdRepeat}
                   values={values}
-                  onChangeText={(text) => {
-                    //setNewPwdRepeat(text)
-                    setFieldValue('repeatedPassword', text)
-                  }}
+                  onChangeText={(text) => setFieldValue('repeatedPassword', text)}
                   icon="lock-outline"
                   name="repeatedPassword"
                   enabled={true}
@@ -312,7 +280,7 @@ function ProfileScreen() {
                   showEye={false}
                 />
               )}
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -322,7 +290,7 @@ function ProfileScreen() {
                 title={i18n.t('phone')}
                 keyboardType="phone-pad"
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -331,8 +299,7 @@ function ProfileScreen() {
                 name="address"
                 title={i18n.t('address')}
               />
-
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -341,7 +308,7 @@ function ProfileScreen() {
                 name="idNumber"
                 title={i18n.t('idNumber')}
               />
-              <EditProfileFields
+              <InputField
                 themeColor="black"
                 textColor="black"
                 values={values}
@@ -378,7 +345,12 @@ function ProfileScreen() {
                   color={colorsByTheme.black_white}
                 />
               </View>
-              {JSON.stringify(values) != JSON.stringify({...user, password: defaultPwd, repeatedPassword: defaultPwd}) && (
+              {JSON.stringify(values) !=
+                JSON.stringify({
+                  ...user,
+                  password: defaultPwd,
+                  repeatedPassword: defaultPwd,
+                }) && (
                 <View>
                   <MyButton
                     title={i18n.t('save')}
@@ -448,19 +420,6 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     marginTop: 5,
-    // backgroundColor: 'white',
-    // paddingHorizontal: 20,
-    // paddingVertical: 10,
-    // borderTopLeftRadius: 10,
-    // borderTopRightRadius: 10,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 5,
   },
 })
 
