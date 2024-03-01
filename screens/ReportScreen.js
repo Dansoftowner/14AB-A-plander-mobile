@@ -300,6 +300,7 @@ export default function ReportScreen({ navigation, route }) {
           sections={agendaItems ?? []}
           renderItem={renderItem}
           // scrollToNextEvent
+          keyExtractor={item => item._id}
           sectionStyle={[
             styles.section,
             {
