@@ -12,6 +12,7 @@ import AddAssignment from '../screens/AddAssignment'
 import AssignmentScreen from '../screens/AssignmentScreen'
 import EditAssignment from '../screens/EditAssignment'
 import MembersScreen from '../screens/MembersScreen'
+import TempAssScreen from '../screens/TempAssScreen'
 
 const Stack = createStackNavigator()
 function AssingmentStack() {
@@ -44,7 +45,7 @@ function AssingmentStack() {
           },
         }}
       />
-      <Stack.Screen name={routes.ASSIGNMENTS} component={AssignmentScreen} />
+      <Stack.Screen name={routes.ASSIGNMENTS} component={TempAssScreen} />
       <Stack.Screen
         name={routes.MEMBERS}
         component={MembersScreen}
