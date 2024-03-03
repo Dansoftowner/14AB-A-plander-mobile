@@ -23,9 +23,11 @@ function EditReport({ navigation, route }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
   const [assignmentId, setAssignmentId] = useState('')
+  const [assignmentAssignees, setAssignmentAssignees] = useState([])
   const { user } = useContext(AuthContext)
   const [report, setReport] = useState(null)
   const formRef = useRef()
+  const [isAssigned, setIsAssigned] = useState(false)
   const [selectedMode, setSelectedMode] = useState(
     report?.mode === undefined ? '' : report.mode,
   )
@@ -162,6 +164,10 @@ function EditReport({ navigation, route }) {
   useEffect(() => {
     if (route.params.id !== -1) {
       setAssignmentId(route.params.id)
+      setAssignmentAssignees(route.params.assignees)
+      const isassigned = route.params.assignees.map((ass) => ass._id == user._id).includes(true)
+      setIsAssigned(isassigned)
+      console.log(isassigned)
       handleGetReport(route.params.id)
     }
   }, [route.params.id])
@@ -332,6 +338,9 @@ function EditReport({ navigation, route }) {
                   setFieldValue('purpose', item.value), console.log(item)
                 }}
               />
+              <MyText textColor='black'>
+                {isAssigned}
+              </MyText>
               <InputField
                 themeColor="black"
                 textColor="black"
@@ -355,6 +364,7 @@ function EditReport({ navigation, route }) {
                   }}
                   onPress={handleDeleteReport}
                 />
+                {(user.roles.includes('president') || isAssigned) &&
                 <MyButton
                   textStyle={{ color: 'white' }}
                   title={i18n.t('delete')}
@@ -365,15 +375,15 @@ function EditReport({ navigation, route }) {
                   }}
                   onPress={handleDeleteReport}
                 />
+                }
 
-                {(JSON.stringify({
+                {((user.roles.includes('president') || isAssigned) && ((JSON.stringify({
                   _id: report?._id,
                   author: report?.author,
                   ...values,
                   submittedAt: report?.submittedAt,
                 }) != JSON.stringify(report) ||
-                  report?.description === undefined) &&
-                  user.roles.includes('president') && (
+                  report?.description === undefined))) && (
                     <View>
                       <MyButton
                         textStyle={{ color: 'white' }}

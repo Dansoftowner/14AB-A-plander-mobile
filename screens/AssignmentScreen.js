@@ -8,6 +8,8 @@ import {
   Calendar,
 } from 'react-native-calendars'
 
+import { endOfMonth, startOfMonth } from 'date-fns'
+
 import AuthContext from '../auth/authContext'
 import assignments from '../api/assignments'
 import colors from '../config/colors'
@@ -19,6 +21,7 @@ import dateTranslationHU from '../locales/hu/date'
 import dateTranslationEN from '../locales/hu/date'
 import AgendaItem from '../components/calendar/AgendaItem'
 import MyButton from '../components/MyButton'
+import MyText from '../components/MyText'
 
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
@@ -26,6 +29,7 @@ LocaleConfig.locales['en'] = dateTranslationEN
 export default function AssignmentScreen({ navigation, route }) {
   const { colors: colorsByTheme } = useTheme()
   const [markedDays, setMarkedDays] = useState(null)
+  const [monthOfCalendar, setMonthOfCalendar] = useState(new Date())
   const [agendaItems, setAgendaItems] = useState(null)
   const [selected, setSelected] = useState('')
   const leftArrowIcon = require('../assets/arrows/previous.png')
@@ -78,15 +82,22 @@ export default function AssignmentScreen({ navigation, route }) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      getAgendaItems()
+      console.log('lefut a navigáció ás a markedDays')
+      console.log(monthOfCalendar)
+      getMarkedDays(monthOfCalendar)
+      getAgendaItems(monthOfCalendar)
     })
     return unsubscribe
   }, [navigation])
 
   useEffect(() => {
-    getMarkedDays()
-    getAgendaItems()
-  }, [route.params?.delete])
+    console.log(monthOfCalendar)
+  }, [monthOfCalendar])
+
+  // useEffect(() => {
+  //   getMarkedDays(startOfMonth(monthOfCalendar), new Date(monthOfCalendar).getMonth() === new Date().getMonth() ? new Date() : endOfMonth(monthOfCalendar))
+  //   // getAgendaItems()
+  // }, [route.params?.delete])
 
   const formatDate = (date) => {
     const year = date.getFullYear()
@@ -106,16 +117,9 @@ export default function AssignmentScreen({ navigation, route }) {
     const differenceDays = differenceMs / (1000 * 60 * 60 * 24)
     return Math.abs(Math.round(differenceDays))
   }
-
-  // function getHoursDifference(startDate, endDate) {
-  //   const differenceMs = endDate.getTime() - startDate.getTime()
-  //   const differenceHours = differenceMs / (1000 * 60 * 60)
-  //   return Math.abs(Math.round(differenceHours))
-  // }
-
-  const getMarkedDays = async () => {
+  const getMarkedDays = async (start) => {
     const markedDays = {}
-    const result = await assignments.getAssignments()
+    const result = await assignments.getAssignments(start, endOfMonth(start))
     if (!result?.ok) {
       console.log(result)
     } else {
@@ -246,9 +250,11 @@ export default function AssignmentScreen({ navigation, route }) {
     return array
   }
 
-  const getAgendaItems = async () => {
-    const result = await assignments.getAssignments()
+  const getAgendaItems = async (start) => {
+    const result = await assignments.getAssignments(start, endOfMonth(start))
+    setAgendaItems([])
     if (!result?.ok) {
+      console.log(result)
     } else {
       const eventsVector = []
       result.data.items.forEach((element) => {
@@ -266,7 +272,7 @@ export default function AssignmentScreen({ navigation, route }) {
       <AgendaItem
         item={item}
         dotColor={item.color}
-        key={item._id}
+        // key={item._id}
         onItemPress={() =>
           navigation.navigate(routes.EDIT_ASSIGMENT, { id: item._id })
         }
@@ -280,6 +286,12 @@ export default function AssignmentScreen({ navigation, route }) {
     <>
       <CalendarProvider date={new Date().toDateString()}>
         <Calendar
+          onMonthChange={(date) => {
+            setMonthOfCalendar(startOfMonth(new Date(date.dateString)))
+            getMarkedDays(new Date(date.dateString))
+            getAgendaItems(new Date(date.dateString))
+            console.log(agendaItems)
+          }}
           onDayPress={(day) => {
             console.log('selected day', day)
             setSelected(day.dateString)
@@ -290,7 +302,7 @@ export default function AssignmentScreen({ navigation, route }) {
           theme={calendarTheme}
           firstDay={1}
           markingType={'period'}
-          markedDates={markedDaysDummy}
+          markedDates={markedDays}
           leftArrowImageSource={leftArrowIcon}
           rightArrowImageSource={rightArrowIcon}
         />
@@ -303,20 +315,43 @@ export default function AssignmentScreen({ navigation, route }) {
             />
           </View>
         )}
-        <AgendaList
-          sections={agendaItems ?? []}
-          renderItem={renderItem}
-          keyExtractor={item => item._id}
-          // scrollToNextEvent
-          sectionStyle={[
-            styles.section,
-            {
-              backgroundColor: colorsByTheme.white_dark_blue,
-              color: colors.medium,
-            },
-          ]}
-          dayFormat={'MMMM d'}
-        />
+        {agendaItems == null || agendaItems.length == 0 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignContent: 'center',
+              // backgroundColor: 'red',
+            }}
+          >
+            <MyText
+              textColor="black"
+              style={{
+                fontWeight: 'bold',
+                fontSize: 25,
+                marginVertical: 10,
+                textAlign: 'center'
+              }}
+            >
+              {i18n.t('noAssMonth')}
+            </MyText>
+          </View>
+        ) : (
+          <AgendaList
+            sections={agendaItems ?? []}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            // scrollToNextEvent
+            sectionStyle={[
+              styles.section,
+              {
+                backgroundColor: colorsByTheme.white_dark_blue,
+                color: colors.medium,
+              },
+            ]}
+            dayFormat={'MMMM d'}
+          />
+        )}
       </CalendarProvider>
     </>
   )

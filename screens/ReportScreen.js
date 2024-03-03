@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import {
   AgendaList,
   CalendarProvider,
@@ -8,7 +8,8 @@ import {
 } from 'react-native-calendars'
 import { useTheme } from '@react-navigation/native'
 
-import { endOfDay } from 'date-fns'
+import { endOfDay, startOfMonth } from 'date-fns'
+import { endOfMonth } from 'date-fns'
 
 import colors from '../config/colors'
 import assignments from '../api/assignments'
@@ -21,6 +22,7 @@ import AuthContext from '../auth/authContext'
 import dateTranslationHU from '../locales/hu/date'
 import dateTranslationEN from '../locales/hu/date'
 import MyAlert from '../components/MyAlert'
+import MyText from '../components/MyText'
 
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
@@ -28,6 +30,9 @@ LocaleConfig.locales['en'] = dateTranslationEN
 export default function ReportScreen({ navigation, route }) {
   const [markedDays, setMarkedDays] = useState(null)
   const [agendaItems, setAgendaItems] = useState(null)
+  const [monthOfCalendar, setMothOfCalendar] = useState(
+    new Date()
+  )
   const [selected, setSelected] = useState('')
   const [infoShown, setInfoShown] = useState(false)
   const { colors: colorsByTheme } = useTheme()
@@ -54,14 +59,22 @@ export default function ReportScreen({ navigation, route }) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      getAgendaItems()
+      getMarkedDays(startOfMonth(monthOfCalendar))
+      getAgendaItems(startOfMonth(monthOfCalendar))
     })
     return unsubscribe
   }, [navigation])
 
   useEffect(() => {
-    getMarkedDays()
-    getAgendaItems()
+    console.log(new Date(monthOfCalendar).getMonth())
+    console.log(new Date().getMonth())
+    getMarkedDays(
+      startOfMonth(monthOfCalendar),
+      new Date(monthOfCalendar).getMonth() === new Date().getMonth()
+        ? new Date()
+        : endOfMonth(monthOfCalendar),
+    )
+    //getAgendaItems(startOfMonth(monthOfCalendar), new Date(monthOfCalendar).getMonth() === new Date().getMonth() ? new Date() : endOfMonth(monthOfCalendar))
   }, [route.params?.delete])
 
   const formatDate = (date) => {
@@ -83,16 +96,16 @@ export default function ReportScreen({ navigation, route }) {
     return Math.abs(Math.round(differenceDays))
   }
 
-  function getHoursDifference(startDate, endDate) {
-    const differenceMs = endDate.getTime() - startDate.getTime()
-    const differenceHours = differenceMs / (1000 * 60 * 60)
-    return Math.abs(Math.round(differenceHours))
-  }
-
-  const getMarkedDays = async () => {
+  const getMarkedDays = async (start) => {
     const markedDays = {}
+    const endParam =
+      start.getMonth() == new Date().getMonth()
+        ? new Date()
+        : endOfMonth(start)
     const result = await assignments.getAssignments(
-      endOfDay(new Date()).toISOString(),
+      start,
+      endParam,
+      //endOfDay(new Date()).toISOString(),
     )
     if (!result?.ok) {
       console.log(result)
@@ -108,7 +121,7 @@ export default function ReportScreen({ navigation, route }) {
           if (i.betweenDays) {
             markedDays[i.dateStart] = i.markingStart
             markedDays[i.dateEnd] = i.markingEnd
-            console.log(i.betweenDays.length)
+            // console.log(i.betweenDays.length)
             i.betweenDays.forEach((markedDay) => {
               markedDays[markedDay.date] = markedDay.marking
             })
@@ -131,7 +144,7 @@ export default function ReportScreen({ navigation, route }) {
     const isAssigned = assignees
       .map((ass) => ass._id == user._id)
       .includes(true)
-    console.log(isAssigned)
+    // console.log(isAssigned)
     if (isAssigned) {
       if (endFormattedString === startFormattedString) {
         const eventObject = {
@@ -193,7 +206,7 @@ export default function ReportScreen({ navigation, route }) {
     const titleDate = formatDate(new Date(assignment.start))
     const title = assignment.title
     const hasReport = assignment?.report
-    console.log(hasReport)
+    // console.log(hasReport)
     const eventObject = {
       title: titleDate,
       data: [
@@ -227,10 +240,14 @@ export default function ReportScreen({ navigation, route }) {
     return array
   }
 
-  const getAgendaItems = async () => {
-    const result = await assignments.getAssignments(
-      endOfDay(new Date()).toISOString(),
-    )
+  const getAgendaItems = async (start) => {
+    const endParam =
+      start.getMonth() == new Date().getMonth()
+        ? new Date()
+        : endOfMonth(start)
+    const result = await assignments.getAssignments(start, endParam)
+    //console.log(start, end)
+    setAgendaItems([])
     if (!result?.ok) {
     } else {
       const eventsVector = []
@@ -251,14 +268,13 @@ export default function ReportScreen({ navigation, route }) {
     const isAssigned = assignment.assignees
       .map((ass) => ass._id == user._id)
       .includes(true)
-    if (!isAssigned) {
+    if (!isAssigned && !user.roles.includes('president')) {
       return setInfoShown(true)
     }
-    console.log(assignment)
     if (assignment.hasReport == null) {
-      return navigation.navigate(routes.ADD_REPORT, { id: assignment._id })
+      return navigation.navigate(routes.ADD_REPORT, { id: assignment._id, assignees: assignment.assignees })
     }
-    return navigation.navigate(routes.EDIT_REPORT, { id: assignment._id })
+    return navigation.navigate(routes.EDIT_REPORT, { id: assignment._id, assignees: assignment.assignees })
   }
 
   const renderItem = useCallback(({ item }) => {
@@ -270,7 +286,7 @@ export default function ReportScreen({ navigation, route }) {
         onItemPress={() => {
           handleReportTouched(item)
         }}
-        key={item._id}
+      // key={item._id}
       />
     )
   }, [])
@@ -279,8 +295,16 @@ export default function ReportScreen({ navigation, route }) {
 
   return (
     <>
-      <CalendarProvider date={new Date().toDateString()}>
+      <CalendarProvider
+        date="2024-02-01"
+      >
         <Calendar
+          onMonthChange={(date) => {
+            setMothOfCalendar(new Date(date.dateString))
+            getMarkedDays(startOfMonth(date.dateString))
+            getAgendaItems(startOfMonth(date.dateString))
+            console.log('Kezdőérték:', date.dateString)
+          }}
           onDayPress={(day) => {
             console.log('selected day', day)
             setSelected(day.dateString)
@@ -296,19 +320,43 @@ export default function ReportScreen({ navigation, route }) {
           rightArrowImageSource={rightArrowIcon}
         />
 
-        <AgendaList
-          sections={agendaItems ?? []}
-          renderItem={renderItem}
-          // scrollToNextEvent
-          sectionStyle={[
-            styles.section,
-            {
-              backgroundColor: colorsByTheme.white_dark_blue,
-              color: colors.medium,
-            },
-          ]}
-          dayFormat={'MMMM d'}
-        />
+        {agendaItems == null || agendaItems.length == 0 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignContent: 'center',
+              // backgroundColor: 'red',
+            }}
+          >
+            <MyText
+              textColor="black"
+              style={{
+                fontWeight: 'bold',
+                fontSize: 25,
+                marginVertical: 10,
+                textAlign: 'center',
+              }}
+            >
+              {i18n.t('noRepMonth')}
+            </MyText>
+          </View>
+        ) : (
+          <AgendaList
+            sections={agendaItems ?? []}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            // scrollToNextEvent
+            sectionStyle={[
+              styles.section,
+              {
+                backgroundColor: colorsByTheme.white_dark_blue,
+                color: colors.medium,
+              },
+            ]}
+            dayFormat={'MMMM d'}
+          />
+        )}
       </CalendarProvider>
       <MyAlert
         visible={infoShown}
