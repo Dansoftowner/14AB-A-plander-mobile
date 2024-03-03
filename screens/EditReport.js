@@ -4,6 +4,7 @@ import { useTheme } from '@react-navigation/native'
 
 import RadioGroup from 'react-native-radio-buttons-group'
 import { Formik } from 'formik'
+import {add} from 'date-fns'
 
 import i18n from '../locales/i18n'
 import reports from '../api/reports'
@@ -119,6 +120,10 @@ function EditReport({ navigation, route }) {
   }
 
   const handleDeleteReport = async () => {
+    if (add(new Date(report.submittedAt), {days: 3}) < new Date()) {
+      setErrorMessage(i18n.t('3dayError'))
+      return setErrorShown(true)
+    }
     const result = await reports.deleteReport(assignmentId)
     if (!result?.ok) {
       console.log(result.data)
@@ -130,6 +135,10 @@ function EditReport({ navigation, route }) {
   }
 
   const handleSubmit = async () => {
+    if (add(new Date(report.submittedAt), {days: 3}) < new Date()) {
+      setErrorMessage(i18n.t('3dayError'))
+      return setErrorShown(true)
+    }
     const values = formRef.current.values
     const result = await reports.patchReport(
       assignmentId,
@@ -338,9 +347,9 @@ function EditReport({ navigation, route }) {
                   setFieldValue('purpose', item.value), console.log(item)
                 }}
               />
-              <MyText textColor='black'>
+              {/* <MyText textColor='black'>
                 {isAssigned}
-              </MyText>
+              </MyText> */}
               <InputField
                 themeColor="black"
                 textColor="black"
