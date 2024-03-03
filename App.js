@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { useColorScheme } from 'react-native'
+import { useColorScheme, Appearance } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 
@@ -15,13 +15,28 @@ import MyStack from './navigation/MyStack'
 import LanguageContext from './locales/LanguageContext'
 import LoginScreen from './screens/LoginScreen'
 import MainScreen from './screens/MainScreen'
+import members from './api/members'
 
 export default function App() {
   const colorScheme = useColorScheme()
   const [user, setUser] = useState()
   const [language, setLanguage] = useState('hu')
-  i18n.locale = language
 
+  useEffect(() => {
+    handleGetPreferences()
+  }, [])
+
+  i18n.locale = language
+  
+  const handleGetPreferences = async () => {
+    const result = await members.getPreferences()
+    if (!result.ok) {
+      console.log(result)
+    }
+    console.log(result.data)
+    setLanguage(result.data.language)
+    Appearance.setColorScheme(result.data.colorMode)
+  }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthContext.Provider value={{ user, setUser }}>
