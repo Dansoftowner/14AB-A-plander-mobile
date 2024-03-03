@@ -22,9 +22,9 @@ export default function App() {
   const [user, setUser] = useState()
   const [language, setLanguage] = useState('hu')
 
-  useEffect(() => {
-    handleGetPreferences()
-  }, [])
+  // useEffect(() => {
+  //   handleGetPreferences()
+  // }, [])
 
   i18n.locale = language
   
