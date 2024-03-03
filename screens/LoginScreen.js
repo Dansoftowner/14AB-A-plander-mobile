@@ -76,7 +76,7 @@ export default function LoginScreen({ navigation }) {
     setLoginFailed(false)
     setUser(result.data)
     storage.storeToken(result.headers['x-plander-auth'])
-    //console.log(storage.getToken())
+    //console.log(result.headers['x-plander-auth'])
   }
 
   const handleNavigateAssociation = () => {
