@@ -6,6 +6,9 @@ const getMe = (memberId) =>
 
 const getMembers = (q) => apiClient.get('/members', { q: q })
 
+const getPreferences = () => apiClient.get('/members/me/preferences')
+const patchPreferences = (data) => apiClient.patch('/members/me/preferences', data)
+
 const patchMe = (name, address, idNumber, phoneNumber, guardNumber) =>
   apiClient
     .patch(`/members/me`, { name, address, idNumber, phoneNumber, guardNumber })
@@ -23,6 +26,8 @@ const patchMeCredentials = (email, username, password, currentPassword) =>
 export default {
   getMe,
   getMembers,
+  getPreferences,
   patchMe,
   patchMeCredentials,
+  patchPreferences
 }
