@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, useColorScheme } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 import {
   AgendaList,
@@ -29,6 +29,7 @@ LocaleConfig.locales['en'] = dateTranslationEN
 
 export default function AssignmentScreen({ navigation, route }) {
   const { colors: colorsByTheme } = useTheme()
+  const colorScheme = useColorScheme()
   const [markedDays, setMarkedDays] = useState(null)
   const [monthOfCalendar, setMonthOfCalendar] = useState(new Date())
   const [agendaItems, setAgendaItems] = useState(null)
@@ -39,9 +40,20 @@ export default function AssignmentScreen({ navigation, route }) {
   const { user } = useContext(AuthContext)
   const periodColor = colors.medium_green
   const dotColor = colors.dark_blue
-  const calendarTheme = {
+  const calendarThemeLight = {
     backgroundColor: colorsByTheme.white_darker_blue,
-    calendarBackground: colorsByTheme.white_darker_blue,
+    calendarBackground: colors.white,
+    textSectionTitleColor: colorsByTheme.medium_white,
+    selectedDayBackgroundColor: colors.soft_blue,
+    selectedDayTextColor: '#ffffff',
+    monthTextColor: colorsByTheme.medium_white,
+    dayTextColor: colorsByTheme.black_white,
+    textDisabledColor: colors.light,
+    arrowColor: colorsByTheme.medium_blue_yellow,
+  }  
+  const calendarThemeDark = {
+    backgroundColor: colorsByTheme.white_darker_blue,
+    calendarBackground: colors.dark_blue,
     textSectionTitleColor: colorsByTheme.medium_white,
     selectedDayBackgroundColor: colors.soft_blue,
     selectedDayTextColor: '#ffffff',
@@ -301,7 +313,7 @@ export default function AssignmentScreen({ navigation, route }) {
           monthFormat={language == 'hu' ? 'yyyy MMMM' : 'MMMM yyyy'}
           style={[styles.calendar, { borderColor: colors.light }]}
           disableWeekScroll
-          theme={calendarTheme}
+          theme={colorScheme === "light" ? calendarThemeLight : calendarThemeDark}
           firstDay={1}
           markingType={'period'}
           markedDates={markedDays}
@@ -318,7 +330,7 @@ export default function AssignmentScreen({ navigation, route }) {
           </View>
         )}
         <MyText textColor='black'>
-          {language}
+          {colorScheme}
         </MyText>
         {agendaItems == null || agendaItems.length == 0 ? (
           <View
