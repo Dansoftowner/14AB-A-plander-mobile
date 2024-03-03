@@ -18,7 +18,8 @@ import languageContext from '../locales/LanguageContext'
 import routes from '../navigation/routes'
 
 import dateTranslationHU from '../locales/hu/date'
-import dateTranslationEN from '../locales/hu/date'
+import dateTranslationEN from '../locales/en/date'
+
 import AgendaItem from '../components/calendar/AgendaItem'
 import MyButton from '../components/MyButton'
 import MyText from '../components/MyText'
@@ -117,6 +118,7 @@ export default function AssignmentScreen({ navigation, route }) {
     const differenceDays = differenceMs / (1000 * 60 * 60 * 24)
     return Math.abs(Math.round(differenceDays))
   }
+
   const getMarkedDays = async (start) => {
     const markedDays = {}
     const result = await assignments.getAssignments(start, endOfMonth(start))
@@ -296,7 +298,7 @@ export default function AssignmentScreen({ navigation, route }) {
             console.log('selected day', day)
             setSelected(day.dateString)
           }}
-          monthFormat={'yyyy MMMM'}
+          monthFormat={language == 'hu' ? 'yyyy MMMM' : 'MMMM yyyy'}
           style={[styles.calendar, { borderColor: colors.light }]}
           disableWeekScroll
           theme={calendarTheme}
@@ -315,6 +317,9 @@ export default function AssignmentScreen({ navigation, route }) {
             />
           </View>
         )}
+        <MyText textColor='black'>
+          {language}
+        </MyText>
         {agendaItems == null || agendaItems.length == 0 ? (
           <View
             style={{
@@ -349,7 +354,7 @@ export default function AssignmentScreen({ navigation, route }) {
                 color: colors.medium,
               },
             ]}
-            dayFormat={'MMMM d'}
+            dayFormat={language == 'hu' ? 'MMMM d' : 'd MMMM'}
           />
         )}
       </CalendarProvider>

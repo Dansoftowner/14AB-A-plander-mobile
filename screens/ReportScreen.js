@@ -20,7 +20,7 @@ import languageContext from '../locales/LanguageContext'
 import AgendaItem from '../components/calendar/AgendaItem'
 import AuthContext from '../auth/authContext'
 import dateTranslationHU from '../locales/hu/date'
-import dateTranslationEN from '../locales/hu/date'
+import dateTranslationEN from '../locales/en/date'
 import MyAlert from '../components/MyAlert'
 import MyText from '../components/MyText'
 
@@ -309,7 +309,7 @@ export default function ReportScreen({ navigation, route }) {
             console.log('selected day', day)
             setSelected(day.dateString)
           }}
-          monthFormat={'yyyy MMMM'}
+          monthFormat={language == 'hu' ? 'yyyy MMMM' : 'MMMM yyyy'}
           style={[styles.calendar, { borderColor: colors.light }]}
           disableWeekScroll
           theme={calendarTheme}
@@ -354,7 +354,7 @@ export default function ReportScreen({ navigation, route }) {
                 color: colors.medium,
               },
             ]}
-            dayFormat={'MMMM d'}
+            dayFormat={language == 'hu' ? 'MMMM d' : 'd MMMM'}
           />
         )}
       </CalendarProvider>
