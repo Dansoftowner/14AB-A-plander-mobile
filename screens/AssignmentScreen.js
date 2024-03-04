@@ -306,10 +306,10 @@ export default function AssignmentScreen({ navigation, route }) {
             getAgendaItems(new Date(date.dateString))
             console.log(agendaItems)
           }}
-          onDayPress={(day) => {
-            console.log('selected day', day)
-            setSelected(day.dateString)
-          }}
+          // onDayPress={(day) => {
+          //   console.log('selected day', day)
+          //   setSelected(day.dateString)
+          // }}
           monthFormat={language == 'hu' ? 'yyyy MMMM' : 'MMMM yyyy'}
           style={[styles.calendar, { borderColor: colors.light }]}
           disableWeekScroll
@@ -329,9 +329,9 @@ export default function AssignmentScreen({ navigation, route }) {
             />
           </View>
         )}
-        <MyText textColor='black'>
+        {/* <MyText textColor='black'>
           {colorScheme}
-        </MyText>
+        </MyText> */}
         {agendaItems == null || agendaItems.length == 0 ? (
           <View
             style={{
@@ -358,7 +358,6 @@ export default function AssignmentScreen({ navigation, route }) {
             sections={agendaItems ?? []}
             renderItem={renderItem}
             keyExtractor={(item) => item._id}
-            // scrollToNextEvent
             sectionStyle={[
               styles.section,
               {

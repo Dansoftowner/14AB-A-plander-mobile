@@ -45,7 +45,8 @@ function AssingmentStack() {
           },
         }}
       />
-      <Stack.Screen name={routes.ASSIGNMENTS} component={TempAssScreen} />
+      {/* <Stack.Screen name={routes.ASSIGNMENTS} component={TempAssScreen} /> */}
+      <Stack.Screen name={routes.ASSIGNMENTS} component={AssignmentScreen} />
       <Stack.Screen
         name={routes.MEMBERS}
         component={MembersScreen}

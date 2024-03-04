@@ -10,6 +10,7 @@ import routes from './routes'
 import AddReport from '../screens/AddReport'
 import EditReport from '../screens/EditReport'
 import ReportScreen from '../screens/ReportScreen'
+import ViewPdfScreen from '../screens/ViewPdfScreen'
 
 const Stack = createStackNavigator()
 
@@ -42,7 +43,8 @@ function ReportStack() {
           },
         }}
       />
-      <Stack.Screen name={routes.REPORTS} component={ReportScreen} />
+      {/* <Stack.Screen name={routes.REPORTS} component={ReportScreen} /> */}
+      <Stack.Screen name={routes.REPORTS} component={ViewPdfScreen} />
     </Stack.Navigator>
   )
 }
