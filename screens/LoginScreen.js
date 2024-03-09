@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Image, StyleSheet, View, useColorScheme } from 'react-native'
+import { Appearance, Image, StyleSheet, View, useColorScheme } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 
 import { Formik } from 'formik'
@@ -18,6 +18,8 @@ import MyText from '../components/MyText'
 import Screen from './Screen'
 import SelectAssociation from '../components/SelectAssociation'
 import MyAlert from '../components/MyAlert'
+import members from '../api/members'
+import languageContext from '../locales/LanguageContext'
 
 export default function LoginScreen({ navigation }) {
   const form = React.useRef()
@@ -29,6 +31,7 @@ export default function LoginScreen({ navigation }) {
   const { setUser } = useContext(AuthContext)
   const { colors: colorsByTheme } = useTheme()
   const colorScheme = useColorScheme()
+  const { setLanguage } = useContext(languageContext)
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => {
@@ -52,7 +55,6 @@ export default function LoginScreen({ navigation }) {
   }
 
   const handleSubmit = async (fastlogin, data) => {
-    //const values = form.current.values
     if (!fastlogin) {
       form.current.setTouched({
         username: true,
@@ -60,12 +62,10 @@ export default function LoginScreen({ navigation }) {
         association: true,
       })
       form.current.validateForm()
-      console.log(form.current.errors)
       if (Object.keys(form.current.errors).length !== 0) {
         return
       }
     }
-    //const { association, username, password } = values
     const { association, username, password } = data
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
@@ -75,8 +75,13 @@ export default function LoginScreen({ navigation }) {
     }
     setLoginFailed(false)
     setUser(result.data)
-    storage.storeToken(result.headers['x-plander-auth'])
-    //console.log(storage.getToken())
+    await storage.storeToken(result.headers['x-plander-auth'])
+    members.getPreferences().then(res => {
+      setLanguage(res.data.language || 'hu')
+      Appearance.setColorScheme(res.data.colorMode || 'light')
+    }).catch(err => {
+      console.log(err)
+    })
   }
 
   const handleNavigateAssociation = () => {

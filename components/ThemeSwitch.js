@@ -12,15 +12,20 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import i18n from '../locales/i18n'
 
 import MyText from './MyText'
+import members from '../api/members'
 
 function ThemeSwitch() {
   const colorMode = Appearance.getColorScheme()
   const { colors: colorsByTheme } = useTheme()
   const handleOnPress = () => {
     if (colorMode === 'light') {
-      return Appearance.setColorScheme('dark')
+      Appearance.setColorScheme('dark')
+      members.patchPreferences({colorMode: "dark"})
     }
-    return Appearance.setColorScheme('light')
+    else{
+      Appearance.setColorScheme('light')
+      members.patchPreferences({colorMode: "light"})
+    }
   }
 
   return (

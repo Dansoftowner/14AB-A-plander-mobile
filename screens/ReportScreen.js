@@ -1,340 +1,345 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react'
-import { StyleSheet } from 'react-native'
-import {
-  AgendaList,
-  CalendarProvider,
-  LocaleConfig,
-  Calendar,
-} from 'react-native-calendars'
+import { Appearance, StyleSheet, View, useColorScheme } from 'react-native'
 import { useTheme } from '@react-navigation/native'
+import {
+    AgendaList,
+    CalendarProvider,
+    LocaleConfig,
+    Calendar,
+} from 'react-native-calendars'
 
-import { endOfDay } from 'date-fns'
+import { addDays, differenceInDays, endOfMonth, isEqual, min, startOfDay, startOfMonth } from 'date-fns'
 
-import colors from '../config/colors'
+import AuthContext from '../auth/authContext'
 import assignments from '../api/assignments'
+import colors from '../config/colors'
 import i18n from '../locales/i18n'
-import routes from '../navigation/routes'
 import languageContext from '../locales/LanguageContext'
+import routes from '../navigation/routes'
+
+import dateTranslationHU from '../locales/hu/date'
+import dateTranslationEN from '../locales/en/date'
 
 import AgendaItem from '../components/calendar/AgendaItem'
-import AuthContext from '../auth/authContext'
-import dateTranslationHU from '../locales/hu/date'
-import dateTranslationEN from '../locales/hu/date'
+import MyButton from '../components/MyButton'
+import MyText from '../components/MyText'
 import MyAlert from '../components/MyAlert'
+import MarkNotation from '../components/MarkNotation'
 
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
 
-export default function ReportScreen({ navigation, route }) {
-  const [markedDays, setMarkedDays] = useState(null)
-  const [agendaItems, setAgendaItems] = useState(null)
-  const [selected, setSelected] = useState('')
-  const [infoShown, setInfoShown] = useState(false)
-  const { colors: colorsByTheme } = useTheme()
-  const leftArrowIcon = require('../assets/arrows/previous.png')
-  const rightArrowIcon = require('../assets/arrows/next.png')
-  const periodColor = colors.light_green
-  const dotColor = colors.orange
-  const { language } = useContext(languageContext)
-  const { user } = useContext(AuthContext)
+export default function AssignmentScreen({ navigation, route }) {
+    const { language } = useContext(languageContext)
+    const { user } = useContext(AuthContext)
+    const rightArrowIcon = require('../assets/arrows/next.png')
+    const { colors: colorsByTheme } = useTheme()
+    const periodColor = colorsByTheme.periodColor
+    const dotColor = colors.orange
+    const leftArrowIcon = require('../assets/arrows/previous.png')
+    const colorScheme = useColorScheme()
+    const [infoShown, setInfoShown] = useState(false)
 
-  const calendarTheme = {
-    backgroundColor: colorsByTheme.white_darker_blue,
-    calendarBackground: colorsByTheme.white_darker_blue,
-    textSectionTitleColor: colorsByTheme.medium_white,
-    selectedDayBackgroundColor: colors.soft_blue,
-    selectedDayTextColor: '#ffffff',
-    monthTextColor: colorsByTheme.medium_white,
-    //todayBackgroundColor: colorsByTheme.light_blue_dark_blue,
-    // todayTextColor: 'red',
-    dayTextColor: colorsByTheme.black_white,
-    textDisabledColor: colors.light,
-    arrowColor: colorsByTheme.medium_blue_yellow,
-  }
+    const [selected, setSelected] = useState('')
+    const [monthOfCalendar, setMonthOfCalendar] = useState(new Date())
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      getAgendaItems()
-    })
-    return unsubscribe
-  }, [navigation])
-
-  useEffect(() => {
-    getMarkedDays()
-    getAgendaItems()
-  }, [route.params?.delete])
-
-  const formatDate = (date) => {
-    const year = date.getFullYear()
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    return `${year}-${month}-${day}` //Example: 2024-02-03
-  }
-
-  function addDays(date, days) {
-    const result = new Date(date)
-    result.setDate(result.getDate() + days)
-    return result
-  }
-
-  function getDaysDifference(startDate, endDate) {
-    const differenceMs = endDate.getTime() - startDate.getTime()
-    const differenceDays = differenceMs / (1000 * 60 * 60 * 24)
-    return Math.abs(Math.round(differenceDays))
-  }
-
-  function getHoursDifference(startDate, endDate) {
-    const differenceMs = endDate.getTime() - startDate.getTime()
-    const differenceHours = differenceMs / (1000 * 60 * 60)
-    return Math.abs(Math.round(differenceHours))
-  }
-
-  const getMarkedDays = async () => {
-    const markedDays = {}
-    const result = await assignments.getAssignments(
-      endOfDay(new Date()).toISOString(),
-    )
-    if (!result?.ok) {
-      console.log(result)
-    } else {
-      result.data.items.forEach((element) => {
-        const i = convertMarkedEvent(element)
-        if (i.type == 'dot') {
-          markedDays[i.date] = i.marking
-        } else {
-          if (i.isOneDay) {
-            markedDays[i.start] = i.marking
-          }
-          if (i.betweenDays) {
-            markedDays[i.dateStart] = i.markingStart
-            markedDays[i.dateEnd] = i.markingEnd
-            console.log(i.betweenDays.length)
-            i.betweenDays.forEach((markedDay) => {
-              markedDays[markedDay.date] = markedDay.marking
-            })
-          } else {
-            markedDays[i.start] = i.marking
-          }
-        }
-      })
-      setMarkedDays(markedDays)
+    const [markedDays, setMarkedDays] = useState(null)
+    const [agendaItems, setAgendaItems] = useState(null)
+    const calendarThemeLight = {
+        backgroundColor: colorsByTheme.white_darker_blue,
+        calendarBackground: colors.white,
+        textSectionTitleColor: colorsByTheme.medium_white,
+        selectedDayBackgroundColor: colors.soft_blue,
+        selectedDayTextColor: '#ffffff',
+        monthTextColor: colorsByTheme.medium_white,
+        dayTextColor: colorsByTheme.black_white,
+        textDisabledColor: colors.light,
+        arrowColor: colorsByTheme.medium_blue_yellow,
     }
-  }
+    const calendarThemeDark = {
+        backgroundColor: colorsByTheme.white_darker_blue,
+        calendarBackground: colors.dark_blue,
+        textSectionTitleColor: colorsByTheme.medium_white,
+        selectedDayBackgroundColor: colors.soft_blue,
+        selectedDayTextColor: '#ffffff',
+        monthTextColor: colorsByTheme.medium_white,
+        dayTextColor: colorsByTheme.black_white,
+        textDisabledColor: colors.light,
+        arrowColor: colorsByTheme.medium_blue_yellow,
+    }
 
-  const convertMarkedEvent = (assignment) => {
-    const startFormattedString = formatDate(new Date(assignment.start))
-    const endFormattedString = formatDate(new Date(assignment.end))
-    const startDate = new Date(assignment.start)
-    const endDate = new Date(assignment.end)
-    const assignees = assignment.assignees
-    //console.log(assignment.assignees, assignment.start)
-    const isAssigned = assignees
-      .map((ass) => ass._id == user._id)
-      .includes(true)
-    console.log(isAssigned)
-    if (isAssigned) {
-      if (endFormattedString === startFormattedString) {
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            console.log('lefut a navigáció ás a markedDays')
+            //getAssignmentDates(monthOfCalendar)
+            //console.log(monthOfCalendar)
+        })
+        return unsubscribe
+    }, [navigation])
+
+    useEffect(() => {
+        //console.log(monthOfCalendar)
+    }, [monthOfCalendar])
+
+    useEffect(() => {
+        getAssignmentDates(new Date())
+    }, [])
+
+    const getAssignmentDates = async (startDate) => {
+        if (startDate > new Date()) {
+            return
+        }
+        const endParam = isEqual(startOfMonth(startDate), startOfMonth(new Date())) ? new Date() : endOfMonth(startDate)
+        const result = await assignments.getAssignments(startOfMonth(startDate), endParam)
+        if (result.data.items.length > 0) {
+            convertToMarkedDays(result.data.items)
+            convertToAgendaItems(result.data.items)
+        }
+        else {
+            setAgendaItems([])
+            setMarkedDays({})
+        }
+    }
+    const convertToMarkedDays = (items) => {
+        const hasReportList = []
+        const doesNotHaveReportList = []
+        console.log(items[0])
+        items.forEach((item) => {
+            const startDate = new Date(item.start)
+            const endDate = new Date(item.end)
+            const daysBetweenDates = differenceInDays(endDate, startDate)
+            if (item.report != null) {
+                if (daysBetweenDates > 0) {
+                    for (let i = 0; i < daysBetweenDates + 1; i++) {
+                        if (i + 1 == daysBetweenDates + 1) {
+                            hasReportList.push({ end: startOfDay(endDate) })
+                        }
+                        else if (i == 0) {
+                            hasReportList.push({ start: startOfDay(startDate) })
+                        }
+                        else {
+                            hasReportList.push({ date: startOfDay(addDays(startDate, i)) })
+                        }
+                    }
+                }
+                else {
+                    hasReportList.push({ start: startOfDay(startDate), end: startOfDay(endDate) })
+                }
+            }
+            else {
+                for (let i = 0; i < daysBetweenDates + 1; i++) {
+                    doesNotHaveReportList.push({ date: startOfDay(addDays(startDate, i)) })
+                }
+            }
+        })
+        const markedDays = {}
+        const soonestDate = doesNotHaveReportList.length > 0 ? min([hasReportList[0].start ?? hasReportList[0].end, doesNotHaveReportList[0].date]) : hasReportList[0].start
+        const daysUntilMonthEnda = differenceInDays(endOfMonth(soonestDate), soonestDate)
+        for (let i = 0; i < daysUntilMonthEnda + 1; i++) {
+            const element = addDays(soonestDate, i)
+            const inHasReportList = hasReportList.some(item => isEqual(item.start, element))
+            //const isPeriod = assignedList.some(item => isEqual(item.start, element) && item.end === undefined)
+            const notInDoesNotHaveReportList = doesNotHaveReportList.some(item => isEqual(item.date, element))
+            if (inHasReportList && notInDoesNotHaveReportList) {
+                markedDays[formatDate(element)] = {
+                    color: periodColor,
+                    startingDay: true,
+                    endingDay: true,
+                    dotColor: dotColor,
+                    marked: true,
+                }
+            }
+            else if (inHasReportList) {
+                markedDays[formatDate(element)] = {
+                    color: periodColor,
+                    startingDay: true,
+                    endingDay: true,
+                }
+            }
+            else if (notInDoesNotHaveReportList) {
+                markedDays[formatDate(element)] = {
+                    dotColor: dotColor,
+                    marked: true,
+                }
+            }
+        }
+        setMarkedDays(markedDays)
+        return markedDays
+    }
+    const convertToAgendaItems = (items) => {
+        setAgendaItems([])
+        const eventsVector = []
+        // console.log(items)
+        items.forEach((element) => {
+            const i = convertAgendaItem(element)
+            eventsVector.push(i)
+        })
+        const newArray = convertAgendaVectorToObject(eventsVector)
+        //   console.log(newArray)
+        setAgendaItems(newArray)
+    }
+    const convertAgendaVectorToObject = (vector) => {
+        const array = []
+        vector.forEach((item) => {
+            const existingItemIndex = array.findIndex(
+                (obj) => obj.title === item.title,
+            )
+            if (existingItemIndex !== -1) {
+                array[existingItemIndex].data = array[existingItemIndex].data.concat(
+                    item.data,
+                )
+            } else {
+                array.push(item)
+            }
+        })
+        return array
+    }
+    const convertAgendaItem = (assignment) => {
+        const isAssigned = assignment.assignees.map((ass) => ass._id == user._id).includes(true)
+        const titleDate = formatDate(new Date(assignment.start))
+        const title = assignment.title
         const eventObject = {
-          type: 'period',
-          isOneDay: true,
-          start: startFormattedString,
-          marking: {
-            // marked: true,
-            startingDay: startFormattedString,
-            endingDay: startFormattedString,
-            color: periodColor,
-          },
+            title: titleDate,
+            data: [
+                {
+                    id: assignment._id,
+                    assignees: assignment.assignees,
+                    report: assignment.report,
+                    title: title,
+                    start: assignment.start,
+                    isAssigned: isAssigned,
+                    color:
+                        assignment.report ? periodColor : dotColor,
+                },
+            ],
         }
         return eventObject
-      } else {
-        const eventObject = {
-          type: 'period',
-          isOneDay: false,
-          dateStart: startFormattedString,
-          dateEnd: endFormattedString,
-          markingStart: {
-            startingDay: true,
-            color: periodColor,
-          },
-          markingEnd: {
-            endingDay: true,
-            color: periodColor,
-          },
-          betweenDays: [],
-        }
-        const daysBetweenStartEnd = getDaysDifference(startDate, endDate)
-        for (let i = 1; i < daysBetweenStartEnd; i++) {
-          const betweenDay = {
-            date: formatDate(addDays(startDate, i)),
-            marking: {
-              color: periodColor,
-            },
-          }
-          eventObject.betweenDays.push(betweenDay)
-        }
-        return eventObject
-      }
-    } else {
-      const eventObject = {
-        type: 'dot',
-        date: startFormattedString,
-        marking: {
-          marked: true,
-          dotColor: dotColor,
-        },
-      }
-      return eventObject
     }
-  }
-
-  const convertAgendaItem = (assignment) => {
-    // const startFormattedString = formatDate(new Date(assignment.start))
-    // const endFormattedString = formatDate(new Date(assignment.end))
-    const titleDate = formatDate(new Date(assignment.start))
-    const title = assignment.title
-    const hasReport = assignment?.report
-    console.log(hasReport)
-    const eventObject = {
-      title: titleDate,
-      data: [
-        {
-          _id: assignment._id,
-          title: title,
-          start: assignment.start,
-          color: hasReport ? periodColor : dotColor,
-          assignees: assignment.assignees,
-          hasReport: hasReport,
-        },
-      ],
+    const formatDate = (date) => {
+        const year = date.getFullYear()
+        const month = (date.getMonth() + 1).toString().padStart(2, '0')
+        const day = date.getDate().toString().padStart(2, '0')
+        return `${year}-${month}-${day}` //Example: 2024-02-03
     }
-    return eventObject
-  }
-
-  const convertVector = (vector) => {
-    const array = []
-    vector.forEach((item) => {
-      const existingItemIndex = array.findIndex(
-        (obj) => obj.title === item.title,
-      )
-      if (existingItemIndex !== -1) {
-        array[existingItemIndex].data = array[existingItemIndex].data.concat(
-          item.data,
+    const setSelectedDay = (selectedDay) => {
+        for (const date in markedDays) {
+            if (date === selectedDay) {
+                markedDays[date]["selected"] = true;
+            } else {
+                markedDays[date]["selected"] = false;
+            }
+        }
+    }
+    const handleReportTouched = (assignment) => {
+        if (!assignment.isAssigned && !user.roles.includes('president')) {
+            return setInfoShown(true)
+        }
+        if (assignment.report == null) {
+            return navigation.navigate(routes.ADD_REPORT, { id: assignment.id, assignees: assignment.assignees })
+        }
+        return navigation.navigate(routes.EDIT_REPORT, { id: assignment.id, assignees: assignment.assignees })
+    }
+    const renderItem = useCallback(({ item }) => {
+        return (
+            <AgendaItem
+                isReport={true}
+                item={item}
+                color={item.color}
+                key={item._id}
+                onItemPress={() => {
+                    console.log(item)
+                    handleReportTouched(item)
+                }}
+            />
         )
-      } else {
-        array.push(item)
-      }
-    })
-    return array
-  }
+    }, [])
 
-  const getAgendaItems = async () => {
-    const result = await assignments.getAssignments(
-      endOfDay(new Date()).toISOString(),
-    )
-    if (!result?.ok) {
-    } else {
-      const eventsVector = []
-      result.data.items.forEach((element) => {
-        const i = convertAgendaItem(element)
-        eventsVector.push(i)
-      })
-      //console.log(eventsVector)
-      const newArray = convertVector(eventsVector)
-      //console.log(newArray)
-      setAgendaItems(newArray)
-    }
-  }
+    LocaleConfig.defaultLocale = language
 
-  const handleReportTouched = (assignment) => {
-    // console.log(user._id)
-    // console.log(assignment.assignees)
-    const isAssigned = assignment.assignees
-      .map((ass) => ass._id == user._id)
-      .includes(true)
-    if (!isAssigned) {
-      return setInfoShown(true)
-    }
-    console.log(assignment)
-    if (assignment.hasReport == null) {
-      return navigation.navigate(routes.ADD_REPORT, { id: assignment._id })
-    }
-    return navigation.navigate(routes.EDIT_REPORT, { id: assignment._id })
-  }
-
-  const renderItem = useCallback(({ item }) => {
     return (
-      <AgendaItem
-        isReport={true}
-        item={item}
-        dotColor={item.color}
-        onItemPress={() => {
-          handleReportTouched(item)
-        }}
-        key={item._id}
-      />
+        <>
+            <CalendarProvider date={new Date().toDateString()}>
+                <Calendar
+                    onMonthChange={(date) => {
+                        setMonthOfCalendar(startOfMonth(new Date(date.dateString)))
+                        getAssignmentDates(new Date(date.dateString))
+                    }}
+                    onDayPress={(day) => {
+                        setSelectedDay(day.dateString)
+                    }}
+                    monthFormat={language == 'hu' ? 'yyyy MMMM' : 'MMMM yyyy'}
+                    style={[styles.calendar, { borderColor: colors.light }]}
+                    theme={colorScheme === "light" ? calendarThemeLight : calendarThemeDark}
+                    firstDay={1}
+                    animateScroll
+                    markingType={'period'}
+                    markedDates={markedDays}
+                    leftArrowImageSource={leftArrowIcon}
+                    rightArrowImageSource={rightArrowIcon}
+                />
+                {agendaItems == null || agendaItems.length == 0 ? (
+                    <View style={styles.agendaListContainer}>
+                        <MyText textColor="black" style={styles.notAssignedMonthTitle}>
+                            {i18n.t('noRepMonth')}
+                        </MyText>
+                    </View>
+                ) : (
+                    <>
+                        <MarkNotation title={i18n.t('doneReport')} color={periodColor} />
+                        <MarkNotation title={i18n.t('missingReport')} color={dotColor} />
+                        <AgendaList
+                            sections={agendaItems ?? []}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.id}
+                            sectionStyle={[
+                                styles.section,
+                                {
+                                    backgroundColor: colorsByTheme.white_dark_blue,
+                                    color: colors.medium,
+                                },
+                            ]}
+                            dayFormat={language == 'hu' ? 'MMMM d' : 'd MMMM'}
+                        />
+                    </>
+                )}
+                <MyAlert
+                    visible={infoShown}
+                    type="info"
+                    size="small"
+                    button={i18n.t('close')}
+                    message={i18n.t('notAssigned')}
+                    onClose={() => setInfoShown(false)}
+                />
+            </CalendarProvider>
+        </>
     )
-  }, [])
-
-  LocaleConfig.defaultLocale = language
-
-  return (
-    <>
-      <CalendarProvider date={new Date().toDateString()}>
-        <Calendar
-          onDayPress={(day) => {
-            console.log('selected day', day)
-            setSelected(day.dateString)
-          }}
-          monthFormat={'yyyy MMMM'}
-          style={[styles.calendar, { borderColor: colors.light }]}
-          disableWeekScroll
-          theme={calendarTheme}
-          firstDay={1}
-          markingType={'period'}
-          markedDates={markedDays}
-          leftArrowImageSource={leftArrowIcon}
-          rightArrowImageSource={rightArrowIcon}
-        />
-
-        <AgendaList
-          sections={agendaItems ?? []}
-          renderItem={renderItem}
-          // scrollToNextEvent
-          sectionStyle={[
-            styles.section,
-            {
-              backgroundColor: colorsByTheme.white_dark_blue,
-              color: colors.medium,
-            },
-          ]}
-          dayFormat={'MMMM d'}
-        />
-      </CalendarProvider>
-      <MyAlert
-        visible={infoShown}
-        type="info"
-        size="small"
-        button={i18n.t('close')}
-        message={i18n.t('notAssigned')}
-        onClose={() => setInfoShown(false)}
-      />
-    </>
-  )
 }
 
 const styles = StyleSheet.create({
-  calendar: {
-    paddingLeft: 20,
-    paddingRight: 20,
-    height: 400,
-    borderRadius: 10,
-    margin: 5,
-    overflow: 'hidden',
-  },
-  header: {
-    backgroundColor: 'lightgrey',
-  },
-  section: {
-    textTransform: 'capitalize',
-  },
+    calendar: {
+        paddingLeft: 20,
+        paddingRight: 20,
+        marginBottom: 10,
+        height: 400,
+        borderRadius: 10,
+        margin: 5,
+        overflow: 'hidden',
+    },
+    notAssignedMonthTitle: {
+        fontWeight: 'bold',
+        fontSize: 25,
+        marginVertical: 10,
+        textAlign: 'center'
+    },
+    agendaListContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
+    header: {
+        backgroundColor: 'lightgrey',
+    },
+    section: {
+        textTransform: 'capitalize',
+    },
 })

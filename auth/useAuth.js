@@ -6,7 +6,6 @@ export default useAuth = () => {
   const { user, setUser } = useContext(AuthContext)
 
   const logOut = () => {
-    console.log('logout')
     setUser(null)
     storage.removeToken()
   }

@@ -13,6 +13,8 @@
   "modifiedAssignment": "The assignment is successfully modified.",
   "addedAssignment": "The assignment is successfully added.",
   "errorStartEndDate": "The start date should be before the end date!",
+  "errorStartEndKm": "The start km should be less, than the final km!",
+  "errorExternalRep": "The external representative should be at least 5 characters long!",
   "noMembers": "No members assigned to this assignment!",
   "assignmentStart": "Start date",
   "assignmentEnd": "End date",

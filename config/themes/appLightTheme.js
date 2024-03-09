@@ -6,6 +6,8 @@ const AppLightTheme = {
   dark: true,
   colors: {
     ...DefaultTheme.colors,
+    periodColor: colors.light_green,
+    dotColor: colors.medium_blue,
     Login_background: colors.soft_blue,
     Login_dropDownFont: colors.medium,
     Login_placeholders: colors.light,

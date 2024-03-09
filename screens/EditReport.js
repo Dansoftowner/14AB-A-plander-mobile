@@ -4,6 +4,7 @@ import { useTheme } from '@react-navigation/native'
 
 import RadioGroup from 'react-native-radio-buttons-group'
 import { Formik } from 'formik'
+import {add} from 'date-fns'
 
 import i18n from '../locales/i18n'
 import reports from '../api/reports'
@@ -23,9 +24,11 @@ function EditReport({ navigation, route }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
   const [assignmentId, setAssignmentId] = useState('')
+  const [assignmentAssignees, setAssignmentAssignees] = useState([])
   const { user } = useContext(AuthContext)
   const [report, setReport] = useState(null)
   const formRef = useRef()
+  const [isAssigned, setIsAssigned] = useState(false)
   const [selectedMode, setSelectedMode] = useState(
     report?.mode === undefined ? '' : report.mode,
   )
@@ -116,7 +119,16 @@ function EditReport({ navigation, route }) {
     return setReport(result.data)
   }
 
+  const handleViewReport = async () => {
+    console.log(report)
+    navigation.navigate(routes.VIEW_PDF, {id: assignmentId})
+  }
+
   const handleDeleteReport = async () => {
+    if (add(new Date(report.submittedAt), {days: 3}) < new Date()) {
+      setErrorMessage(i18n.t('3dayError'))
+      return setErrorShown(true)
+    }
     const result = await reports.deleteReport(assignmentId)
     if (!result?.ok) {
       console.log(result.data)
@@ -128,7 +140,19 @@ function EditReport({ navigation, route }) {
   }
 
   const handleSubmit = async () => {
+    if (add(new Date(report.submittedAt), {days: 3}) < new Date()) {
+      setErrorMessage(i18n.t('3dayError'))
+      return setErrorShown(true)
+    }
     const values = formRef.current.values
+    if (values.startKm >= values.endKm) {
+      setErrorMessage(i18n.t('errorStartEndKm'))
+      return setErrorShown(true)
+    }
+    if (values.externalRepresentative != '' && values.externalOrganization.length <= 4) {
+      setErrorMessage(i18n.t('A külső szerevezet képviselőjének legalább 5 karakter hosszúnak kell lennie'))
+      return setErrorShown(true)
+    }
     const result = await reports.patchReport(
       assignmentId,
       values.method,
@@ -162,6 +186,10 @@ function EditReport({ navigation, route }) {
   useEffect(() => {
     if (route.params.id !== -1) {
       setAssignmentId(route.params.id)
+      setAssignmentAssignees(route.params.assignees)
+      const isassigned = route.params.assignees.map((ass) => ass._id == user._id).includes(true)
+      setIsAssigned(isassigned)
+      console.log(isassigned)
       handleGetReport(route.params.id)
     }
   }, [route.params.id])
@@ -332,6 +360,9 @@ function EditReport({ navigation, route }) {
                   setFieldValue('purpose', item.value), console.log(item)
                 }}
               />
+              {/* <MyText textColor='black'>
+                {isAssigned}
+              </MyText> */}
               <InputField
                 themeColor="black"
                 textColor="black"
@@ -353,8 +384,9 @@ function EditReport({ navigation, route }) {
                     width: 120,
                     backgroundColor: colorsByTheme.medium_yellow_light_yellow,
                   }}
-                  onPress={handleDeleteReport}
+                  onPress={handleViewReport}
                 />
+                {(user.roles.includes('president') || isAssigned) &&
                 <MyButton
                   textStyle={{ color: 'white' }}
                   title={i18n.t('delete')}
@@ -365,15 +397,15 @@ function EditReport({ navigation, route }) {
                   }}
                   onPress={handleDeleteReport}
                 />
+                }
 
-                {(JSON.stringify({
+                {((user.roles.includes('president') || isAssigned) && ((JSON.stringify({
                   _id: report?._id,
                   author: report?.author,
                   ...values,
                   submittedAt: report?.submittedAt,
                 }) != JSON.stringify(report) ||
-                  report?.description === undefined) &&
-                  user.roles.includes('president') && (
+                  report?.description === undefined))) && (
                     <View>
                       <MyButton
                         textStyle={{ color: 'white' }}

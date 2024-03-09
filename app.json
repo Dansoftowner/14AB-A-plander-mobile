@@ -24,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.plander"
     },
     "locales": {
       "en": "./locales/en/login.json",
@@ -36,6 +37,11 @@
     "plugins": [
       "expo-localization",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "856951de-7b83-4ba8-bba4-1311456665d4"
+      }
+    }
   }
 }

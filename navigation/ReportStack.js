@@ -9,6 +9,7 @@ import routes from './routes'
 
 import AddReport from '../screens/AddReport'
 import EditReport from '../screens/EditReport'
+import ViewPdfScreen from '../screens/ViewPdfScreen'
 import ReportScreen from '../screens/ReportScreen'
 
 const Stack = createStackNavigator()
@@ -43,6 +44,12 @@ function ReportStack() {
         }}
       />
       <Stack.Screen name={routes.REPORTS} component={ReportScreen} />
+      <Stack.Screen name={routes.VIEW_PDF} component={ViewPdfScreen} options={{
+            headerShown: true,
+            headerTitle: '',
+            headerTintColor: colorsByTheme.white_dark_blue,
+            headerStyle: { backgroundColor: colorsByTheme.Login_background },
+      }} />
     </Stack.Navigator>
   )
 }

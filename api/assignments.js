@@ -1,7 +1,7 @@
 import apiClient from './client'
 
-const getAssignments = (end) =>
-  apiClient.get('/assignments', { projection: 'full', end })
+const getAssignments = (start, end) =>
+  apiClient.get('/assignments', { projection: 'full', start, end })
 
 const getAssignmentById = (assignmentId) =>
   apiClient.get(`/assignments/${assignmentId}`, { projection: 'full' })
