@@ -62,7 +62,6 @@ export default function LoginScreen({ navigation }) {
         association: true,
       })
       form.current.validateForm()
-      console.log(form.current.errors)
       if (Object.keys(form.current.errors).length !== 0) {
         return
       }
