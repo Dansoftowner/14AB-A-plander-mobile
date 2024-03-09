@@ -6,7 +6,7 @@ const getMe = (memberId) =>
 
 const getMembers = (q) => apiClient.get('/members', { q: q })
 
-const getPreferences = () => apiClient.get('/members/me/preferences')
+const getPreferences = () => apiClient.get('/members/me/preferences').then(res => res)
 const patchPreferences = (data) => apiClient.patch('/members/me/preferences', data)
 
 const patchMe = (name, address, idNumber, phoneNumber, guardNumber) =>
