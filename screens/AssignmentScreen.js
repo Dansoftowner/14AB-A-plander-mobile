@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react'
-import { Appearance, StyleSheet, View, useColorScheme } from 'react-native'
+import { StyleSheet, View, useColorScheme } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 import {
     AgendaList,
@@ -23,6 +23,7 @@ import dateTranslationEN from '../locales/en/date'
 import AgendaItem from '../components/calendar/AgendaItem'
 import MyButton from '../components/MyButton'
 import MyText from '../components/MyText'
+import MarkNotation from '../components/MarkNotation'
 
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
@@ -225,7 +226,7 @@ export default function AssignmentScreen({ navigation, route }) {
         return (
             <AgendaItem
                 item={item}
-                dotColor={item.color}
+                color={item.color}
                 onItemPress={() =>
                     navigation.navigate(routes.EDIT_ASSIGMENT, { id: item._id })
                 }
@@ -256,20 +257,11 @@ export default function AssignmentScreen({ navigation, route }) {
                     leftArrowImageSource={leftArrowIcon}
                     rightArrowImageSource={rightArrowIcon}
                 />
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
-                    <View
-                        style={{
-                            backgroundColor: periodColor,
-                            width: 15,
-                            height: 15,
-                            borderRadius: 8,
-                            marginRight: 10,
-                        }}
-                    ></View>
-                    <MyText textColor='black'>
-                        Szolgálatba osztva
-                    </MyText>
-                </View>
+                {
+                    (agendaItems != null && agendaItems.length != 0) && (
+                        <MarkNotation title={i18n.t('inAssignment')} color={periodColor} />
+                    )
+                }
                 {user.roles.includes('president') && (
                     <View style={{ alignItems: 'center' }}>
                         <MyButton

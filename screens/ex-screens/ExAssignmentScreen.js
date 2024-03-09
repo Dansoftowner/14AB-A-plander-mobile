@@ -10,19 +10,19 @@ import {
 
 import { endOfMonth, startOfMonth } from 'date-fns'
 
-import AuthContext from '../auth/authContext'
-import assignments from '../api/assignments'
-import colors from '../config/colors'
-import i18n from '../locales/i18n'
-import languageContext from '../locales/LanguageContext'
-import routes from '../navigation/routes'
+import AuthContext from '../../auth/authContext'
+import assignments from '../../api/assignments'
+import colors from '../../config/colors'
+import i18n from '../../locales/i18n'
+import languageContext from '../../locales/LanguageContext'
+import routes from '../../navigation/routes'
 
-import dateTranslationHU from '../locales/hu/date'
-import dateTranslationEN from '../locales/en/date'
+import dateTranslationHU from '../../locales/hu/date'
+import dateTranslationEN from '../../locales/en/date'
 
-import AgendaItem from '../components/calendar/AgendaItem'
-import MyButton from '../components/MyButton'
-import MyText from '../components/MyText'
+import AgendaItem from '../../components/calendar/AgendaItem'
+import MyButton from '../../components/MyButton'
+import MyText from '../../components/MyText'
 
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
