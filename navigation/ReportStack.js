@@ -9,8 +9,8 @@ import routes from './routes'
 
 import AddReport from '../screens/AddReport'
 import EditReport from '../screens/EditReport'
-import ReportScreen from '../screens/ReportScreen'
 import ViewPdfScreen from '../screens/ViewPdfScreen'
+import ReportScreen from '../screens/ReportScreen'
 
 const Stack = createStackNavigator()
 
@@ -50,7 +50,6 @@ function ReportStack() {
             headerTintColor: colorsByTheme.white_dark_blue,
             headerStyle: { backgroundColor: colorsByTheme.Login_background },
       }} />
-      {/* <Stack.Screen name={routes.REPORTS} component={ViewPdfScreen} /> */}
     </Stack.Navigator>
   )
 }
