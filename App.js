@@ -18,25 +18,12 @@ import MainScreen from './screens/MainScreen'
 import members from './api/members'
 
 export default function App() {
-  const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme('light')
   const [user, setUser] = useState()
   const [language, setLanguage] = useState('hu')
 
-  // useEffect(() => {
-  //   handleGetPreferences()
-  // }, [])
-
   i18n.locale = language
   
-  const handleGetPreferences = async () => {
-    const result = await members.getPreferences()
-    if (!result.ok) {
-      console.log(result)
-    }
-    console.log(result.data)
-    setLanguage(result.data.language)
-    Appearance.setColorScheme(result.data.colorMode)
-  }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthContext.Provider value={{ user, setUser }}>

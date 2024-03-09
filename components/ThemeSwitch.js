@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Appearance,
   View,
@@ -15,17 +15,23 @@ import MyText from './MyText'
 import members from '../api/members'
 
 function ThemeSwitch() {
+  // const [colorModeJS, setColorModeJS] = useState(Appearance.getColorScheme())
   const colorMode = Appearance.getColorScheme()
   const { colors: colorsByTheme } = useTheme()
-  const handleOnPress = async() => {
-    const result = await members.patchPreferences({colorMode: colorMode == 'light' ? 'dark' : 'light'})
-    if (!result.ok) {
-      console.log(result)
-    }
+  // Appearance.setColorScheme('dark')
+  const handleOnPress = () => {
     if (colorMode === 'light') {
-      return Appearance.setColorScheme('dark')
+      Appearance.setColorScheme('dark')
+      members.patchPreferences({colorMode: "dark"})
     }
-    return Appearance.setColorScheme('light')
+    else{
+      Appearance.setColorScheme('light')
+      members.patchPreferences({colorMode: "light"})
+    }
+    // const result = members.patchPreferences({colorMode})
+    // if (!result.ok) {
+    //   console.log(result.data)
+    // }
   }
 
   return (
