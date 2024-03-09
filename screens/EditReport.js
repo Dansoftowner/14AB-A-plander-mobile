@@ -145,6 +145,14 @@ function EditReport({ navigation, route }) {
       return setErrorShown(true)
     }
     const values = formRef.current.values
+    if (values.startKm >= values.endKm) {
+      setErrorMessage(i18n.t('errorStartEndKm'))
+      return setErrorShown(true)
+    }
+    if (values.externalRepresentative != '' && values.externalOrganization.length <= 4) {
+      setErrorMessage(i18n.t('A külső szerevezet képviselőjének legalább 5 karakter hosszúnak kell lennie'))
+      return setErrorShown(true)
+    }
     const result = await reports.patchReport(
       assignmentId,
       values.method,

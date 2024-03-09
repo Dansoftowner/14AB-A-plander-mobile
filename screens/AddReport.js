@@ -15,6 +15,7 @@ import InputField from '../components/InputField'
 import MyText from '../components/MyText'
 import MyButton from '../components/MyButton'
 import MyAlert from '../components/MyAlert'
+import { add } from 'date-fns'
 
 function AddReport({ navigation, route }) {
   const formRef = useRef()
@@ -22,6 +23,7 @@ function AddReport({ navigation, route }) {
   const [errorShown, setErrorShown] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [report, setReport] = useState(null)
   const [successShown, setSuccessShown] = useState(false)
   const [assignmentId, setAssignmentId] = useState('')
   const [selectedMode, setSelectedMode] = useState('')
@@ -105,12 +107,20 @@ function AddReport({ navigation, route }) {
   useEffect(() => {
     if (route.params.id !== -1) {
       setAssignmentId(route.params.id)
+      handleGetReport(route.params.id)
     }
   }, [route.params.id])
 
   const handleSubmit = async () => {
     const values = formRef.current.values
-    console.log(values._id)
+    if (values.startKm >= values.endKm) {
+      setErrorMessage(i18n.t('errorStartEndKm'))
+      return setErrorShown(true)
+    }
+    if (values.externalRepresentative != '' && values.externalOrganization.length <= 4) {
+      setErrorMessage(i18n.t('A külső szerevezet képviselőjének legalább 5 karakter hosszúnak kell lennie'))
+      return setErrorShown(true)
+    }
     const result = await reports.postReport(
       assignmentId,
       values.method,
@@ -133,6 +143,14 @@ function AddReport({ navigation, route }) {
     }
     setSuccessMessage(i18n.t('createdReport'))
     return setSuccessShown(true)
+  }
+
+  const handleGetReport = async (reportID) => {
+    const result = await reports.getReport(reportID)
+    if (!result?.ok) {
+      return console.log(result.data)
+    }
+    return setReport(result.data)
   }
 
   return (
