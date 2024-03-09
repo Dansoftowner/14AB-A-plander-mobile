@@ -15,8 +15,7 @@ import i18n from '../../locales/i18n'
 export default function AgendaItem({
   item,
   onItemPress,
-  dotColor,
-  periodColor,
+  color,
   isReport = false,
 }) {
 
@@ -35,7 +34,7 @@ export default function AgendaItem({
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <View
           style={{
-            backgroundColor: dotColor,
+            backgroundColor: color,
             width: 15,
             height: 15,
             borderRadius: 8,
@@ -66,7 +65,7 @@ export default function AgendaItem({
             textColor="black"
             style={{ fontSize: 14, paddingHorizontal: 10 }}
           >
-            {item.report ? "Jelentés szerkesztése" : "Jelentés készítése"}
+            {item.report ? i18n.t('editReport') : i18n.t('addReport')}
           </MyText>
         </View>
         )
