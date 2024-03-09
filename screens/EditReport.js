@@ -119,6 +119,11 @@ function EditReport({ navigation, route }) {
     return setReport(result.data)
   }
 
+  const handleViewReport = async () => {
+    console.log(report)
+    navigation.navigate(routes.VIEW_PDF, {id: assignmentId})
+  }
+
   const handleDeleteReport = async () => {
     if (add(new Date(report.submittedAt), {days: 3}) < new Date()) {
       setErrorMessage(i18n.t('3dayError'))
@@ -371,7 +376,7 @@ function EditReport({ navigation, route }) {
                     width: 120,
                     backgroundColor: colorsByTheme.medium_yellow_light_yellow,
                   }}
-                  onPress={handleDeleteReport}
+                  onPress={handleViewReport}
                 />
                 {(user.roles.includes('president') || isAssigned) &&
                 <MyButton

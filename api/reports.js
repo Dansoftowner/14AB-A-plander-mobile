@@ -47,9 +47,12 @@ const patchReport = (
     description,
   })
 
+const getReportPdf = (_id) => apiClient.get(`/assignments/${_id}/report/pdf`, {}, { responseType: 'arraybuffer' })
+
 export default {
   deleteReport,
   getReport,
+  getReportPdf,
   patchReport,
   postReport
 }
