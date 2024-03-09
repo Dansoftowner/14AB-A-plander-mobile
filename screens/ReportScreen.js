@@ -245,6 +245,7 @@ export default function AssignmentScreen({ navigation, route }) {
                 isReport={true}
                 item={item}
                 color={item.color}
+                key={item._id}
                 onItemPress={() => {
                     console.log(item)
                     handleReportTouched(item)

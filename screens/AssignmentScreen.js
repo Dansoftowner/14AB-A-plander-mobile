@@ -226,6 +226,7 @@ export default function AssignmentScreen({ navigation, route }) {
         return (
             <AgendaItem
                 item={item}
+                key={item._id}
                 color={item.color}
                 onItemPress={() =>
                     navigation.navigate(routes.EDIT_ASSIGMENT, { id: item._id })
