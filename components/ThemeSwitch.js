@@ -20,11 +20,11 @@ function ThemeSwitch() {
   const handleOnPress = () => {
     if (colorMode === 'light') {
       Appearance.setColorScheme('dark')
-      members.patchPreferences({colorMode: "dark"})
+      members.patchPreferences({ colorMode: "dark" })
     }
-    else{
+    else {
       Appearance.setColorScheme('light')
-      members.patchPreferences({colorMode: "light"})
+      members.patchPreferences({ colorMode: "light" })
     }
   }
 

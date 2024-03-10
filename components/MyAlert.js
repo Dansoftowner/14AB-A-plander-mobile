@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { Modal, Dimensions } from 'react-native'
-import { View, StyleSheet, Button, TouchableOpacity, Text } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 
 import { Formik } from 'formik'

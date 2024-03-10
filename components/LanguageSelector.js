@@ -16,7 +16,7 @@ function LanguageSelector() {
   const { language, setLanguage } = useContext(LanguageContext)
   const handleOnPress = async () => {
     setLanguage(language == 'en' ? 'hu' : 'en')
-    const result = await members.patchPreferences({language: language == 'en' ? 'hu' : 'en'})
+    const result = await members.patchPreferences({ language: language == 'en' ? 'hu' : 'en' })
     if (!result.ok) {
       console.log(result)
     }
