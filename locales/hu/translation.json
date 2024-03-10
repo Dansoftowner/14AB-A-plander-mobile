@@ -21,5 +21,6 @@
   "details": " adatai",
   "delete": "Törlés",
   "noAssMonth": "A választott hónapban még nem történt beosztásfelvétel!",
-  "noRepMonth": "A választott hónapban még nem történt jelentésfelvétel!"
+  "noRepMonth": "A választott hónapban még nem történt jelentésfelvétel!",
+  "loading": "Betöltés..."
 }
