@@ -282,7 +282,7 @@ function AddReport({ navigation, route }) {
                 value={values.purpose}
                 data={options}
                 onChange={(item) => {
-                  setFieldValue('purpose', item.value), console.log(item)
+                  setFieldValue('purpose', item.value)
                 }}
               />
               <InputField

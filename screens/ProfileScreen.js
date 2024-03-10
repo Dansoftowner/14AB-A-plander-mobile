@@ -109,7 +109,6 @@ function ProfileScreen() {
       }
     } else {
       const { name, address, idNumber, phoneNumber, guardNumber } = values
-      console.log('basic')
       const result = await members.patchMe(
         name,
         address,
