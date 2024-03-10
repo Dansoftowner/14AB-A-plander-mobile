@@ -9,12 +9,17 @@ import LanguageContext from '../locales/LanguageContext'
 import FlagHU from '../assets/flags/hu.svg'
 import FlagEN from '../assets/flags/gb.svg'
 import MyText from './MyText'
+import members from '../api/members'
 
 function LanguageSelector() {
   const { colors: colorsByTheme } = useTheme()
   const { language, setLanguage } = useContext(LanguageContext)
-  const handleOnPress = () => {
+  const handleOnPress = async () => {
     setLanguage(language == 'en' ? 'hu' : 'en')
+    const result = await members.patchPreferences({language: language == 'en' ? 'hu' : 'en'})
+    if (!result.ok) {
+      console.log(result)
+    }
   }
 
   return (

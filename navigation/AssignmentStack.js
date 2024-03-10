@@ -9,9 +9,9 @@ import i18n from '../locales/i18n'
 import routes from './routes'
 
 import AddAssignment from '../screens/AddAssignment'
-import AssignmentScreen from '../screens/AssignmentScreen'
 import EditAssignment from '../screens/EditAssignment'
 import MembersScreen from '../screens/MembersScreen'
+import AssignmentScreen from '../screens/AssignmentScreen'
 
 const Stack = createStackNavigator()
 function AssingmentStack() {

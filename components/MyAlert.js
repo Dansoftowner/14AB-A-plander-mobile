@@ -49,7 +49,7 @@ function MyAlert({
   const sizeProps = {
     small: {
       width: SCREEN_WIDTH - SCREEN_WIDTH / 4,
-      height: 150,
+      height: 160,
     },
     medium: {
       width: SCREEN_WIDTH - SCREEN_WIDTH / 6,

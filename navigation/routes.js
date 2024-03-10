@@ -13,4 +13,5 @@ export default {
     REPORTS: "ReportsScreen",
     REPORTS_STACK: "ReportsStack",
     SETTINGS: "SettingsScreen",
+    VIEW_PDF: "ViewPdfScreen",
 }
