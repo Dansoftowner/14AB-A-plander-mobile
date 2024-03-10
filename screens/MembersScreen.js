@@ -12,7 +12,7 @@ function MembersScreen() {
   const handleGetMembers = async (q) => {
     const result = await membersApi.getMembers(q)
     if (!result.ok) {
-      return console.log(result) //TODO Hibakezelés
+      return console.log(result)
     }
     setMembers([...result.data.items])
   }
