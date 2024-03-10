@@ -50,23 +50,17 @@ export default function LoginScreen({ navigation }) {
     return unsubscribe
   }, [navigation])
 
-  const handleForgettenPassword = () => {
-    console.log('TODO forgotten password')
-  }
-
-  const handleSubmit = async (fastlogin, data) => {
-    if (!fastlogin) {
-      form.current.setTouched({
-        username: true,
-        password: true,
-        association: true,
-      })
-      form.current.validateForm()
-      if (Object.keys(form.current.errors).length !== 0) {
-        return
-      }
+  const handleSubmit = async () => {
+    form.current.setTouched({
+      username: true,
+      password: true,
+      association: true,
+    })
+    form.current.validateForm()
+    if (Object.keys(form.current.errors).length !== 0) {
+      return
     }
-    const { association, username, password } = data
+    const { association, username, password } = form.current.values
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
@@ -81,6 +75,8 @@ export default function LoginScreen({ navigation }) {
       Appearance.setColorScheme(res.data.colorMode || 'light')
     }).catch(err => {
       console.log(err)
+      setErrorMessage(result.data.message)
+      setLoginFailed(true)
     })
   }
 
@@ -186,20 +182,10 @@ export default function LoginScreen({ navigation }) {
               style={styles.loginButton}
               onPress={handleSubmit}
             />
-            <MyButton
+            {/* <MyButton
               title={i18n.t('forgotMyPassword')}
               onPress={handleForgettenPassword}
-            />
-            <MyButton
-              title="Gyors login"
-              onPress={() => {
-                handleSubmit(true, {
-                  association: { _id: '652f7b95fc13ae3ce86c7cdf' },
-                  username: 'gizaac0',
-                  password: 'Apple123',
-                })
-              }}
-            />
+            /> */}
           </View>
         )}
       </Formik>
