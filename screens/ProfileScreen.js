@@ -28,12 +28,11 @@ function ProfileScreen() {
   const [successShown, setSuccessShown] = useState(false)
   const [logoutShown, setLogoutShown] = useState(false)
   const defaultPwd = '00000000AA'
-  const [prevoiusGuardNumber, setPreviousGuardNumber] = useState(
-    user.guardNumber,
-  )
+  const [prevoiusGuardNumber, setPreviousGuardNumber] = useState(user.guardNumber)
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
+      .label(i18n.t('email'))
       .email(i18n.t('zodEmail'))
       .required(i18n.t('fieldRequired')),
     username: Yup.string()
@@ -52,8 +51,8 @@ function ProfileScreen() {
       .oneOf([Yup.ref('password'), null], i18n.t('zodRepeatedPwd')),
     address: Yup.string()
       .min(5, i18n.t('zodAddress'))
-      .matches(/[0-9]/, i18n.t('zodAddress')),
-    idNumber: Yup.string().min(3, i18n.t('zodIdNumber')),
+      .matches(/[0-9]/, i18n.t('zodAddress')).required(i18n.t('fieldRequired')),
+    idNumber: Yup.string().min(3, i18n.t('zodIdNumber')).required(i18n.t('fieldRequired')),
     phoneNumber: Yup.string().min(9, i18n.t('zodPhoneNumber')),
     guardNumber: Yup.string()
       .matches(/\d{2}\/\d{4}\/\d{5}/, i18n.t('zodGuardNumber'))
@@ -75,16 +74,11 @@ function ProfileScreen() {
       defaultPwd != values.password
     ) {
       const { email, username, password } = values
-      // console.log(currentPassword)
-      // console.log(password)
       if (password === currentPassword) {
-        // console.log('itt van az error')
-        // setisPasswordEditable(false)
         setErrorMessage(i18n.t('passwordChangeError'))
-        setErrorShown(true)
-        console.log('itt van az error')
         setFieldValue('password', defaultPwd)
         setFieldValue('repeatedPassword', defaultPwd)
+        return setErrorShown(true)
       } else {
         const result = await members.patchMeCredentials(
           email === user.email ? undefined : email,
@@ -94,11 +88,9 @@ function ProfileScreen() {
             : password,
           currentPassword,
         )
-        // console.log(result)
         if (!result.ok) {
-          console.log(result.headers)
-          setErrorShown(true)
           setErrorMessage(result.data.message)
+          return setErrorShown(true)
         } else {
           const { name, address, idNumber, phoneNumber, guardNumber } = values
           const result = await members.patchMe(
@@ -108,15 +100,11 @@ function ProfileScreen() {
             phoneNumber,
             guardNumber,
           )
-          //const result = await members.patchMeCredentials("652f866cfc13ae3ce86c7ce7")
           if (!result.ok) {
-            console.log(result.headers)
-            setErrorShown(true)
             setErrorMessage(result.data.message)
-          } else {
-            setLogoutShown(true)
+            return setErrorShown(true)
           }
-          // console.log(result)
+          setLogoutShown(true)
         }
       }
     } else {
@@ -129,17 +117,13 @@ function ProfileScreen() {
         phoneNumber,
         guardNumber,
       )
-      //const result = await members.patchMeCredentials("652f866cfc13ae3ce86c7ce7")
       if (!result.ok) {
         console.log(result.headers)
-        setErrorShown(true)
         setErrorMessage(result.data.message)
-      } else {
-        setSuccessShown(true)
-        setUser({ ...values })
-        //setAlertShown()
+        return setErrorShown(true)
       }
-      // console.log(result)
+      setSuccessShown(true)
+      setUser({ ...values })
     }
   }
 
@@ -210,16 +194,17 @@ function ProfileScreen() {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
           innerRef={formRef}
-          enableReinitialize //ez nagyon fontos!
+          enableReinitialize
         >
           {({
             values,
-            errors,
             handleChange,
             handleSubmit,
             setFieldValue,
             validateForm,
             setTouched,
+            validateField,
+            errors
           }) => (
             <View style={styles.form}>
               <InputField
@@ -256,13 +241,13 @@ function ProfileScreen() {
                 showEye={false}
                 setPasswordEditable={() => {
                   setIsPasswordEditable(!isPasswordEditable)
-                  if (values.password === defaultPwd) {
+                  if (!isPasswordEditable) {
                     setFieldValue('password', '')
                     setFieldValue('repeatedPassword', '')
-                  } else {
-                    setFieldValue('password', defaultPwd)
-                    setFieldValue('repeatedPassword', defaultPwd)
+                    return
                   }
+                  setFieldValue('password', defaultPwd)
+                  setFieldValue('repeatedPassword', defaultPwd)
                 }}
               />
               {isPasswordEditable && (
@@ -351,40 +336,36 @@ function ProfileScreen() {
                   password: defaultPwd,
                   repeatedPassword: defaultPwd,
                 }) && (
-                <View>
-                  <MyButton
-                    title={i18n.t('save')}
-                    onPress={() => {
-                      setTouched({
-                        email: true,
-                        username: true,
-                        password: true,
-                        repeatedPassword: true,
-                        address: true,
-                        idNumber: true,
-                        phoneNumber: true,
-                        guardNumber: true,
-                      })
-                      validateForm()
-                      console.log(errors)
-                      if (Object.keys(formRef.current.errors).length !== 0) {
-                        setErrorMessage(i18n.t('wrongFields'))
-                        setErrorShown(true)
-                        return
-                      }
-                      if (
-                        user.email !== values.email ||
-                        user.username !== values.username ||
-                        defaultPwd != values.password
-                      ) {
-                        setAlertShown(true)
-                      } else {
+                  <View>
+                    <MyButton
+                      title={i18n.t('save')}
+                      onPress={() => {
+                        setTouched({
+                          email: true,
+                          username: true,
+                          password: true,
+                          repeatedPassword: true,
+                          address: true,
+                          idNumber: true,
+                          phoneNumber: true,
+                          guardNumber: true,
+                        })
+                        validateForm()
+                        if (Object.keys(formRef.current.errors).length !== 0) {
+                          setErrorMessage(i18n.t('wrongFields'))
+                          return setErrorShown(true)
+                        }
+                        if (
+                          user.email !== values.email ||
+                          user.username !== values.username ||
+                          defaultPwd != values.password
+                        )
+                          return setAlertShown(true)
                         handleSubmit()
-                      }
-                    }}
-                  />
-                </View>
-              )}
+                      }}
+                    />
+                  </View>
+                )}
             </View>
           )}
         </Formik>
