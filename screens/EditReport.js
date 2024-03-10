@@ -4,7 +4,7 @@ import { useTheme } from '@react-navigation/native'
 
 import RadioGroup from 'react-native-radio-buttons-group'
 import { Formik } from 'formik'
-import {add} from 'date-fns'
+import { add } from 'date-fns'
 
 import i18n from '../locales/i18n'
 import reports from '../api/reports'
@@ -19,23 +19,17 @@ import MyButton from '../components/MyButton'
 import MyText from '../components/MyText'
 
 function EditReport({ navigation, route }) {
+  const formRef = useRef()
+  const { colors: colorsByTheme } = useTheme()
+  const { user } = useContext(AuthContext)
+  const [errorMessage, setErrorMessage] = useState('')
   const [errorShown, setErrorShown] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
   const [successShown, setSuccessShown] = useState(false)
   const [assignmentId, setAssignmentId] = useState('')
-  const [assignmentAssignees, setAssignmentAssignees] = useState([])
-  const { user } = useContext(AuthContext)
-  const [report, setReport] = useState(null)
-  const formRef = useRef()
   const [isAssigned, setIsAssigned] = useState(false)
-  const [selectedMode, setSelectedMode] = useState(
-    report?.mode === undefined ? '' : report.mode,
-  )
-  const [selectedType, setSelectedType] = useState(
-    report?.externalOrganization == undefined ? 'independent' : 'corporate',
-  )
-  const { colors: colorsByTheme } = useTheme()
+  const [report, setReport] = useState(null)
+  const [selectedType, setSelectedType] = useState('independent')
   const options = [
     { value: 'Jelző-figyelő járőrözés', label: 'Jelző-figyelő járőrözés' },
     { value: 'Rendezvénybiztosítás', label: 'Rendezvénybiztosítás' },
@@ -116,16 +110,14 @@ function EditReport({ navigation, route }) {
     if (!result?.ok) {
       return console.log(result.data)
     }
+    setSelectedType(result.data.externalOrganization == null ? 'independent' : 'corporate')
     return setReport(result.data)
   }
-
   const handleViewReport = async () => {
-    console.log(report)
-    navigation.navigate(routes.VIEW_PDF, {id: assignmentId})
+    navigation.navigate(routes.VIEW_PDF, { id: assignmentId })
   }
-
   const handleDeleteReport = async () => {
-    if (add(new Date(report.submittedAt), {days: 3}) < new Date()) {
+    if (add(new Date(report.submittedAt), { days: 3 }) < new Date()) {
       setErrorMessage(i18n.t('3dayError'))
       return setErrorShown(true)
     }
@@ -138,19 +130,18 @@ function EditReport({ navigation, route }) {
     setSuccessMessage(i18n.t('removedAssignment'))
     return setSuccessShown(true)
   }
-
   const handleSubmit = async () => {
-    if (add(new Date(report.submittedAt), {days: 3}) < new Date()) {
+    if (add(new Date(report.submittedAt), { days: 3 }) < new Date()) {
       setErrorMessage(i18n.t('3dayError'))
       return setErrorShown(true)
     }
     const values = formRef.current.values
-    if (values.startKm >= values.endKm) {
+    if (values.startKm >= values.endKm && values.endKm != 0) {
       setErrorMessage(i18n.t('errorStartEndKm'))
       return setErrorShown(true)
     }
     if (values.externalRepresentative != '' && values.externalOrganization.length <= 4) {
-      setErrorMessage(i18n.t('A külső szerevezet képviselőjének legalább 5 karakter hosszúnak kell lennie'))
+      setErrorMessage(i18n.t('errorExternalRep'))
       return setErrorShown(true)
     }
     const result = await reports.patchReport(
@@ -158,18 +149,18 @@ function EditReport({ navigation, route }) {
       values.method,
       values.purpose,
       values.licensePlateNumber == '' || values.method != 'vehicle'
-        ? undefined
+        ? null
         : values.licensePlateNumber,
       values.startKm == 0 || values.method != 'vehicle'
-        ? undefined
+        ? null
         : values.startKm,
       values.endKm == 0 || values.method != 'vehicle'
-        ? undefined
+        ? null
         : values.endKm,
-      values.externalOrganization == ''
-        ? undefined
+      values.externalOrganization == '' || selectedType == 'independent'
+        ? null
         : values.externalOrganization,
-      values.externalRepresentative == ''
+      values.externalRepresentative == '' || selectedType == 'independent'
         ? undefined
         : values.externalRepresentative,
       values.description == '' ? undefined : values.description,
@@ -186,10 +177,8 @@ function EditReport({ navigation, route }) {
   useEffect(() => {
     if (route.params.id !== -1) {
       setAssignmentId(route.params.id)
-      setAssignmentAssignees(route.params.assignees)
       const isassigned = route.params.assignees.map((ass) => ass._id == user._id).includes(true)
       setIsAssigned(isassigned)
-      console.log(isassigned)
       handleGetReport(route.params.id)
     }
   }, [route.params.id])
@@ -238,7 +227,7 @@ function EditReport({ navigation, route }) {
           }}
           onSubmit={handleSubmit}
           innerRef={formRef}
-          enableReinitialize //ez nagyon fontos!
+          enableReinitialize
         >
           {({ values, handleChange, handleSubmit, setFieldValue }) => (
             <View style={styles.form}>
@@ -254,8 +243,6 @@ function EditReport({ navigation, route }) {
                 selectedId={values.method}
                 layout="row"
                 onPress={(item) => {
-                  console.log(item)
-                  setSelectedMode(item)
                   setFieldValue('method', item)
                 }}
               />
@@ -339,13 +326,6 @@ function EditReport({ navigation, route }) {
                 </>
               )}
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                {/* <MyButton
-                  onPress={() =>
-                    navigation.navigate(routes.MEMBERS, { path: 'add' })
-                  }
-                  title={i18n.t('add')}
-                  style={{ marginTop: 10, width: 'auto' }}
-                /> */}
               </View>
               <MyText
                 textColor="black"
@@ -360,9 +340,6 @@ function EditReport({ navigation, route }) {
                   setFieldValue('purpose', item.value), console.log(item)
                 }}
               />
-              {/* <MyText textColor='black'>
-                {isAssigned}
-              </MyText> */}
               <InputField
                 themeColor="black"
                 textColor="black"
@@ -387,16 +364,16 @@ function EditReport({ navigation, route }) {
                   onPress={handleViewReport}
                 />
                 {(user.roles.includes('president') || isAssigned) &&
-                <MyButton
-                  textStyle={{ color: 'white' }}
-                  title={i18n.t('delete')}
-                  style={{
-                    width: 100,
-                    marginLeft: 10,
-                    backgroundColor: colorsByTheme.medium_red_light_red,
-                  }}
-                  onPress={handleDeleteReport}
-                />
+                  <MyButton
+                    textStyle={{ color: 'white' }}
+                    title={i18n.t('delete')}
+                    style={{
+                      width: 100,
+                      marginLeft: 10,
+                      backgroundColor: colorsByTheme.medium_red_light_red,
+                    }}
+                    onPress={handleDeleteReport}
+                  />
                 }
 
                 {((user.roles.includes('president') || isAssigned) && ((JSON.stringify({

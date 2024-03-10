@@ -15,7 +15,6 @@ import InputField from '../components/InputField'
 import MyText from '../components/MyText'
 import MyButton from '../components/MyButton'
 import MyAlert from '../components/MyAlert'
-import { add } from 'date-fns'
 
 function AddReport({ navigation, route }) {
   const formRef = useRef()
@@ -23,12 +22,9 @@ function AddReport({ navigation, route }) {
   const [errorShown, setErrorShown] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-  const [report, setReport] = useState(null)
   const [successShown, setSuccessShown] = useState(false)
   const [assignmentId, setAssignmentId] = useState('')
-  const [selectedMode, setSelectedMode] = useState('')
   const [selectedType, setSelectedType] = useState()
-  //   const { user, setUser } = useContext(AuthContext)
   const options = [
     { value: 'Jelző-figyelő járőrözés', label: 'Jelző-figyelő járőrözés' },
     { value: 'Rendezvénybiztosítás', label: 'Rendezvénybiztosítás' },
@@ -107,18 +103,17 @@ function AddReport({ navigation, route }) {
   useEffect(() => {
     if (route.params.id !== -1) {
       setAssignmentId(route.params.id)
-      handleGetReport(route.params.id)
     }
   }, [route.params.id])
 
   const handleSubmit = async () => {
     const values = formRef.current.values
-    if (values.startKm >= values.endKm) {
+    if (values.startKm >= values.endKm && values.endKm != 0) {
       setErrorMessage(i18n.t('errorStartEndKm'))
       return setErrorShown(true)
     }
     if (values.externalRepresentative != '' && values.externalOrganization.length <= 4) {
-      setErrorMessage(i18n.t('A külső szerevezet képviselőjének legalább 5 karakter hosszúnak kell lennie'))
+      setErrorMessage(i18n.t('errorExternalRep'))
       return setErrorShown(true)
     }
     const result = await reports.postReport(
@@ -143,14 +138,6 @@ function AddReport({ navigation, route }) {
     }
     setSuccessMessage(i18n.t('createdReport'))
     return setSuccessShown(true)
-  }
-
-  const handleGetReport = async (reportID) => {
-    const result = await reports.getReport(reportID)
-    if (!result?.ok) {
-      return console.log(result.data)
-    }
-    return setReport(result.data)
   }
 
   return (
@@ -188,7 +175,7 @@ function AddReport({ navigation, route }) {
           }}
           onSubmit={handleSubmit}
           innerRef={formRef}
-          enableReinitialize //ez nagyon fontos!
+          enableReinitialize
         >
           {({ values, handleChange, handleSubmit, setFieldValue }) => (
             <View style={styles.form}>
@@ -204,7 +191,6 @@ function AddReport({ navigation, route }) {
                 selectedId={values.method}
                 layout="row"
                 onPress={(item) => {
-                  setSelectedMode(item)
                   setFieldValue('method', item)
                 }}
               />
@@ -286,15 +272,6 @@ function AddReport({ navigation, route }) {
                   />
                 </>
               )}
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                {/* <MyButton
-                  onPress={() =>
-                    navigation.navigate(routes.MEMBERS, { path: 'add' })
-                  }
-                  title={i18n.t('add')}
-                  style={{ marginTop: 10, width: 'auto' }}
-                /> */}
-              </View>
               <MyText
                 textColor="black"
                 style={{ fontWeight: 'bold', paddingBottom: 5 }}
