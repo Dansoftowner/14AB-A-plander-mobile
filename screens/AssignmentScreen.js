@@ -67,19 +67,6 @@ export default function AssignmentScreen({ navigation }) {
     }
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            console.log('lefut a navigáció ás a markedDays')
-            //getAssignmentDates(monthOfCalendar)
-            //console.log(monthOfCalendar)
-        })
-        return unsubscribe
-    }, [navigation])
-
-    useEffect(() => {
-        console.log(monthOfCalendar)
-    }, [monthOfCalendar])
-
-    useEffect(() => {
         getAssignmentDates(new Date())
     }, [])
 
@@ -131,7 +118,6 @@ export default function AssignmentScreen({ navigation }) {
         for (let i = 0; i < daysUntilMonthEnda + 1; i++) {
             const element = addDays(soonestDate, i)
             const inAssignedList = assignedList.some(item => isEqual(item.start, element))
-            //const isPeriod = assignedList.some(item => isEqual(item.start, element) && item.end === undefined)
             const inNotAssignedList = notAssignedList.some(item => isEqual(item.date, element))
             if (inAssignedList && inNotAssignedList) {
                 markedDays[formatDate(element)] = {
@@ -157,19 +143,16 @@ export default function AssignmentScreen({ navigation }) {
             }
         }
         setMarkedDays(markedDays)
-        console.log(markedDays)
         return markedDays
     }
     const convertToAgendaItems = (items) => {
         setAgendaItems([])
         const eventsVector = []
-        // console.log(items)
         items.forEach((element) => {
             const i = convertAgendaItem(element)
             eventsVector.push(i)
         })
         const newArray = convertAgendaVectorToObject(eventsVector)
-        //   console.log(newArray)
         setAgendaItems(newArray)
     }
     const convertAgendaVectorToObject = (vector) => {
