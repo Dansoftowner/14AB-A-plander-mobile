@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
 } from 'react-native'
 
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useTheme, useNavigation, useRoute } from '@react-navigation/native'
 
-import colors from '../config/colors'
 import routes from '../navigation/routes'
 
 import MyText from './MyText'
@@ -18,6 +17,7 @@ import MyTextInput from './MyTextInput'
 function MembersAutoComplete({ data, onSelectMember }) {
   const navigation = useNavigation()
   const route = useRoute()
+  const { colors: colorsByTheme } = useTheme()
   const handleSelectedMember = (item) => {
     console.log(item)
     if (route.params.path === 'add') {
@@ -42,18 +42,25 @@ function MembersAutoComplete({ data, onSelectMember }) {
           onChangeText={(text) => {
             onSelectMember(text)
           }}
-          style={styles.input}
+          style={{
+            marginVertical: 2,
+            borderRadius: 15,
+            color: colorsByTheme.white_black,
+          }}
         />
         <FlatList
           contentContainerStyle={{
             alignItems: 'center',
+            backgroundColor: colorsByTheme.white_dark_blue,
+            overflow: 'hidden',
+            borderRadius: 10
           }}
           style={styles.list}
           data={data}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleSelectedMember(item)}>
               {item?.name && (
-                <MyText style={[styles.text, { color: colors.medium_dark }]}>
+                <MyText style={[styles.text, { color: colorsByTheme.black_white }]}>
                   {item.name}
                 </MyText>
               )}
@@ -70,10 +77,6 @@ const styles = StyleSheet.create({
   container: {},
   text: {
     paddingVertical: 2,
-  },
-  input: {
-    marginVertical: 2,
-    borderRadius: 15,
   },
   list: {
     backgroundColor: 'white',

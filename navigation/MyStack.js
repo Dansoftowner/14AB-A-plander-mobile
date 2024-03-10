@@ -10,6 +10,7 @@ import AssociationsScreen from '../screens/AssociationsScreen'
 import { FormProvider } from '../components/FormContext'
 import LoginScreen from '../screens/LoginScreen'
 import i18n from '../locales/i18n'
+import colors from '../config/colors'
 
 const Stack = createStackNavigator()
 
@@ -24,9 +25,13 @@ function MyStack() {
           component={AssociationsScreen}
           options={{
             headerShown: true,
+            headerTintColor: colorsByTheme.white_white,
+            headerStyle: {
+              backgroundColor: colorsByTheme.medium_blue_dark_blue,
+              shadowColor: colorsByTheme.medium_blue_dark_blue,
+            },
+            headerTitleStyle: { fontWeight: 'bold' },
             headerTitle: i18n.t('associationSelector'),
-            headerTintColor: colorsByTheme.white_dark_blue,
-            headerStyle: { backgroundColor: colorsByTheme.Login_background },
           }}
         />
       </Stack.Navigator>
