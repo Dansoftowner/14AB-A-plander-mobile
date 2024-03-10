@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, ScrollView, Text, FlatList } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 
 import { Formik } from 'formik'
@@ -9,7 +9,6 @@ import { hu } from 'date-fns/locale'
 import i18n from '../locales/i18n'
 import AuthContext from '../auth/authContext'
 import assignments from '../api/assignments'
-import languageContext from '../locales/LanguageContext'
 import routes from '../navigation/routes'
 
 import MyText from '../components/MyText'
@@ -21,19 +20,17 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import MyListItem from '../components/MyListItem'
 
 function EditAssignment({ route, navigation }) {
-  const { user, setUser } = useContext(AuthContext)
   const { colors: colorsByTheme } = useTheme()
-  // const [alertShown, setAlertShown] = useState(false)
+  const formRef = useRef()
+  const { user } = useContext(AuthContext)
+  const [errorMessage, setErrorMessage] = useState('')
   const [errorShown, setErrorShown] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [successShown, setSuccessShown] = useState(false)
   const [datePickerShown, setDatePickerShown] = useState(false)
   const [timePickerShown, setTimePickerShown] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successShown, setSuccessShown] = useState(false)
-  const [assignment, setAssignment] = useState()
   const [isStartDate, setIsStartDate] = useState(true)
-  const formRef = useRef()
-  const { language } = useContext(languageContext)
+  const [assignment, setAssignment] = useState()
 
   const handleSubmit = async () => {
     const values = formRef.current.values
@@ -51,7 +48,6 @@ function EditAssignment({ route, navigation }) {
         assignees,
       )
       if (!result.ok) {
-        // console.log(result.data.message)
         setErrorMessage(result.data.message)
         return setErrorShown(true)
       }
@@ -62,30 +58,20 @@ function EditAssignment({ route, navigation }) {
   }
 
   const onChangeDate = ({ type }, selectedDate) => {
-    // if (type == 'set') {
-    const currentDate = selectedDate
+    if (type == 'dismissed') return setDatePickerShown(false)
     setDatePickerShown(false)
-    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', selectedDate)
     setTimePickerShown(true)
-    // } else {
-    //   setDatePickerShown(!datePickerShown)
-    // }
   }
 
   const onChangeTime = ({ type }, selectedDate) => {
-    // if (type == 'set') {
-    const currentDate = selectedDate
+    if (type == 'dismissed') return setTimePickerShown(false)
     setTimePickerShown(false)
-    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
-    // } else {
-    //   setTimePickerShown(!timePickerShown)
-    // }
+    formRef.current.setFieldValue(isStartDate ? 'start' : 'end', selectedDate)
   }
 
   const handleAddMember = (member) => {
-    const isMemberAlreadyAdded =
-      formRef.current.values.assignees.filter((x) => x._id === member._id)
-        .length > 0
+    const isMemberAlreadyAdded = formRef.current.values.assignees.filter((x) => x._id === member._id).length > 0
     if (!isMemberAlreadyAdded) {
       formRef.current.setFieldValue('assignees', [
         ...formRef.current.values.assignees,
@@ -97,7 +83,9 @@ function EditAssignment({ route, navigation }) {
   const handleGetAssignment = async (assingmentId) => {
     const result = await assignments.getAssignmentById(assingmentId)
     if (!result.ok) {
-      return console.log(result) //TODO Hibakezelés
+      console.log(result.data)
+      setErrorMessage(result.data.message)
+      return setErrorShown(true)
     }
     setAssignment(result.data)
   }
@@ -106,20 +94,19 @@ function EditAssignment({ route, navigation }) {
     const assignmentId = formRef.current.values._id
     const result = await assignments.deleteAssignment(assignmentId)
     if (!result.ok) {
-      return console.log(result)
+      console.log(result.data)
+      setErrorMessage(result.data.message)
+      return setErrorShown(true)
     }
-    // console.log(result.data)
     setSuccessMessage(i18n.t('removedAssignment'))
     return setSuccessShown(true)
   }
 
   const handleDeleteMember = (item) => {
-    //console.log(item._id)
     formRef.current.setFieldValue(
       'assignees',
       formRef.current.values.assignees.filter((x) => x._id !== item._id),
     )
-    console.log(formRef.current.values.assignees)
   }
 
   useEffect(() => {
@@ -170,7 +157,7 @@ function EditAssignment({ route, navigation }) {
           }}
           onSubmit={handleSubmit}
           innerRef={formRef}
-          enableReinitialize //ez nagyon fontos!
+          enableReinitialize
         >
           {({ values, handleChange, handleSubmit }) => (
             <View style={styles.form}>

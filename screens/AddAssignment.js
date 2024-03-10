@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, ScrollView, Text, FlatList } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 
 import { Formik } from 'formik'
@@ -21,48 +21,18 @@ import MyListItem from '../components/MyListItem'
 function AddAssignment({ route, navigation }) {
   const formRef = useRef()
   const { colors: colorsByTheme } = useTheme()
-  const [errorShown, setErrorShown] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [successShown, setSuccessShown] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [errorShown, setErrorShown] = useState(false)
   const [datePickerShown, setDatePickerShown] = useState(false)
   const [timePickerShown, setTimePickerShown] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successShown, setSuccessShown] = useState(false)
   const [isStartDate, setIsStartDate] = useState(true)
-  //possibly deleteable
-  const [assignment, setAssignment] = useState()
-  const [alertShown, setAlertShown] = useState(false)
-
-  const handleSubmit = async () => {
-    const values = formRef.current.values
-    if (values.start > values.end) {
-      setErrorMessage(i18n.t('errorStartEndDate'))
-      return setErrorShown(true)
-    } else {
-      const assignees = values.assignees.map((assignee) => assignee._id)
-      const result = await assignments.patchAssignmentById(
-        values._id,
-        values.title,
-        values.location,
-        values.start,
-        values.end,
-        assignees,
-      )
-      if (!result.ok) {
-        console.log(result.data.message)
-        setErrorMessage(result.data.message)
-        return setErrorShown(true)
-      }
-      //setAssignment({ ...values })
-      setSuccessMessage(i18n.t('modifiedAssignment'))
-      return setSuccessShown(true)
-    }
-  }
 
   const onChangeDate = ({ type }, selectedDate) => {
     if (type == 'set') {
-      const currentDate = selectedDate
       setDatePickerShown(false)
-      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', selectedDate)
       setTimePickerShown(true)
     } else {
       setDatePickerShown(!datePickerShown)
@@ -71,18 +41,15 @@ function AddAssignment({ route, navigation }) {
 
   const onChangeTime = ({ type }, selectedDate) => {
     if (type == 'set') {
-      const currentDate = selectedDate
       setTimePickerShown(false)
-      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', currentDate)
+      formRef.current.setFieldValue(isStartDate ? 'start' : 'end', selectedDate)
     } else {
       setTimePickerShown(!timePickerShown)
     }
   }
 
   const handleAddMember = (member) => {
-    const isMemberAlreadyAdded =
-      formRef.current.values.assignees.filter((x) => x._id === member._id)
-        .length > 0
+    const isMemberAlreadyAdded = formRef.current.values.assignees.filter((x) => x._id === member._id).length > 0
     if (!isMemberAlreadyAdded) {
       formRef.current.setFieldValue('assignees', [
         ...formRef.current.values.assignees,
@@ -110,7 +77,6 @@ function AddAssignment({ route, navigation }) {
       if (values.location == '') {
         values.location = 'Nem megadott'
       }
-      console.log(values.assignees)
       values.assignees = values.assignees.map((assignee) => assignee._id)
       const result = await assignments.postAssignment(
         values.title,
@@ -166,7 +132,6 @@ function AddAssignment({ route, navigation }) {
             end: add(new Date(), { hours: 3 }),
             assignees: [],
           }}
-          onSubmit={handleSubmit}
           innerRef={formRef}
         >
           {({ values, handleChange }) => (
