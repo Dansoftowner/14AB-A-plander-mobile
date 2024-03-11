@@ -1,5 +1,5 @@
 {
-  "langSelectorAlt": "Change selected language",
+  "langSelectorAlt": "Change language",
   "association": "Association",
   "emailAddress": "Email address",
   "back": "Back",
@@ -15,5 +15,12 @@
   "error": "Error!",
   "success": "Success!",
   "backToHome": "Back to home...",
-  "404": "Page not found!"
+  "404": "Page not found!",
+  "close": "Close",
+  "reports": "Reports",
+  "details": " 's details",
+  "delete": "Delete",
+  "noAssMonth": "There is no assignment for this month!",
+  "noRepMonth": "There is no report for this month!",
+  "loading": "Loading..."
 }

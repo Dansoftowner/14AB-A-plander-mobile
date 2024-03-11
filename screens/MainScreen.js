@@ -1,27 +1,40 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
-import Screen from './Screen'
-import MyText from '../components/MyText'
-import { useTheme } from '@react-navigation/native';
-import colors from '../config/colors';
-import useAuth from '../auth/useAuth';
-import LogOut from '../components/LogOut';
+import { useTheme } from '@react-navigation/native'
 
-function MainScreen(props) {
-    const {user} = useAuth();
+import MyText from '../components/MyText'
+import AuthContext from '../auth/authContext'
+
+function MainScreen() {
+  const { user } = useContext(AuthContext)
+  const { colors: colorsByTheme } = useTheme()
 
   return (
-    <Screen>
-      <View style={[styles.container]}>
-      <LogOut />
-      </View>
-    </Screen>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: colorsByTheme.medium_blue_dark_blue },
+      ]}
+    >
+      <MyText style={[styles.text]}>
+        Üdv{'\n'}újra,{'\n'}
+        {user.name.split(' ').map((word) => word + '\n')}
+      </MyText>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-  }
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  text: {
+    fontSize: 50,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
 })
 
 export default MainScreen

@@ -1,5 +1,5 @@
 {
-  "langSelectorAlt": "Kiválasztott nyelv módosítása",
+  "langSelectorAlt": "Nyelv módosítása",
   "association": "Egyesület",
   "emailAddress": "E-mail cím",
   "back": "Vissza",
@@ -15,5 +15,12 @@
   "error": "Hiba!",
   "success": "Siker!",
   "backToHome": "Vissza a főoldalra...",
-  "404": "A keresett oldal nem található!"
+  "404": "A keresett oldal nem található!",
+  "close": "Bezárás",
+  "reports": "Jelentések",
+  "details": " adatai",
+  "delete": "Törlés",
+  "noAssMonth": "A választott hónapban még nem történt beosztásfelvétel!",
+  "noRepMonth": "A választott hónapban még nem történt jelentésfelvétel!",
+  "loading": "Betöltés..."
 }

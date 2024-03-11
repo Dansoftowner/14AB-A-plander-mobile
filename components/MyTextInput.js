@@ -1,62 +1,127 @@
-import React from "react";
-import { View, TextInput, StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useTheme } from '@react-navigation/native';
+import React from 'react'
+import { View, TextInput, StyleSheet } from 'react-native'
+import { useTheme } from '@react-navigation/native'
 
-//import defaultStyles from "../config/styles";
-import colors from "../config/colors";
-import EyeToShowPassword from "./EyeToShowPassword";
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-function MyTextInput({title, icon, onPress, isPasswordField = false, passwordVisible = false, width = "100%", ...otherProps }) {
-  const { colors: colorsByTheme } = useTheme();
+import EyeToShowPassword from './EyeToShowPassword'
+import MyText from './MyText'
 
+function MyTextInput({
+  title,
+  icon,
+  onPress,
+  onChangeText,
+  style,
+  value,
+  showEye,
+  isEditable,
+  subtitle,
+  themeColor = 'white',
+  width = '100%',
+  maxLength = 50,
+  enabled = true,
+  isPasswordField = false,
+  passwordVisible = false,
+  isButton = false,
+  ...otherProps
+}) {
+  const { colors: colorsByTheme } = useTheme()
+  const colorCalculated = () => {
+    if (isEditable) {
+      if (themeColor === 'white') {
+        return colorsByTheme.white_black
+      }
+      return colorsByTheme.black_white
+    }
+    return colorsByTheme.medium_light
+  }
   return (
-    <View style={[styles.container, { width }, {borderColor: colorsByTheme.Login_textColor}]}>
+    <View
+      style={[
+        styles.container,
+        { width },
+        {
+          borderColor:
+            themeColor === 'white'
+              ? colorsByTheme.white_black
+              : colorsByTheme.black_white,
+        },
+        style,
+      ]}
+    >
       {icon && (
         <MaterialCommunityIcons
           name={icon}
           size={20}
-          color={colorsByTheme.Login_textColor}
+          color={
+            themeColor === 'white'
+              ? colorsByTheme.white_black
+              : colorsByTheme.black_white
+          }
           style={styles.icon}
         />
       )}
-      <TextInput
-        placeholder={title}
-        placeholderTextColor={colorsByTheme.Login_placeholders}
-        style={[styles.text, {color: colorsByTheme.Login_textColor}]}
-        {...otherProps}
-      />
-      {isPasswordField && (
-        <EyeToShowPassword style={styles.eye} onPress={onPress} passwordVisible={passwordVisible}/>
+      {isButton ? (
+        <MyText
+          style={[
+            styles.text,
+            {
+              color:
+                title !== subtitle
+                  ? themeColor === 'white'
+                    ? colorsByTheme.white_black
+                    : colorsByTheme.black_white
+                  : colorsByTheme.Login_placeholders,
+            },
+          ]}
+          {...otherProps}
+        >
+          {title ?? subtitle}
+        </MyText>
+      ) : (
+        <TextInput
+          value={value}
+          maxLength={maxLength}
+          placeholder={title}
+          onChangeText={(text) => onChangeText(text)}
+          style={[styles.text, { color: colorCalculated() }, style]}
+          {...otherProps}
+        />
+      )}
+      {isPasswordField && showEye && (
+        <EyeToShowPassword
+          style={styles.eye}
+          onPress={onPress}
+          passwordVisible={passwordVisible}
+        />
       )}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     borderRadius: 15,
-    flexDirection: "row",
+    flexDirection: 'row',
     padding: 15,
     marginVertical: 10,
-    alignItems: "center",
-    borderWidth: 0.7
-    },
-    eye: {
-      right: 10,
-      justifyContent: "flex-end",
-      alignSelf: "flex-end",
-    },
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  eye: {
+    right: 10,
+    justifyContent: 'flex-end',
+    alignSelf: 'flex-end',
+  },
   icon: {
     marginRight: 10,
   },
   text: {
-    //color: colors.white,
-    fontWeight: "700",
+    fontWeight: '700',
     flex: 1,
-    //width: "300",
-    // backgroundColor: "red"
-  }
-});
+    fontSize: 14,
+  },
+})
 
-export default MyTextInput;
+export default MyTextInput

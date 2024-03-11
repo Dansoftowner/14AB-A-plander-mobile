@@ -1,5 +1,4 @@
 import {I18n} from 'i18n-js'
-import {getLocales} from 'expo-localization'
 
 import loginTransEN from './en/login.json'
 import loginTransHU from './hu/login.json'
@@ -13,26 +12,29 @@ import memberTransEN from './en/member.json'
 import translationTransHU from './hu/translation.json'
 import translationTransEN from './en/translation.json'
 
+import navigationHU from './hu/navigation.json'
+import navigationEN from './en/navigation.json'
+
+import assignmentHU from './hu/assignments.json'
+import assignmentEN from './en/assignments.json'
+
 const translations = {
     en: {
         ...loginTransEN, 
         ...registerTransEN,
         ...memberTransEN,
-        ...translationTransEN
+        ...translationTransEN,
+        ...navigationEN,
+        ...assignmentEN
     },
     hu: {
         ...loginTransHU, 
         ...registerTransHU,
         ...memberTransHU,
-        ...translationTransHU
+        ...translationTransHU,
+        ...navigationHU,
+        ...assignmentHU
     }
 }
 
 export default new I18n(translations);
-
-// i18n.use(Backend).use(LanguageDetector).use(initReactI18next).init({
-//     resources,
-//     defaultNS: 'common',
-//     fallbackLng: 'hu',
-//     debug: true,
-//   })

@@ -1,4 +1,5 @@
 {
+    "theme": "Change theme",
     "password": "Password",
     "username": "Username or e-mail",
     "associationSelector": "Choose an association",

@@ -1,0 +1,17 @@
+export default {
+    ADD_ASSIGMENT: "AddAssignmentScreen",
+    ADD_REPORT: "AddReportScreen",
+    ASSOCIATIONS: "AssociationsScreen",
+    ASSIGNMENTS: "AssignmentsScreen",
+    ASSIGNMENT_STACK: "AssignmentStack",
+    EDIT_ASSIGMENT: "EditAssignment",
+    EDIT_REPORT: "EditReport",
+    LOGIN: "LoginScreen",
+    MAIN: "MainSceen",
+    MEMBERS: "MembersScreen",
+    PROFILE: "ProfileScreen",
+    REPORTS: "ReportsScreen",
+    REPORTS_STACK: "ReportsStack",
+    SETTINGS: "SettingsScreen",
+    VIEW_PDF: "ViewPdfScreen",
+}

@@ -1,34 +1,52 @@
-import React from "react";
-import { useFormikContext } from "formik";
-import { useTheme } from '@react-navigation/native';
+import React from 'react'
+import { View } from 'react-native'
 
-import MyErrorMessage from "./MyErrorMessage";
-import MyTextInput from "./MyTextInput";
-function MyFormField({ name, width, onPress, isPasswordField = false, passwordVisible = false, ...otherProps }) {
-  const {
-    setFieldTouched,
-    handleChange,
-    setFieldValue,
-    values,
-    errors,
-    touched,
-  } = useFormikContext();
+import { useFormikContext } from 'formik'
+
+import MyErrorMessage from './MyErrorMessage'
+import MyTextInput from './MyTextInput'
+
+function MyFormField({
+  name,
+  width,
+  onPress,
+  onChangeText,
+  value,
+  title,
+  themeColor,
+  style,
+  enabled,
+  showEye,
+  isEditable = true,
+  isPasswordField = false,
+  passwordVisible = false,
+  ...otherProps
+}) {
+  const { setFieldTouched, errors, touched } = useFormikContext()
 
   return (
-    <>
+    <View>
       <MyTextInput
+        title={title}
         onBlur={() => setFieldTouched(name)}
-        onChangeText={(text) => setFieldValue(name, text)}
-        value={values[name]}
+        onChangeText={onChangeText}
+        value={value}
         width={width}
         onPress={onPress}
         isPasswordField={isPasswordField}
         passwordVisible={passwordVisible}
         {...otherProps}
+        isEditable={isEditable}
+        themeColor={themeColor}
+        editable={enabled}
+        style={style}
+        showEye={showEye}
       />
-      <MyErrorMessage error={errors[name]} visible={touched[name]} />
-    </>
-  );
+      {errors[name] && (
+        <MyErrorMessage error={errors[name]} visible={touched[name]} />
+      )}
+    </View>
+  )
 }
 
-export default MyFormField;
+export default MyFormField
