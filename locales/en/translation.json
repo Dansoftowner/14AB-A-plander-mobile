@@ -21,5 +21,6 @@
   "details": " 's details",
   "delete": "Delete",
   "noAssMonth": "There is no assignment for this month!",
-  "noRepMonth": "There is no report for this month!"
+  "noRepMonth": "There is no report for this month!",
+  "loading": "Loading..."
 }

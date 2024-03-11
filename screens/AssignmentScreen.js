@@ -20,7 +20,7 @@ import routes from '../navigation/routes'
 import dateTranslationHU from '../locales/hu/date'
 import dateTranslationEN from '../locales/en/date'
 
-import AgendaItem from '../components/calendar/AgendaItem'
+import AgendaItem from '../components/AgendaItem'
 import MyButton from '../components/MyButton'
 import MyText from '../components/MyText'
 import MarkNotation from '../components/MarkNotation'
@@ -28,7 +28,7 @@ import MarkNotation from '../components/MarkNotation'
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
 
-export default function AssignmentScreen({ navigation, route }) {
+export default function AssignmentScreen({ navigation }) {
     const { language } = useContext(languageContext)
     const { user } = useContext(AuthContext)
     const rightArrowIcon = require('../assets/arrows/next.png')
@@ -65,19 +65,6 @@ export default function AssignmentScreen({ navigation, route }) {
         textDisabledColor: colors.light,
         arrowColor: colorsByTheme.medium_blue_yellow,
     }
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            console.log('lefut a navigáció ás a markedDays')
-            //getAssignmentDates(monthOfCalendar)
-            //console.log(monthOfCalendar)
-        })
-        return unsubscribe
-    }, [navigation])
-
-    useEffect(() => {
-        console.log(monthOfCalendar)
-    }, [monthOfCalendar])
 
     useEffect(() => {
         getAssignmentDates(new Date())
@@ -131,7 +118,6 @@ export default function AssignmentScreen({ navigation, route }) {
         for (let i = 0; i < daysUntilMonthEnda + 1; i++) {
             const element = addDays(soonestDate, i)
             const inAssignedList = assignedList.some(item => isEqual(item.start, element))
-            //const isPeriod = assignedList.some(item => isEqual(item.start, element) && item.end === undefined)
             const inNotAssignedList = notAssignedList.some(item => isEqual(item.date, element))
             if (inAssignedList && inNotAssignedList) {
                 markedDays[formatDate(element)] = {
@@ -157,19 +143,16 @@ export default function AssignmentScreen({ navigation, route }) {
             }
         }
         setMarkedDays(markedDays)
-        console.log(markedDays)
         return markedDays
     }
     const convertToAgendaItems = (items) => {
         setAgendaItems([])
         const eventsVector = []
-        // console.log(items)
         items.forEach((element) => {
             const i = convertAgendaItem(element)
             eventsVector.push(i)
         })
         const newArray = convertAgendaVectorToObject(eventsVector)
-        //   console.log(newArray)
         setAgendaItems(newArray)
     }
     const convertAgendaVectorToObject = (vector) => {
@@ -226,7 +209,7 @@ export default function AssignmentScreen({ navigation, route }) {
         return (
             <AgendaItem
                 item={item}
-                key={item._id}
+                key={item => item._id}
                 color={item.color}
                 onItemPress={() =>
                     navigation.navigate(routes.EDIT_ASSIGMENT, { id: item._id })

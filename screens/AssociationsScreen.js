@@ -41,7 +41,7 @@ function AssociationsScreen({ navigation }) {
   const handleGetAssociations = async (q) => {
     const result = await associationsHook.getAssociations(q)
     if (!result.ok) {
-      return console.log(result) //TODO Hibakezelés
+      return console.log(result)
     }
     setAssociations([...result.data.items])
   }

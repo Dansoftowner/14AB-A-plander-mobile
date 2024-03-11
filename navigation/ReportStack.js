@@ -45,10 +45,10 @@ function ReportStack() {
       />
       <Stack.Screen name={routes.REPORTS} component={ReportScreen} />
       <Stack.Screen name={routes.VIEW_PDF} component={ViewPdfScreen} options={{
-            headerShown: true,
-            headerTitle: '',
-            headerTintColor: colorsByTheme.white_dark_blue,
-            headerStyle: { backgroundColor: colorsByTheme.Login_background },
+        headerShown: true,
+        headerTitle: '',
+        headerTintColor: colorsByTheme.white_dark_blue,
+        headerStyle: { backgroundColor: colorsByTheme.Login_background },
       }} />
     </Stack.Navigator>
   )

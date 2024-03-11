@@ -1,4 +1,3 @@
-import isEmpty from 'lodash/isEmpty'
 import React from 'react'
 import {
   StyleSheet,
@@ -7,10 +6,13 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import { useTheme } from '@react-navigation/native'
+
+import isEmpty from 'lodash/isEmpty'
 import { format } from 'date-fns'
 import { hu } from 'date-fns/locale'
-import MyText from '../MyText'
-import i18n from '../../locales/i18n'
+
+import MyText from './MyText'
+import i18n from '../locales/i18n'
 
 export default function AgendaItem({
   item,
@@ -30,7 +32,7 @@ export default function AgendaItem({
   }
 
   return (
-    <TouchableOpacity onPress={onItemPress} style={[styles.item, {backgroundColor: colorsByTheme.white_dark_blue}]}>
+    <TouchableOpacity onPress={onItemPress} style={[styles.item, { backgroundColor: colorsByTheme.white_dark_blue }]}>
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <View
           style={{
@@ -49,27 +51,27 @@ export default function AgendaItem({
         }}
       >
         {!isReport ? (
-        <View>
-          <Text style={[styles.itemTitleText, {color: colorsByTheme.black_white}]}>{item.title}</Text>
-          <MyText
-            textColor="black"
-            style={{ fontSize: 14, paddingHorizontal: 10 }}
-          >
-            { i18n.t('assignmentStart')} : {format(item.start, 'HH:mm', { locale: hu })}
-          </MyText>
-        </View>)
-        : (
           <View>
-          <Text style={[styles.itemTitleText, {color: colorsByTheme.black_white}]}>{item.title}</Text>
-          <MyText
-            textColor="black"
-            style={{ fontSize: 14, paddingHorizontal: 10 }}
-          >
-            {item.report ? i18n.t('editReport') : i18n.t('addReport')}
-          </MyText>
-        </View>
-        )
-}
+            <Text style={[styles.itemTitleText, { color: colorsByTheme.black_white }]}>{item.title}</Text>
+            <MyText
+              textColor="black"
+              style={{ fontSize: 14, paddingHorizontal: 10 }}
+            >
+              {i18n.t('assignmentStart')} : {format(item.start, 'HH:mm', { locale: hu })}
+            </MyText>
+          </View>)
+          : (
+            <View>
+              <Text style={[styles.itemTitleText, { color: colorsByTheme.black_white }]}>{item.title}</Text>
+              <MyText
+                textColor="black"
+                style={{ fontSize: 14, paddingHorizontal: 10 }}
+              >
+                {item.report ? i18n.t('editReport') : i18n.t('addReport')}
+              </MyText>
+            </View>
+          )
+        }
       </View>
     </TouchableOpacity>
   )

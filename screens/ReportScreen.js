@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react'
-import { Appearance, StyleSheet, View, useColorScheme } from 'react-native'
+import { StyleSheet, View, useColorScheme } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 import {
     AgendaList,
@@ -20,8 +20,7 @@ import routes from '../navigation/routes'
 import dateTranslationHU from '../locales/hu/date'
 import dateTranslationEN from '../locales/en/date'
 
-import AgendaItem from '../components/calendar/AgendaItem'
-import MyButton from '../components/MyButton'
+import AgendaItem from '../components/AgendaItem'
 import MyText from '../components/MyText'
 import MyAlert from '../components/MyAlert'
 import MarkNotation from '../components/MarkNotation'
@@ -29,20 +28,16 @@ import MarkNotation from '../components/MarkNotation'
 LocaleConfig.locales['hu'] = dateTranslationHU
 LocaleConfig.locales['en'] = dateTranslationEN
 
-export default function AssignmentScreen({ navigation, route }) {
+export default function AssignmentScreen({ navigation }) {
+    const colorScheme = useColorScheme()
+    const { colors: colorsByTheme } = useTheme()
     const { language } = useContext(languageContext)
     const { user } = useContext(AuthContext)
-    const rightArrowIcon = require('../assets/arrows/next.png')
-    const { colors: colorsByTheme } = useTheme()
     const periodColor = colorsByTheme.periodColor
     const dotColor = colors.orange
+    const rightArrowIcon = require('../assets/arrows/next.png')
     const leftArrowIcon = require('../assets/arrows/previous.png')
-    const colorScheme = useColorScheme()
     const [infoShown, setInfoShown] = useState(false)
-
-    const [selected, setSelected] = useState('')
-    const [monthOfCalendar, setMonthOfCalendar] = useState(new Date())
-
     const [markedDays, setMarkedDays] = useState(null)
     const [agendaItems, setAgendaItems] = useState(null)
     const calendarThemeLight = {
@@ -69,29 +64,17 @@ export default function AssignmentScreen({ navigation, route }) {
     }
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            console.log('lefut a navigáció ás a markedDays')
-            //getAssignmentDates(monthOfCalendar)
-            //console.log(monthOfCalendar)
-        })
-        return unsubscribe
-    }, [navigation])
-
-    useEffect(() => {
-        //console.log(monthOfCalendar)
-    }, [monthOfCalendar])
-
-    useEffect(() => {
         getAssignmentDates(new Date())
     }, [])
 
     const getAssignmentDates = async (startDate) => {
         if (startDate > new Date()) {
-            return
+            setAgendaItems([])
+            return setMarkedDays({})
         }
         const endParam = isEqual(startOfMonth(startDate), startOfMonth(new Date())) ? new Date() : endOfMonth(startDate)
         const result = await assignments.getAssignments(startOfMonth(startDate), endParam)
-        if (result.data.items.length > 0) {
+        if (result.data.items) {
             convertToMarkedDays(result.data.items)
             convertToAgendaItems(result.data.items)
         }
@@ -103,7 +86,6 @@ export default function AssignmentScreen({ navigation, route }) {
     const convertToMarkedDays = (items) => {
         const hasReportList = []
         const doesNotHaveReportList = []
-        console.log(items[0])
         items.forEach((item) => {
             const startDate = new Date(item.start)
             const endDate = new Date(item.end)
@@ -133,12 +115,11 @@ export default function AssignmentScreen({ navigation, route }) {
             }
         })
         const markedDays = {}
-        const soonestDate = doesNotHaveReportList.length > 0 ? min([hasReportList[0].start ?? hasReportList[0].end, doesNotHaveReportList[0].date]) : hasReportList[0].start
+        const soonestDate = calculateSoonestDate(hasReportList, doesNotHaveReportList)
         const daysUntilMonthEnda = differenceInDays(endOfMonth(soonestDate), soonestDate)
         for (let i = 0; i < daysUntilMonthEnda + 1; i++) {
             const element = addDays(soonestDate, i)
             const inHasReportList = hasReportList.some(item => isEqual(item.start, element))
-            //const isPeriod = assignedList.some(item => isEqual(item.start, element) && item.end === undefined)
             const notInDoesNotHaveReportList = doesNotHaveReportList.some(item => isEqual(item.date, element))
             if (inHasReportList && notInDoesNotHaveReportList) {
                 markedDays[formatDate(element)] = {
@@ -166,16 +147,23 @@ export default function AssignmentScreen({ navigation, route }) {
         setMarkedDays(markedDays)
         return markedDays
     }
+    const calculateSoonestDate = (hasReportList, doesNotHaveReportList) => {
+        if (doesNotHaveReportList.length > 0) {
+            if (hasReportList.length > 0) {
+                return min([hasReportList[0].start, doesNotHaveReportList[0].date])
+            }
+            return doesNotHaveReportList[0].date
+        }
+        return hasReportList[0].start
+    }
     const convertToAgendaItems = (items) => {
         setAgendaItems([])
         const eventsVector = []
-        // console.log(items)
         items.forEach((element) => {
             const i = convertAgendaItem(element)
             eventsVector.push(i)
         })
         const newArray = convertAgendaVectorToObject(eventsVector)
-        //   console.log(newArray)
         setAgendaItems(newArray)
     }
     const convertAgendaVectorToObject = (vector) => {
@@ -219,7 +207,7 @@ export default function AssignmentScreen({ navigation, route }) {
         const year = date.getFullYear()
         const month = (date.getMonth() + 1).toString().padStart(2, '0')
         const day = date.getDate().toString().padStart(2, '0')
-        return `${year}-${month}-${day}` //Example: 2024-02-03
+        return `${year}-${month}-${day}`
     }
     const setSelectedDay = (selectedDay) => {
         for (const date in markedDays) {
@@ -245,9 +233,8 @@ export default function AssignmentScreen({ navigation, route }) {
                 isReport={true}
                 item={item}
                 color={item.color}
-                key={item._id}
+                key={item => item._id}
                 onItemPress={() => {
-                    console.log(item)
                     handleReportTouched(item)
                 }}
             />
@@ -261,7 +248,6 @@ export default function AssignmentScreen({ navigation, route }) {
             <CalendarProvider date={new Date().toDateString()}>
                 <Calendar
                     onMonthChange={(date) => {
-                        setMonthOfCalendar(startOfMonth(new Date(date.dateString)))
                         getAssignmentDates(new Date(date.dateString))
                     }}
                     onDayPress={(day) => {

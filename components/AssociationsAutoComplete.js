@@ -9,7 +9,6 @@ import {
 
 import { useTheme, useNavigation } from '@react-navigation/native'
 
-import colors from '../config/colors'
 import routes from '../navigation/routes'
 
 import MyText from './MyText'
@@ -34,6 +33,9 @@ function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
         <FlatList
           contentContainerStyle={{
             alignItems: 'center',
+            backgroundColor: colorsByTheme.white_dark_blue,
+            overflow: 'hidden',
+            borderRadius: 10
           }}
           style={styles.list}
           data={data}
@@ -44,7 +46,7 @@ function AssociationsAutoComplete({ data, selectAssociation, setFieldValue }) {
                 navigation.navigate(routes.LOGIN)
               }}
             >
-              <MyText style={[styles.text, { color: colors.medium_dark }]}>
+              <MyText style={[styles.text, { color: colorsByTheme.black_white }]}>
                 {item.name ?? ''}
               </MyText>
             </TouchableOpacity>

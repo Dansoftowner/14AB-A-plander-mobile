@@ -51,7 +51,7 @@ function InputField({
         />
         {!enabled && (
           <SmallButton
-            style={{ marginLeft: 8 }}
+            style={{ marginLeft: 8, position: 'absolute', top: 25, right: 0 }}
             type="edit"
             onPress={() => {
               setIsEditable(!isEditable)
@@ -67,7 +67,7 @@ function InputField({
 const styles = StyleSheet.create({
   field: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
 })
 

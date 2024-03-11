@@ -15,7 +15,6 @@ function DropDownList({ data, onChange, value }) {
     <View
       style={[styles.container, { backgroundColor: colorsByTheme.white_black }]}
     >
-      {/* {renderLabel()} */}
       <Dropdown
         style={[
           styles.dropdown,
@@ -41,14 +40,6 @@ function DropDownList({ data, onChange, value }) {
           onChange(item)
           setIsFocus(false)
         }}
-        //   renderLeftIcon={() => (
-        //     <MaterialCommunityIcons
-        //       style={styles.icon}
-        //       color={isFocus ? 'blue' : 'black'}
-        //       name="card"
-        //       size={20}
-        //     />
-        //   )}
       />
     </View>
   )
