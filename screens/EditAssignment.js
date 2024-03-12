@@ -220,7 +220,7 @@ function EditAssignment({ route, navigation }) {
                 name="start"
                 subtitle={format(
                   values?.start == '' ? new Date() : values.start,
-                  'yyyy. MMMM. dd. HH:mm',
+                  'yyyy. MMMM. d. HH:mm',
                   { locale: hu },
                 )}
                 onPress={() => {
