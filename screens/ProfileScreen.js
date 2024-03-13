@@ -127,7 +127,7 @@ function ProfileScreen() {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: colorsByTheme.white_black }}>
       <View style={styles.container}>
         <MyAlert
           visible={alertShown}
@@ -376,9 +376,8 @@ function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'white'
-  },
+    alignItems: 'center'
+    },
   field: {
     flexDirection: 'row',
     alignItems: 'center',
