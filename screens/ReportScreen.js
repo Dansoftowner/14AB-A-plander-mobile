@@ -233,7 +233,7 @@ export default function AssignmentScreen({ navigation }) {
                 isReport={true}
                 item={item}
                 color={item.color}
-                key={item => item._id}
+                key={item._id}
                 onItemPress={() => {
                     handleReportTouched(item)
                 }}

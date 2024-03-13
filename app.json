@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "plander",
+    "name": "Plander",
     "slug": "plander",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,8 +8,8 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#0375D3"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -25,7 +25,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.plander"
+      "package": "com.plander",
+      "versionCode": 1
     },
     "locales": {
       "en": "./locales/en/login.json",

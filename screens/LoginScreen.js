@@ -4,8 +4,8 @@ import { useTheme } from '@react-navigation/native'
 
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-
 import i18n from '../locales/i18n'
+
 import auth from '../api/auth'
 import AuthContext from '../auth/authContext'
 import { useFormDispatch, useFormState } from '../components/FormContext'
@@ -110,7 +110,7 @@ export default function LoginScreen({ navigation }) {
         visible={loginFailed}
         type="error"
         size="small"
-        button="Close"
+        button={i18n.t('close')}
         message={errorMessage}
         onClose={() => setLoginFailed(false)}
       />
