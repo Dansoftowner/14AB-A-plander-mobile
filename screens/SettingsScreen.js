@@ -2,7 +2,7 @@ import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 
-import Logout from '../components/Logout'
+import Logout from '../components/LogOut'
 import LanguageSelector from '../components/LanguageSelector'
 import ThemeSwitch from '../components/ThemeSwitch'
 
