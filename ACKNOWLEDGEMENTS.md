@@ -34,6 +34,7 @@
 - lodash
 - Yup
 - Socket.IO-client
+- React-query
 
 ## Fejlesztési
 - Expo
