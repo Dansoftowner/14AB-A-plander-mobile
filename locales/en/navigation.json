@@ -1,7 +1,8 @@
 {
-    "editProfile": "Edit Profile",
-    "navMain": "Main",
-    "navSettings": "Settings",
-    "navProfile": "Profile",
-    "assignments": "Assignments"
+  "editProfile": "Edit Profile",
+  "navMain": "Main",
+  "navSettings": "Settings",
+  "navProfile": "Profile",
+  "assignments": "Assignments",
+  "chats": "Chats"
 }

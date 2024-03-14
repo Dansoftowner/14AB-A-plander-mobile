@@ -14,6 +14,7 @@ import MainScreen from '../screens/MainScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import ReportStack from './ReportStack'
 import SettingsScreen from '../screens/SettingsScreen'
+import ChatsScreen from '../screens/ChatsScreen'
 
 const Drawer = createDrawerNavigator()
 
@@ -42,6 +43,11 @@ function MyDrawer() {
           name={routes.MAIN}
           component={MainScreen}
           options={{ title: i18n.t('navMain'), headerTitle: 'Plander' }}
+        />
+        <Drawer.Screen
+          name={routes.CHATS}
+          component={ChatsScreen}
+          options={{ title: i18n.t('chats'), headerTitle: 'Plander' }}
         />
         <Drawer.Screen
           name={routes.ASSIGNMENT_STACK}
