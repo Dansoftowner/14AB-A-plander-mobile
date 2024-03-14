@@ -13,11 +13,14 @@ import AuthContext from './auth/authContext'
 import MyDrawer from './navigation/MyDrawer'
 import MyStack from './navigation/MyStack'
 import LanguageContext from './locales/LanguageContext'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export default function App() {
   const [user, setUser] = useState()
   const colorScheme = useColorScheme('light')
   const [language, setLanguage] = useState('hu')
+
+  const queryClient = new QueryClient()
 
   i18n.locale = language
 
@@ -25,11 +28,13 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthContext.Provider value={{ user, setUser }}>
         <LanguageContext.Provider value={{ language, setLanguage }}>
-          <NavigationContainer
-            theme={colorScheme === 'light' ? AppLightTheme : AppDarkTheme}
-          >
-            {user ? <MyDrawer /> : <MyStack />}
-          </NavigationContainer>
+          <QueryClientProvider client={queryClient}>
+            <NavigationContainer
+              theme={colorScheme === 'light' ? AppLightTheme : AppDarkTheme}
+            >
+              {user ? <MyDrawer /> : <MyStack />}
+            </NavigationContainer>
+          </QueryClientProvider>
         </LanguageContext.Provider>
       </AuthContext.Provider>
     </GestureHandlerRootView>
