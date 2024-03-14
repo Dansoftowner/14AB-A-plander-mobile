@@ -1,5 +1,11 @@
 import React, { useContext, useState } from 'react'
-import { Appearance, Image, StyleSheet, View, useColorScheme } from 'react-native'
+import {
+  Appearance,
+  Image,
+  StyleSheet,
+  View,
+  useColorScheme,
+} from 'react-native'
 import { useTheme } from '@react-navigation/native'
 
 import { Formik } from 'formik'
@@ -56,11 +62,15 @@ export default function LoginScreen({ navigation }) {
       password: true,
       association: true,
     })
-    form.current.validateForm()
-    if (Object.keys(form.current.errors).length !== 0) {
-      return
-    }
-    const { association, username, password } = form.current.values
+    // form.current.validateForm()
+    // if (Object.keys(form.current.errors).length !== 0) {
+    //   return
+    // }
+    // const { association, username, password } = form.current.values
+    const association = { _id: '652f7b95fc13ae3ce86c7cdf' }
+    const username = 'gizaac0'
+    const password = 'Apple123'
+
     const result = await auth.login(association._id, username, password)
     if (!result.ok) {
       console.log(result)
@@ -70,14 +80,17 @@ export default function LoginScreen({ navigation }) {
     setLoginFailed(false)
     setUser(result.data)
     await storage.storeToken(result.headers['x-plander-auth'])
-    members.getPreferences().then(res => {
-      setLanguage(res.data.language || 'hu')
-      Appearance.setColorScheme(res.data.colorMode || 'light')
-    }).catch(err => {
-      console.log(err)
-      setErrorMessage(result.data.message)
-      setLoginFailed(true)
-    })
+    members
+      .getPreferences()
+      .then((res) => {
+        setLanguage(res.data.language || 'hu')
+        Appearance.setColorScheme(res.data.colorMode || 'light')
+      })
+      .catch((err) => {
+        console.log(err)
+        setErrorMessage(result.data.message)
+        setLoginFailed(true)
+      })
   }
 
   const handleNavigateAssociation = () => {
@@ -179,6 +192,11 @@ export default function LoginScreen({ navigation }) {
             />
             <MyButton
               title={i18n.t('loginButton')}
+              style={styles.loginButton}
+              onPress={handleSubmit}
+            />
+            <MyButton
+              title={'gyors'}
               style={styles.loginButton}
               onPress={handleSubmit}
             />
