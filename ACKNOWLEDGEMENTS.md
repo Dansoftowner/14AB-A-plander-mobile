@@ -13,6 +13,7 @@
 - Reanimated
 - Svg
 - Svg Transformer
+- Gifted Chat
 
 ### Expo
 - Constatants
@@ -32,6 +33,7 @@
 - i18n-js
 - lodash
 - Yup
+- Socket.IO-client
 
 ## Fejlesztési
 - Expo
