@@ -9,6 +9,7 @@ import io from 'socket.io-client'
 import storage from '../auth/storage'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import apiClient from '../api/client'
+import { da } from 'date-fns/locale'
 
 function ChatsScreen(props) {
   const socket = io('wss://dev-plander-org.koyeb.app', {
@@ -20,19 +21,19 @@ function ChatsScreen(props) {
 
   const { user } = useContext(AuthContext)
 
-  const { data, isFetched, isFetching } = useInfiniteQuery({
+  const { data, isFetched, isFetching, fetchNextPage } = useInfiniteQuery({
     queryKey: ['chats'],
     queryFn: async ({ pageParam = 1 }) => {
       const res = await apiClient.get('/chats', {
-        limit: 10,
-        offset: (pageParam - 1) * 10,
+        limit: 15,
+        offset: (pageParam - 1) * 15,
       })
       return res.data
     },
     staleTime: 0,
     refetchOnWindowFocus: false,
     getNextPageParam: (lastPage, allPages) => {
-      return lastPage.items?.length > 0 ? allPages?.length + 1 : undefined
+      return lastPage.items.length > 0 ? allPages.length + 1 : undefined
     },
   })
 
@@ -41,11 +42,14 @@ function ChatsScreen(props) {
   })
 
   const [messages, setMessages] = useState([])
+
   useEffect(() => {
-    let parsed = extractMessages(chatMessages, setMessages)
-    setMessages(parsed)
-    console.log(parsed)
-  }, [chatMessages, isFetched])
+    if (isFetched) {
+      let parsed = extractMessages(chatMessages)
+      setMessages(parsed)
+      console.log(parsed)
+    }
+  }, [isFetched, data])
 
   useEffect(() => {
     socket.connect()
@@ -63,7 +67,7 @@ function ChatsScreen(props) {
       }
     })
     return () => socket.off('recieve-message')
-  }, [])
+  }, [socket])
 
   const onSend = useCallback((localMessages) => {
     socket.emit('send-message', localMessages[0].text)
@@ -72,6 +76,12 @@ function ChatsScreen(props) {
         ...localMessages[0],
       }),
     )
+  }, [])
+
+  const onLoadEarlier = useCallback(async () => {
+    console.log('load earlier')
+    await fetchNextPage()
+    console.log(chatMessages)
   }, [])
 
   return (
@@ -91,11 +101,7 @@ function ChatsScreen(props) {
         loadEarlier
         infiniteScroll
         scrollToBottom
-        renderChatEmpty={() => (
-          <View style={{ height: 100 }}>
-            <Text>Nem történt még beszélgetés!</Text>
-          </View>
-        )}
+        onLoadEarlier={onLoadEarlier}
       />
     </>
   )
@@ -114,11 +120,9 @@ function convertToGiftedChatMessage(message) {
   }
 }
 
-const extractMessages = (messages, setMessages) => {
+const extractMessages = (messages) => {
   if (messages != undefined) {
     const parsed = messages.items.map((r) => convertToGiftedChatMessage(r))
-    setMessages(parsed)
-
     return parsed
   }
 }
